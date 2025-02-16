@@ -1,0 +1,51 @@
+// SPDX-FileCopyrightText: 2022 - 2025 ds5678
+// SPDX-FileCopyrightText: 2025 Legiayayana
+//
+// SPDX-License-Identifier: MIT
+
+using System.Numerics;
+
+namespace Triton.Pixel.Formats;
+
+public record struct ColorRGBA<T> : IColor<ColorRGBA<T>, T> where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
+	public ColorRGBA(T r, T g, T b, T a) {
+		R = r;
+		G = g;
+		B = b;
+		A = a;
+	}
+
+	public T R { get; set; }
+
+	public T G { get; set; }
+
+	public T B { get; set; }
+
+	public T A { get; set; }
+
+	public readonly void GetChannels(out T r, out T g, out T b, out T a) {
+		r = R;
+		g = G;
+		b = B;
+		a = A;
+	}
+
+	public void SetChannels(T r, T g, T b, T a) {
+		R = r;
+		G = g;
+		B = b;
+		A = a;
+	}
+
+	static bool IColor.HasRedChannel => true;
+	static bool IColor.HasGreenChannel => true;
+	static bool IColor.HasBlueChannel => true;
+	static bool IColor.HasAlphaChannel => true;
+	static bool IColor.ChannelsAreFullyUtilized => true;
+	static Type IColor.ChannelType => typeof(T);
+
+	public static ColorRGBA<T> Black => new(NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());
+	public static ColorRGBA<T> White => new(NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());
+
+	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B}, A: {A} }}";
+}
