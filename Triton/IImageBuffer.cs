@@ -34,6 +34,24 @@ public interface IImageBuffer : IDisposable {
 	public void Draw(IImageBuffer image, Point target, ImageDrawOperation op = ImageDrawOperation.Copy);
 	public void Draw(IImageBuffer image, Point target, Rect crop, ImageDrawOperation op = ImageDrawOperation.Copy);
 
+	public void Clear();
+
+	public void Clear<TColor, T>(TColor color, ImageDrawOperation op = ImageDrawOperation.Copy)
+		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
+		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
+
+	public void Clear<TColor, T>(TColor color, int x, int y, ImageDrawOperation op = ImageDrawOperation.Copy)
+		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
+		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
+
+	public void Clear<TColor, T>(TColor color, Point target, ImageDrawOperation op = ImageDrawOperation.Copy)
+		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
+		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
+
+	public void Clear<TColor, T>(TColor color, Rect target, ImageDrawOperation op = ImageDrawOperation.Copy)
+		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
+		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
+
 	static IImageBuffer Create(int width, int height, int bitDepth, int samples, bool isFloat, bool isSigned) =>
 		bitDepth switch {
 			8 when isSigned => Create<sbyte>(width, height, samples),
