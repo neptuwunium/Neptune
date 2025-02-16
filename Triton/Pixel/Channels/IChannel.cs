@@ -16,6 +16,7 @@ public interface IChannel {
 
 	public static virtual T GetBlack<T>() where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => NumericConversion.GetMinimumValueSafe<T>();
 	public static virtual T GetWhite<T>() where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => NumericConversion.GetMaximumValueSafe<T>();
+	public static virtual T GetTransparent<T>() where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => NumericConversion.GetMinimumValueSafe<T>();
 	public static virtual T GetRed<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;
 	public static virtual T GetGreen<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;
 	public static virtual T GetBlue<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;

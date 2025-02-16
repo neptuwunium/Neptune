@@ -8,4 +8,5 @@ namespace Triton.Pixel.Channels;
 public readonly record struct A : IChannel {
 	static bool IChannel.IsAlpha => true;
 	static T IChannel.GetBlack<T>() => NumericConversion.GetMaximumValueSafe<T>();
+	static T IChannel.GetWhite<T>() => NumericConversion.GetMinimumValueSafe<T>();
 }
