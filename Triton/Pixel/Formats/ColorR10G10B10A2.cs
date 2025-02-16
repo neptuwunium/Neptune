@@ -50,6 +50,7 @@ public record struct ColorR10G10B10A2 : IColor<ColorRGBA<ushort>, ushort> {
 
 	public static ColorRGBA<ushort> Black => new(0, 0, 0, ushort.MaxValue);
 	public static ColorRGBA<ushort> White => new(ushort.MaxValue, ushort.MaxValue, ushort.MaxValue, ushort.MaxValue);
+	public static ColorRGBA<ushort> Transparent => Black with { A = 0 };
 
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B}, A: {A} }}";
 }

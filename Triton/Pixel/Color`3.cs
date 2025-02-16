@@ -140,5 +140,7 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3> : ICo
 
 	public static Color<TChannelValue, TChannel1, TChannel2, TChannel3> White => new(TChannel1.GetWhite<TChannelValue>(), TChannel2.GetWhite<TChannelValue>(), TChannel3.GetWhite<TChannelValue>());
 
+	public static Color<TChannelValue, TChannel1, TChannel2, TChannel3> Transparent => Black;
+	
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B}, A: {A} }}";
 }

@@ -84,5 +84,7 @@ public record struct Color<TChannelValue, TChannel> : IColor<Color<TChannelValue
 
 	public static Color<TChannelValue, TChannel> White => new(TChannel.GetWhite<TChannelValue>());
 
+	public static Color<TChannelValue, TChannel> Transparent => Black;
+
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B}, A: {A} }}";
 }

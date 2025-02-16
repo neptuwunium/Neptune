@@ -46,5 +46,6 @@ public record struct ColorA<T> : IColor<ColorA<T>, T> where T : unmanaged, INumb
 	static Type IColor.ChannelType => typeof(T);
 
 	public static ColorA<T> Black => new(NumericConversion.GetMaximumValueSafe<T>());
-	static ColorA<T> IColor<ColorA<T>, T>.White => throw new NotSupportedException();
+	public static ColorA<T> White => new(NumericConversion.GetMinimumValueSafe<T>());
+	public static ColorA<T> Transparent => White;
 }

@@ -47,6 +47,7 @@ public record struct ColorRGB<T> : IColor<ColorRGB<T>, T> where T : unmanaged, I
 
 	public static ColorRGB<T> Black => new(NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>());
 	public static ColorRGB<T> White => new(NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());
+	public static ColorRGB<T> Transparent => Black;
 
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B} }}";
 }

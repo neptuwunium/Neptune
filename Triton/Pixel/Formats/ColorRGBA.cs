@@ -46,6 +46,7 @@ public record struct ColorRGBA<T> : IColor<ColorRGBA<T>, T> where T : unmanaged,
 
 	public static ColorRGBA<T> Black => new(NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());
 	public static ColorRGBA<T> White => new(NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());
+	public static ColorRGBA<T> Transparent => Black with { A = NumericConversion.GetMinimumValueSafe<T>() };
 
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B}, A: {A} }}";
 }

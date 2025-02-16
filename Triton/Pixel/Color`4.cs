@@ -163,5 +163,7 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3, TChan
 
 	public static Color<TChannelValue, TChannel1, TChannel2, TChannel3, TChannel4> White => new(TChannel1.GetWhite<TChannelValue>(), TChannel2.GetWhite<TChannelValue>(), TChannel3.GetWhite<TChannelValue>(), TChannel4.GetWhite<TChannelValue>());
 
+	public static Color<TChannelValue, TChannel1, TChannel2, TChannel3, TChannel4> Transparent => Black with { A = NumericConversion.GetMinimumValueSafe<TChannelValue>() };
+
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B}, A: {A} }}";
 }

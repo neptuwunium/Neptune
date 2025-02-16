@@ -85,4 +85,9 @@ public interface IColor<out TSelf, TChannelValue> : IColor<TChannelValue>
 	///     A white pixel.
 	/// </summary>
 	static abstract TSelf White { get; }
+
+	/// <summary>
+	///     A white pixel.
+	/// </summary>
+	static abstract TSelf Transparent { get; }
 }
