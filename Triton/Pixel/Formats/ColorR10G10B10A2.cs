@@ -1,7 +1,6 @@
-// SPDX-FileCopyrightText: 2022 - 2025 ds5678
 // SPDX-FileCopyrightText: 2025 Legiayayana
 //
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: EUPL-1.2
 
 namespace Triton.Pixel.Formats;
 
