@@ -11,7 +11,21 @@ namespace Triton;
 public static class PixelOperations<TColor, T>
 	where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 	where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
-	public static void BlendPixel(TColor srcPixel, ref TColor dstPixel) {
+	public static void BlendPixel(PixelOperation operation, TColor srcPixel, ref TColor dstPixel)  {
+		switch (operation) {
+			case PixelOperation.AlphaBlend: {
+				AlphaBlendPixel(srcPixel, ref dstPixel);
+				break;
+			}
+			case PixelOperation.Copy:
+				CopyPixel(srcPixel, ref dstPixel);
+				break;
+			default:
+				throw new NotSupportedException();
+		}
+	}
+
+	public static void AlphaBlendPixel(TColor srcPixel, ref TColor dstPixel) {
 		var tmpSrcPixel = srcPixel.Convert<TColor, T, ColorRGBA<float>, float>();
 		var tmpDstPixel = dstPixel.Convert<TColor, T, ColorRGBA<float>, float>();
 

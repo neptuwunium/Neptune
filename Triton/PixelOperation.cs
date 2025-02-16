@@ -4,7 +4,7 @@
 
 namespace Triton;
 
-public enum ImageDrawOperation {
+public enum PixelOperation {
 	Copy,
 	AlphaBlend,
 }

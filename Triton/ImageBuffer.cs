@@ -68,10 +68,10 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	public IImageBuffer CreateSubImage(int width, int height) => new ImageBuffer<TColor, T>(width, height);
 	public IImageBuffer CreateSubImage(Point size) => new ImageBuffer<TColor, T>(size.X, size.Y);
 
-	public void Draw(IImageBuffer image, int x, int y, ImageDrawOperation op = ImageDrawOperation.Copy) => Draw(image, new Point(x, y), new Rect(default, new Point(image.Width, image.Height)), op);
-	public void Draw(IImageBuffer image, Point target, ImageDrawOperation op = ImageDrawOperation.Copy) => Draw(image, target, new Rect(default, new Point(image.Width, image.Height)), op);
+	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy) => Draw(image, new Point(x, y), new Rect(default, new Point(image.Width, image.Height)), operation);
+	public void Draw(IImageBuffer image, Point target, PixelOperation operation = PixelOperation.Copy) => Draw(image, target, new Rect(default, new Point(image.Width, image.Height)), operation);
 
-	public void Draw(IImageBuffer image, Point target, Rect crop, ImageDrawOperation op = ImageDrawOperation.Copy) {
+	public void Draw(IImageBuffer image, Point target, Rect crop, PixelOperation operation = PixelOperation.Copy) {
 		ImageBuffer<TColor, T>? convertedImage = null;
 		if (image is not ImageBuffer<TColor, T> imageBuffer) {
 			imageBuffer = (ImageBuffer<TColor, T>) image.Cast<TColor, T>();
@@ -102,18 +102,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 
 					ref var dstPixel = ref dstImagePixels[dstIndex];
 					var srcPixel = srcImagePixels[srcIndex];
-
-					switch (op) {
-						case ImageDrawOperation.AlphaBlend: {
-							PixelOperations<TColor, T>.BlendPixel(srcPixel, ref dstPixel);
-							break;
-						}
-						case ImageDrawOperation.Copy:
-							PixelOperations<TColor, T>.CopyPixel(srcPixel, ref dstPixel);
-							break;
-						default:
-							throw new NotSupportedException();
-					}
+					PixelOperations<TColor, T>.BlendPixel(operation, srcPixel, ref dstPixel);
 				}
 			}
 		} finally {
@@ -123,34 +112,24 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 
 	public void Clear() => Clear<TColor, T>(TColor.Transparent);
 
-	public void Clear<TNewColor, TNew>(TNewColor color, ImageDrawOperation op = ImageDrawOperation.Copy)
+	public void Clear<TNewColor, TNew>(TNewColor color, PixelOperation operation = PixelOperation.Copy)
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor<TNew>, IColor
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew> {
 		var newPixel = color.Convert<TNewColor, TNew, TColor, T>();
 		foreach (ref var pixel in ColorData.Memory.Span) {
-			switch (op) {
-				case ImageDrawOperation.AlphaBlend: {
-					PixelOperations<TColor, T>.BlendPixel(newPixel, ref pixel);
-					break;
-				}
-				case ImageDrawOperation.Copy:
-					PixelOperations<TColor, T>.CopyPixel(newPixel, ref pixel);
-					break;
-				default:
-					throw new NotSupportedException();
-			}
+			PixelOperations<TColor, T>.BlendPixel(operation, newPixel, ref pixel);
 		}
 	}
 
-	public void Clear<TNewColor, TNew>(TNewColor color, int x, int y, ImageDrawOperation op = ImageDrawOperation.Copy)
+	public void Clear<TNewColor, TNew>(TNewColor color, int x, int y, PixelOperation operation = PixelOperation.Copy)
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor<TNew>, IColor
-		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew> => Clear<TNewColor, TNew>(color, new Rect(new Point(x, y), new Point(Width, Height)), op);
+		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew> => Clear<TNewColor, TNew>(color, new Rect(new Point(x, y), new Point(Width, Height)), operation);
 
-	public void Clear<TNewColor, TNew>(TNewColor color, Point target, ImageDrawOperation op = ImageDrawOperation.Copy)
+	public void Clear<TNewColor, TNew>(TNewColor color, Point target, PixelOperation operation = PixelOperation.Copy)
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor<TNew>, IColor
-		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew> => Clear<TNewColor, TNew>(color, new Rect(target, new Point(Width, Height)), op);
+		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew> => Clear<TNewColor, TNew>(color, new Rect(target, new Point(Width, Height)), operation);
 
-	public void Clear<TNewColor, TNew>(TNewColor color, Rect target, ImageDrawOperation op = ImageDrawOperation.Copy)
+	public void Clear<TNewColor, TNew>(TNewColor color, Rect target, PixelOperation operation = PixelOperation.Copy)
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor<TNew>, IColor
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew> {
 		var pixel = color.Convert<TNewColor, TNew, TColor, T>();
@@ -171,18 +150,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 
 				var dstIndex = dy * Width + dx;
 				ref var dstPixel = ref dstImagePixels[dstIndex];
-
-				switch (op) {
-					case ImageDrawOperation.AlphaBlend: {
-						PixelOperations<TColor, T>.BlendPixel(pixel, ref dstPixel);
-						break;
-					}
-					case ImageDrawOperation.Copy:
-						PixelOperations<TColor, T>.CopyPixel(pixel, ref dstPixel);
-						break;
-					default:
-						throw new NotSupportedException();
-				}
+				PixelOperations<TColor, T>.BlendPixel(operation, pixel, ref dstPixel);
 			}
 		}
 	}

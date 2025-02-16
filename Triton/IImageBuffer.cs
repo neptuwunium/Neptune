@@ -30,25 +30,25 @@ public interface IImageBuffer : IDisposable {
 
 	public IImageBuffer CreateSubImage(Point size);
 
-	public void Draw(IImageBuffer image, int x, int y, ImageDrawOperation op = ImageDrawOperation.Copy);
-	public void Draw(IImageBuffer image, Point target, ImageDrawOperation op = ImageDrawOperation.Copy);
-	public void Draw(IImageBuffer image, Point target, Rect crop, ImageDrawOperation op = ImageDrawOperation.Copy);
+	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy);
+	public void Draw(IImageBuffer image, Point target, PixelOperation operation = PixelOperation.Copy);
+	public void Draw(IImageBuffer image, Point target, Rect crop, PixelOperation operation = PixelOperation.Copy);
 
 	public void Clear();
 
-	public void Clear<TColor, T>(TColor color, ImageDrawOperation op = ImageDrawOperation.Copy)
+	public void Clear<TColor, T>(TColor color, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
-	public void Clear<TColor, T>(TColor color, int x, int y, ImageDrawOperation op = ImageDrawOperation.Copy)
+	public void Clear<TColor, T>(TColor color, int x, int y, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
-	public void Clear<TColor, T>(TColor color, Point target, ImageDrawOperation op = ImageDrawOperation.Copy)
+	public void Clear<TColor, T>(TColor color, Point target, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
-	public void Clear<TColor, T>(TColor color, Rect target, ImageDrawOperation op = ImageDrawOperation.Copy)
+	public void Clear<TColor, T>(TColor color, Rect target, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
