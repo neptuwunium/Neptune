@@ -62,9 +62,9 @@ public partial class TIFFEncoder : IEncoder {
 				NativeMethods.TIFFSetField(tiff, TIFFTag.SampleFormat, (int) (frame.IsHDR ? TIFFSampleFormat.Float : frame.IsSigned ? TIFFSampleFormat.Int : TIFFSampleFormat.UInt));
 				NativeMethods.TIFFSetField(tiff, TIFFTag.Orientation, (int) TIFFOrientation.TopLeft);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.PlanarConfig, (int) TIFFPlanarConfig.Contig);
-				NativeMethods.TIFFSetField(tiff, TIFFTag.Photometric, (int) (frame.IsHDR ? TIFFPhotometric.LogL : TIFFPhotometric.RGB));
+				NativeMethods.TIFFSetField(tiff, TIFFTag.Photometric, (int) (frame.Components < 3 ? TIFFPhotometric.MinIsBlack : TIFFPhotometric.RGB));
 				NativeMethods.TIFFSetField(tiff, TIFFTag.Compression, (int) Compression);
-				if (frame.Components == 4) {
+				if (frame.Components is 2 or 4) {
 					NativeMethods.TIFFSetFieldArray(tiff, TIFFTag.ExtraSamples, 1, (nint) extraSamples);
 				}
 
@@ -120,7 +120,7 @@ public partial class TIFFEncoder : IEncoder {
 				NativeMethods.TiffGetField(tiff, TIFFTag.SampleFormat, out var sampleFormat);
 
 				if (strip <= 0) {
-					strip = height;
+					strip = 1;
 				}
 
 				var image = IImageBuffer.Create(width, height, bitDepth, samples, (TIFFSampleFormat) sampleFormat == TIFFSampleFormat.Float, (TIFFSampleFormat) sampleFormat == TIFFSampleFormat.Int);

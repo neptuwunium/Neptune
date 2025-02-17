@@ -26,6 +26,8 @@ public interface IImageBuffer : IDisposable {
 	public IImageBuffer Cast<TNew>()
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew>;
 
+	public IImageBuffer Cast(int components);
+
 	public IImageBuffer CreateSubImage(int width, int height);
 
 	public IImageBuffer CreateSubImage(Point size);

@@ -65,6 +65,15 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 			_ => throw new NotSupportedException(),
 		};
 
+	public IImageBuffer Cast(int components) =>
+		components switch {
+			1 => Cast<ColorR<T>, T>(),
+			2 => Cast<ColorRG<T>, T>(),
+			3 => Cast<ColorRGB<T>, T>(),
+			4 => Cast<ColorRGBA<T>, T>(),
+			_ => throw new NotSupportedException(),
+		};
+
 	public IImageBuffer CreateSubImage(int width, int height) => new ImageBuffer<TColor, T>(width, height);
 	public IImageBuffer CreateSubImage(Point size) => new ImageBuffer<TColor, T>(size.X, size.Y);
 
