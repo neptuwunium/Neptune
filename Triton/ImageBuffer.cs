@@ -68,6 +68,22 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	public IImageBuffer CreateSubImage(int width, int height) => new ImageBuffer<TColor, T>(width, height);
 	public IImageBuffer CreateSubImage(Point size) => new ImageBuffer<TColor, T>(size.X, size.Y);
 
+	public void PremulitplyAlpha() {
+		if (TColor.HasAlphaChannel) {
+			foreach (ref var pixel in ColorData.Memory.Span) {
+				PixelOperations<TColor, T>.PremultiplyPixel(ref pixel);
+			}
+		}
+	}
+
+	public void UnmultiplyAlpha() {
+		if (TColor.HasAlphaChannel) {
+			foreach (ref var pixel in ColorData.Memory.Span) {
+				PixelOperations<TColor, T>.UnmultiplyPixel(ref pixel);
+			}
+		}
+	}
+
 	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy) => Draw(image, new Point(x, y), new Rect(default, new Point(image.Width, image.Height)), operation);
 	public void Draw(IImageBuffer image, Point target, PixelOperation operation = PixelOperation.Copy) => Draw(image, target, new Rect(default, new Point(image.Width, image.Height)), operation);
 

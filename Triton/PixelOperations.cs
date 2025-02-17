@@ -123,6 +123,14 @@ public static class PixelOperations<TColor, T>
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void UnmultiplyPixel(ref TColor srcPixel) {
+		var tmpPixel = srcPixel.Convert<TColor, T, ColorRGBA<float>, float>();
+		var vec = new Vector3(tmpPixel.R, tmpPixel.G, tmpPixel.B);
+		vec /= tmpPixel.A;
+		srcPixel = new ColorRGBA<float>(vec.X, vec.Y, vec.Z, tmpPixel.A).Convert<ColorRGBA<float>, float, TColor, T>();
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void CopyPixel(TColor srcPixel, ref TColor dstPixel) => dstPixel = srcPixel;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]

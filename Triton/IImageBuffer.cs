@@ -30,6 +30,9 @@ public interface IImageBuffer : IDisposable {
 
 	public IImageBuffer CreateSubImage(Point size);
 
+	public void PremulitplyAlpha();
+	public void UnmultiplyAlpha();
+
 	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IImageBuffer image, Point target, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IImageBuffer image, Point target, Rect crop, PixelOperation operation = PixelOperation.Copy);
