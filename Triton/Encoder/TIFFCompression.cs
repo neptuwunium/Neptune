@@ -27,7 +27,7 @@ public enum TIFFCompression {
 	IT8BL = 32898,
 	PixarFilm = 32908,
 	PixarLog = 32909,
-	LegacyDeflate = 32946,
+	Zip = 32946,
 	DCS = 32947,
 	JBIG = 34661,
 	SGILog = 34676,

@@ -15,11 +15,13 @@ public partial class TIFFEncoder : IEncoder {
 		}
 	}
 
-	public TIFFEncoder(TIFFCompression compression) {
+	public TIFFEncoder(TIFFCompression compression, TIFFCompression hdrCompression) {
 		Compression = compression;
+		HDRCompression = hdrCompression;
 	}
 
 	public TIFFCompression Compression { get; set; }
+	public TIFFCompression HDRCompression { get; set; }
 
 	public static bool IsAvailable { get; }
 
@@ -63,7 +65,7 @@ public partial class TIFFEncoder : IEncoder {
 				NativeMethods.TIFFSetField(tiff, TIFFTag.Orientation, (int) TIFFOrientation.TopLeft);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.PlanarConfig, (int) TIFFPlanarConfig.Contig);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.Photometric, (int) (frame.Components < 3 ? TIFFPhotometric.MinIsBlack : TIFFPhotometric.RGB));
-				NativeMethods.TIFFSetField(tiff, TIFFTag.Compression, (int) Compression);
+				NativeMethods.TIFFSetField(tiff, TIFFTag.Compression, (int) (frame.IsHDR ? HDRCompression : Compression));
 				if (frame.Components is 2 or 4) {
 					NativeMethods.TIFFSetFieldArray(tiff, TIFFTag.ExtraSamples, 1, (nint) extraSamples);
 				}
