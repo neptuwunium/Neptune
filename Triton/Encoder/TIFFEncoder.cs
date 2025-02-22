@@ -25,7 +25,7 @@ public partial class TIFFEncoder : IEncoder {
 
 	public static bool IsAvailable { get; }
 
-	public unsafe void Write(Stream stream, ImageCollection frames) {
+	public unsafe void Write(Stream stream, EncoderWriteOptions options, ImageCollection frames) {
 		var tiff = NativeMethods.TIFFClientOpen(stream is FileStream fs ? Path.GetFileName(fs.Name) : "TritonImage", "w", nint.Zero,
 		                                        (_, dataPtr, dataSize) => {
 			                                        var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
@@ -53,7 +53,7 @@ public partial class TIFFEncoder : IEncoder {
 
 		try {
 			var extraSamples = stackalloc ushort[1];
-			extraSamples[0] = (ushort) TIFFExtraSamples.UnassociatedAlpha;
+			extraSamples[0] = (ushort) (options.AssociateAlpha ? TIFFExtraSamples.AssociatedAlpha : TIFFExtraSamples.UnassociatedAlpha);
 
 			foreach (var frame in frames) {
 				NativeMethods.TIFFSetField(tiff, TIFFTag.ImageWidth, frame.Width);
@@ -65,7 +65,7 @@ public partial class TIFFEncoder : IEncoder {
 				NativeMethods.TIFFSetField(tiff, TIFFTag.Orientation, (int) TIFFOrientation.TopLeft);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.PlanarConfig, (int) TIFFPlanarConfig.Contig);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.Photometric, (int) (frame.Components < 3 ? TIFFPhotometric.MinIsBlack : TIFFPhotometric.RGB));
-				NativeMethods.TIFFSetField(tiff, TIFFTag.Compression, (int) (frame.IsHDR ? HDRCompression : Compression));
+				NativeMethods.TIFFSetField(tiff, TIFFTag.Compression, (int) (options.Compress ? TIFFCompression.None : frame.IsHDR ? HDRCompression : Compression));
 				if (frame.Components is 2 or 4) {
 					NativeMethods.TIFFSetFieldArray(tiff, TIFFTag.ExtraSamples, 1, (nint) extraSamples);
 				}
@@ -159,7 +159,6 @@ public partial class TIFFEncoder : IEncoder {
 		Compression = 259,
 		ExtraSamples = 338,
 	}
-
 
 	internal enum TIFFPhotometric {
 		MinIsWhite = 0,

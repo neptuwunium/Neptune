@@ -32,18 +32,18 @@ public partial class PNGEncoder : IEncoder {
 	public static bool IsAvailable { get; }
 	public static string PNGVersion { get; }
 
-	public void Write(Stream stream, ImageCollection image) {
-		Write(stream, image[0]);
+	public void Write(Stream stream, EncoderWriteOptions options, ImageCollection image) {
+		Write(stream, options, image[0]);
 	}
 
-	public void Write(Stream stream, IImageBuffer image) {
+	public void Write(Stream stream, EncoderWriteOptions options, IImageBuffer image) {
 		if (image.IsHDR) {
 			using var image16 = image.IsSigned ? image.Cast<short>() : image.Cast<ushort>();
-			WriteCore(stream, image16);
+			WriteCore(stream, options, image16);
 			return;
 		}
 
-		WriteCore(stream, image);
+		WriteCore(stream, options, image);
 	}
 
 	public unsafe ImageCollection Read(Stream stream) {
@@ -111,7 +111,7 @@ public partial class PNGEncoder : IEncoder {
 		}
 	}
 
-	public unsafe void WriteCore(Stream stream, IImageBuffer image) {
+	public unsafe void WriteCore(Stream stream, EncoderWriteOptions options, IImageBuffer image) {
 		if (image.IsHDR || image.Components is not (>= 1 and <= 4)) {
 			throw new NotSupportedException();
 		}
@@ -129,7 +129,7 @@ public partial class PNGEncoder : IEncoder {
 			}
 
 			NativeMethods.png_set_write_fn(png, nint.Zero, WriteStream, FlushStream);
-			NativeMethods.png_set_compression_level(png, CompressionLevel);
+			NativeMethods.png_set_compression_level(png, options.Compress ? CompressionLevel : 0);
 			var colorType = image.Components switch {
 				                1 => PNGColorType.Gray,
 				                2 => PNGColorType.GrayAlpha,
