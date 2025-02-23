@@ -17,6 +17,7 @@ public record struct Color<TChannelValue, TChannel> : IColor<Color<TChannelValue
 
 	public TChannelValue R {
 		readonly get {
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel.IsRed) {
 				return TChannel.GetRed(value);
 			}
@@ -28,6 +29,7 @@ public record struct Color<TChannelValue, TChannel> : IColor<Color<TChannelValue
 
 	public TChannelValue G {
 		readonly get {
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel.IsGreen) {
 				return TChannel.GetGreen(value);
 			}
@@ -39,6 +41,7 @@ public record struct Color<TChannelValue, TChannel> : IColor<Color<TChannelValue
 
 	public TChannelValue B {
 		readonly get {
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel.IsBlue) {
 				return TChannel.GetBlue(value);
 			}
@@ -50,6 +53,7 @@ public record struct Color<TChannelValue, TChannel> : IColor<Color<TChannelValue
 
 	public TChannelValue A {
 		readonly get {
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel.IsAlpha) {
 				return TChannel.GetAlpha(value);
 			}

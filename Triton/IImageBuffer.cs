@@ -70,7 +70,7 @@ public interface IImageBuffer : IDisposable {
 			64 when isFloat => Create<double>(width, height, samples),
 			64 when isSigned => Create<long>(width, height, samples),
 			64 => Create<ulong>(width, height, samples),
-			_ => throw new NotSupportedException()
+			_ => throw new NotSupportedException(),
 		};
 
 	static IImageBuffer Create<T>(Point size, int samples) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => Create<T>(size.X, size.Y, samples);

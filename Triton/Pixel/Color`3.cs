@@ -33,6 +33,7 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3> : ICo
 				return TChannel2.GetRed(value2);
 			}
 
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel3.IsRed) {
 				return TChannel3.GetRed(value3);
 			}
@@ -56,6 +57,7 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3> : ICo
 				return TChannel2.GetGreen(value2);
 			}
 
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel3.IsGreen) {
 				return TChannel3.GetGreen(value3);
 			}
@@ -79,6 +81,7 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3> : ICo
 				return TChannel2.GetBlue(value2);
 			}
 
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel3.IsBlue) {
 				return TChannel3.GetBlue(value3);
 			}
@@ -102,6 +105,7 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3> : ICo
 				return TChannel2.GetAlpha(value2);
 			}
 
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel3.IsAlpha) {
 				return TChannel3.GetAlpha(value3);
 			}
@@ -141,6 +145,6 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3> : ICo
 	public static Color<TChannelValue, TChannel1, TChannel2, TChannel3> White => new(TChannel1.GetWhite<TChannelValue>(), TChannel2.GetWhite<TChannelValue>(), TChannel3.GetWhite<TChannelValue>());
 
 	public static Color<TChannelValue, TChannel1, TChannel2, TChannel3> Transparent => Black;
-	
+
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B}, A: {A} }}";
 }

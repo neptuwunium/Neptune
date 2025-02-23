@@ -40,6 +40,7 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3, TChan
 				return TChannel3.GetRed(value3);
 			}
 
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel4.IsRed) {
 				return TChannel4.GetRed(value4);
 			}
@@ -68,6 +69,7 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3, TChan
 				return TChannel3.GetGreen(value3);
 			}
 
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel4.IsGreen) {
 				return TChannel4.GetGreen(value4);
 			}
@@ -96,6 +98,7 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3, TChan
 				return TChannel3.GetBlue(value3);
 			}
 
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel4.IsBlue) {
 				return TChannel4.GetBlue(value4);
 			}
@@ -124,6 +127,7 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3, TChan
 				return TChannel3.GetAlpha(value3);
 			}
 
+			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel4.IsAlpha) {
 				return TChannel4.GetAlpha(value4);
 			}

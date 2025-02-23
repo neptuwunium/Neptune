@@ -7,22 +7,7 @@ using System.Numerics;
 
 namespace Triton.Pixel.Formats;
 
-public record struct ColorRGBA<T> : IColor<ColorRGBA<T>, T> where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
-	public ColorRGBA(T r, T g, T b, T a) {
-		R = r;
-		G = g;
-		B = b;
-		A = a;
-	}
-
-	public T R { get; set; }
-
-	public T G { get; set; }
-
-	public T B { get; set; }
-
-	public T A { get; set; }
-
+public record struct ColorRGBA<T>(T R, T G, T B, T A) : IColor<ColorRGBA<T>, T> where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
 	public readonly void GetChannels(out T r, out T g, out T b, out T a) {
 		r = R;
 		g = G;

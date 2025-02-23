@@ -7,19 +7,7 @@ using System.Numerics;
 
 namespace Triton.Pixel.Formats;
 
-public record struct ColorRGB<T> : IColor<ColorRGB<T>, T> where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
-	public ColorRGB(T r, T g, T b) {
-		R = r;
-		G = g;
-		B = b;
-	}
-
-	public T R { get; set; }
-
-	public T G { get; set; }
-
-	public T B { get; set; }
-
+public record struct ColorRGB<T>(T R, T G, T B) : IColor<ColorRGB<T>, T> where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
 	public readonly T A {
 		get => NumericConversion.GetMaximumValueSafe<T>();
 		set { }

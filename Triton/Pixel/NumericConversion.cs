@@ -129,6 +129,7 @@ public static class NumericConversion {
 			return ConvertDouble<TTo>(Unsafe.As<TFrom, double>(ref value));
 		}
 
+		// ReSharper disable once ConvertIfStatementToReturnStatement
 		if (typeof(TFrom) == typeof(decimal)) {
 			return ConvertDecimal<TTo>(Unsafe.As<TFrom, decimal>(ref value));
 		}
@@ -486,22 +487,10 @@ public static class NumericConversion {
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	private static TTo ConvertIntPtr<TTo>(nint value) where TTo : unmanaged {
-		if (IntPtr.Size == sizeof(int)) {
-			return ConvertInt32<TTo>((int) value);
-		}
-
-		return ConvertInt64<TTo>(value);
-	}
+	private static TTo ConvertIntPtr<TTo>(nint value) where TTo : unmanaged => IntPtr.Size == sizeof(int) ? ConvertInt32<TTo>((int) value) : ConvertInt64<TTo>(value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	private static TTo ConvertUIntPtr<TTo>(nuint value) where TTo : unmanaged {
-		if (IntPtr.Size == sizeof(int)) {
-			return ConvertUInt32<TTo>((uint) value);
-		}
-
-		return ConvertUInt64<TTo>(value);
-	}
+	private static TTo ConvertUIntPtr<TTo>(nuint value) where TTo : unmanaged => IntPtr.Size == sizeof(int) ? ConvertUInt32<TTo>((uint) value) : ConvertUInt64<TTo>(value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	private static TTo ConvertInt64<TTo>(long value) where TTo : unmanaged => ConvertUInt64<TTo>(ChangeSign(value));
@@ -969,13 +958,7 @@ public static class NumericConversion {
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	private static TTo ConvertNFloat<TTo>(NFloat value) where TTo : unmanaged {
-		if (IntPtr.Size == sizeof(int)) {
-			return ConvertSingle<TTo>((float) value);
-		}
-
-		return ConvertDouble<TTo>(value);
-	}
+	private static TTo ConvertNFloat<TTo>(NFloat value) where TTo : unmanaged => IntPtr.Size == sizeof(int) ? ConvertSingle<TTo>((float) value) : ConvertDouble<TTo>(value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	private static TTo ConvertDouble<TTo>(double value) where TTo : unmanaged {
@@ -1198,6 +1181,7 @@ public static class NumericConversion {
 			return Unsafe.As<double, TTo>(ref converted);
 		}
 
+		// ReSharper disable once ConvertIfStatementToReturnStatement
 		if (typeof(TTo) == typeof(decimal)) {
 			return Unsafe.As<decimal, TTo>(ref value);
 		}

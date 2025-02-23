@@ -7,9 +7,7 @@ using System.Numerics;
 
 namespace Triton.Pixel.Formats;
 
-public record struct ColorR<T> : IColor<ColorR<T>, T> where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
-	public T R { get; set; }
-
+public record struct ColorR<T>(T R) : IColor<ColorR<T>, T> where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
 	public readonly T G {
 		get => NumericConversion.GetMinimumValueSafe<T>();
 		set { }
@@ -23,10 +21,6 @@ public record struct ColorR<T> : IColor<ColorR<T>, T> where T : unmanaged, INumb
 	public readonly T A {
 		get => NumericConversion.GetMaximumValueSafe<T>();
 		set { }
-	}
-
-	public ColorR(T r) {
-		R = r;
 	}
 
 	public readonly void GetChannels(out T r, out T g, out T b, out T a) {

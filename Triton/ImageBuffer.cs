@@ -15,32 +15,24 @@ public record struct Point(int X, int Y);
 
 public record struct Rect(Point TopLeft, Point WidthHeight);
 
-public sealed class ImageBuffer<TColor, T> : IImageBuffer
+public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width, int height, bool overrideIsSigned = false) : IImageBuffer
 	where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 	where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
-	public ImageBuffer(IMemoryOwner<byte> buffer, int width, int height, bool overrideIsSigned = false) {
-		Data = buffer;
-		ColorData = new TypedMemory<TColor>(buffer, 0);
-		ValueData = new TypedMemory<T>(buffer, 0);
-		Width = width;
-		Height = height;
-		IsSigned = overrideIsSigned || typeof(T) == typeof(sbyte) || typeof(T) == typeof(short) || typeof(T) == typeof(int);
-	}
 
 	public ImageBuffer(IMemoryOwner<byte> buffer, Point size, bool overrideIsSigned = false) : this(buffer, size.X, size.Y, overrideIsSigned) { }
 	public ImageBuffer(int width, int height) : this(new SizedMemoryOwner<byte>(Unsafe.SizeOf<TColor>() * width * height), width, height) => Clear();
 	public ImageBuffer(Point size) : this(new SizedMemoryOwner<byte>(Unsafe.SizeOf<TColor>() * size.X * size.Y), size.X, size.Y) => Clear();
 
-	public IMemoryOwner<TColor> ColorData { get; }
-	public IMemoryOwner<T> ValueData { get; }
+	public IMemoryOwner<TColor> ColorData { get; } = new TypedMemory<TColor>(buffer, 0);
+	public IMemoryOwner<T> ValueData { get; } = new TypedMemory<T>(buffer, 0);
 
-	public IMemoryOwner<byte> Data { get; }
-	public int Width { get; }
-	public int Height { get; }
+	public IMemoryOwner<byte> Data { get; } = buffer;
+	public int Width { get; } = width;
+	public int Height { get; } = height;
 	public int Stride { get; } = Unsafe.SizeOf<TColor>();
 	public int Components { get; } = Unsafe.SizeOf<TColor>() / Unsafe.SizeOf<T>();
 	public bool IsHDR { get; } = typeof(T) == typeof(float) || typeof(T) == typeof(Half);
-	public bool IsSigned { get; }
+	public bool IsSigned { get; } = overrideIsSigned || typeof(T) == typeof(sbyte) || typeof(T) == typeof(short) || typeof(T) == typeof(int);
 	public int BitDepth { get; } = Unsafe.SizeOf<T>() << 3;
 
 	public IImageBuffer Cast<TNewColor, TNew>()
