@@ -148,7 +148,7 @@ public sealed class IBLImage : IDisposable {
 	}
 
 	public IImageBuffer ToEquirectangular(SamplingOperation samplingOperation = SamplingOperation.Bilinear, double phiOffset = 0d) {
-		var image = Frames[0].CreateSubImage(Size * 8, Size * 4);
+		var image = Frames[0].CreateSubImage(Size * 4, Size * 2); // 6, 3? what is the appropriate scale here?
 		var w = (double) image.Width;
 		var h = (double) image.Height;
 		var phiOffsetRad = phiOffset * Math.PI / 180d;
