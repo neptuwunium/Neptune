@@ -6,8 +6,8 @@ using System.Buffers;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Triton.IO;
-using Triton.Pixel.Formats;
 using Triton.Pixel;
+using Triton.Pixel.Formats;
 
 namespace Triton;
 
@@ -18,7 +18,6 @@ public record struct Rect(Point TopLeft, Point WidthHeight);
 public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width, int height, bool overrideIsSigned = false) : IImageBuffer
 	where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 	where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
-
 	public ImageBuffer(IMemoryOwner<byte> buffer, Point size, bool overrideIsSigned = false) : this(buffer, size.X, size.Y, overrideIsSigned) { }
 	public ImageBuffer(int width, int height) : this(new SizedMemoryOwner<byte>(Unsafe.SizeOf<TColor>() * width * height), width, height) => Clear();
 	public ImageBuffer(Point size) : this(new SizedMemoryOwner<byte>(Unsafe.SizeOf<TColor>() * size.X * size.Y), size.X, size.Y) => Clear();
@@ -83,6 +82,29 @@ public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width,
 				PixelOperations<TColor, T>.UnmultiplyPixel(ref pixel);
 			}
 		}
+	}
+
+	IColor IImageBuffer.Sample(float x, float y, SamplingOperation operation) => Sample(x, y, operation);
+
+	public void Draw(IColor pixel, int x, int y, PixelOperation operation = PixelOperation.Copy) => Draw(pixel, new Point(x, y), operation);
+
+	public void Draw(IColor pixel, Point target, PixelOperation operation = PixelOperation.Copy) {
+		if (pixel is not TColor colorPixel) {
+			// todo: cast
+			throw new InvalidOperationException("Invalid pixel format");
+		}
+
+		if (target.X > Width || target.X < 0) {
+			return;
+		}
+
+		if (target.Y > Height || target.Y < 0) {
+			return;
+		}
+
+		var dstImagePixels = ColorData.Memory.Span;
+		ref var dstPixel = ref dstImagePixels[target.Y * Width + target.X];
+		PixelOperations<TColor, T>.BlendPixel(operation, colorPixel, ref dstPixel);
 	}
 
 	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy) => Draw(image, new Point(x, y), new Rect(default, new Point(image.Width, image.Height)), operation);
@@ -176,5 +198,17 @@ public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width,
 		Data.Dispose();
 		ColorData.Dispose();
 		ValueData.Dispose();
+	}
+
+	public TColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear) {
+		if (x > Width || x < 0) {
+			return TColor.Transparent;
+		}
+
+		if (y > Height || y < 0) {
+			return TColor.Transparent;
+		}
+
+		return SamplingOperations<TColor, T>.SamplePixel(operation, x, y, this);
 	}
 }

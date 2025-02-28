@@ -35,6 +35,10 @@ public interface IImageBuffer : IDisposable {
 	public void PremulitplyAlpha();
 	public void UnmultiplyAlpha();
 
+	public IColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear);
+
+	public void Draw(IColor pixel, int x, int y, PixelOperation operation = PixelOperation.Copy);
+	public void Draw(IColor pixel, Point target, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IImageBuffer image, Point target, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IImageBuffer image, Point target, Rect crop, PixelOperation operation = PixelOperation.Copy);
