@@ -24,9 +24,7 @@ public partial class PNGEncoder : IEncoder {
 		}
 	}
 
-	public PNGEncoder(PNGCompressionLevel compressionLevel) {
-		CompressionLevel = compressionLevel;
-	}
+	public PNGEncoder(PNGCompressionLevel compressionLevel) => CompressionLevel = compressionLevel;
 
 	public PNGCompressionLevel CompressionLevel { get; set; }
 	public static bool IsAvailable { get; }
@@ -34,16 +32,6 @@ public partial class PNGEncoder : IEncoder {
 
 	public void Write(Stream stream, EncoderWriteOptions options, ImageCollection image) {
 		Write(stream, options, image[0]);
-	}
-
-	public void Write(Stream stream, EncoderWriteOptions options, IImageBuffer image) {
-		if (image.IsHDR) {
-			using var image16 = image.IsSigned ? image.Cast<short>() : image.Cast<ushort>();
-			WriteCore(stream, options, image16);
-			return;
-		}
-
-		WriteCore(stream, options, image);
 	}
 
 	public unsafe ImageCollection Read(Stream stream) {
@@ -109,6 +97,16 @@ public partial class PNGEncoder : IEncoder {
 			var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
 			stream.ReadExactly(span);
 		}
+	}
+
+	public void Write(Stream stream, EncoderWriteOptions options, IImageBuffer image) {
+		if (image.IsHDR) {
+			using var image16 = image.IsSigned ? image.Cast<short>() : image.Cast<ushort>();
+			WriteCore(stream, options, image16);
+			return;
+		}
+
+		WriteCore(stream, options, image);
 	}
 
 	public unsafe void WriteCore(Stream stream, EncoderWriteOptions options, IImageBuffer image) {

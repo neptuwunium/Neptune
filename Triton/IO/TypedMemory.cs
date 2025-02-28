@@ -21,16 +21,16 @@ public sealed class TypedMemory<T> : IMemoryOwner<T> where T : struct {
 	public int RealOffset { get; set; }
 	public int Length { get; set; }
 
-	~TypedMemory() {
-		Dispose(false);
-	}
-
 	public void Dispose() {
 		Dispose(true);
 		GC.SuppressFinalize(this);
 	}
 
 	public Memory<T> Memory => Length <= 0 ? Memory<T>.Empty : Manager!.Memory;
+
+	~TypedMemory() {
+		Dispose(false);
+	}
 
 	private void Dispose(bool disposing) {
 		(Manager as IDisposable)?.Dispose();

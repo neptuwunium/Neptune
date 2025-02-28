@@ -20,6 +20,7 @@ public sealed class SizedMemoryOwner<T> : IMemoryOwner<T> where T : struct {
 
 	public IMemoryOwner<T>? UnderlyingOwner { get; private set; }
 	public int Offset { get; set; }
+	public int Length { get; }
 
 	public void Dispose() {
 		Dispose(true);
@@ -27,7 +28,6 @@ public sealed class SizedMemoryOwner<T> : IMemoryOwner<T> where T : struct {
 	}
 
 	public Memory<T> Memory => UnderlyingOwner!.Memory.Slice(Offset, Length - Offset);
-	public int Length { get; }
 
 	~SizedMemoryOwner() => Dispose(false);
 

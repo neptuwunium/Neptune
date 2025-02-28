@@ -45,7 +45,5 @@ public record struct ColorR<T>(T R) : IColor<ColorR<T>, T> where T : unmanaged, 
 	public static ColorR<T> White => new(NumericConversion.GetMaximumValueSafe<T>());
 	public static ColorR<T> Transparent => Black;
 
-	public override string ToString() {
-		return $"{{ R: {R} }}";
-	}
+	public override string ToString() => $"{{ R: {R} }}";
 }

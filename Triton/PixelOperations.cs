@@ -4,8 +4,8 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Triton.Pixel.Formats;
 using Triton.Pixel;
+using Triton.Pixel.Formats;
 
 namespace Triton;
 
@@ -310,7 +310,7 @@ public static class PixelOperations<TColor, T>
 		return isOpaque switch {
 			       true when Math.Abs(Da) <= float.Epsilon => Sca * (1 - Da),
 			       true => Sa * Da + Sca * (1 - Da) + Dca * (1 - Sa),
-			       _ => Sa * Da * Math.Min(1, Dca / Da * Sa / (Sa - Sca)) + Sca * (1 - Da) + Dca * (1 - Sa)
+			       _ => Sa * Da * Math.Min(1, Dca / Da * Sa / (Sa - Sca)) + Sca * (1 - Da) + Dca * (1 - Sa),
 		       };
 	}
 
@@ -338,7 +338,7 @@ public static class PixelOperations<TColor, T>
 		return isTransparent switch {
 			       true when Math.Abs(Sca - Sa) <= float.Epsilon => Sa * Da + Dca * (1 - Sa),
 			       true => Dca * (1 - Sa),
-			       _ => Sa * Da * (1 - Math.Min(1, (1 - Dca / Da) * Sa / Sca)) + Sca * (1 - Da) + Dca * (1 - Sa)
+			       _ => Sa * Da * (1 - Math.Min(1, (1 - Dca / Da) * Sa / Sca)) + Sca * (1 - Da) + Dca * (1 - Sa),
 		       };
 	}
 
@@ -394,7 +394,7 @@ public static class PixelOperations<TColor, T>
 		return Sc50 switch {
 			       true => Dca * (Sa + (2 * Sca - Sa) * (1 - m)) + Sca * (1 - Da) + Dca * (1 - Sa),
 			       false when Dc25 => (float) (Da * (2 * Sca - Sa) * (16 * Math.Pow(m, 3) - 12 * Math.Pow(m, 2) - 3 * m) + Sca - Sca * Da + Dca),
-			       _ => (float) (Da * (2 * Sca - Sa) * (Math.Pow(m, 0.5) - m)) + Sca - Sca * Da + Dca
+			       _ => (float) (Da * (2 * Sca - Sa) * (Math.Pow(m, 0.5) - m)) + Sca - Sca * Da + Dca,
 		       };
 	}
 
