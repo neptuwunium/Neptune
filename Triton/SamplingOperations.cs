@@ -22,7 +22,9 @@ public static class SamplingOperations<TColor, T>
 
 		switch (operation) {
 			case SamplingOperation.Nearest: {
-				return image.ColorData.Memory.Span[(int) y * image.Width * (int) x];
+				var nx = (int) Math.Min(Math.Round(x), image.Width - 1);
+				var ny = (int) Math.Min(Math.Round(y), image.Height - 1);
+				return image.ColorData.Memory.Span[ny * image.Width + nx];
 			}
 			case SamplingOperation.Bilinear: {
 				return BilinearSample(x, y, image);
@@ -41,8 +43,8 @@ public static class SamplingOperations<TColor, T>
 		x %= image.Width;
 		y %= image.Height;
 
-		var sx = (int) x;
-		var sy = (int) y;
+		var sx = (int) Math.Round(x);
+		var sy = (int) Math.Round(y);
 
 		if (image.Width == 1 || image.Height == 1) {
 			samplePixel = image.ColorData.Memory.Span[sy * image.Width + sx];
