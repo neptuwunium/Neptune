@@ -14,10 +14,7 @@ public interface IImageBuffer : IDisposable {
 	public int Width { get; }
 	public int Height { get; }
 	public int Stride { get; }
-	public int Components { get; }
-	public bool IsHDR { get; }
-	public bool IsSigned { get; }
-	public int BitDepth { get; }
+	public ColorId ColorId { get; }
 
 	public IImageBuffer Cast<TNewColor, TNew>()
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor<TNew>, IColor

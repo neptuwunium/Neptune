@@ -90,4 +90,9 @@ public interface IColor<out TSelf, TChannelValue> : IColor<TChannelValue>
 	///     A white pixel.
 	/// </summary>
 	static abstract TSelf Transparent { get; }
+
+	/// <summary>
+	///		Comparison Identifier for this color type.
+	/// </summary>
+	public static ColorId ColorId { get; } = ColorId.FromPixel<TSelf, TChannelValue>();
 }

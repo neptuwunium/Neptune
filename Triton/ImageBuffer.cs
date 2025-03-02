@@ -11,11 +11,7 @@ using Triton.Pixel.Formats;
 
 namespace Triton;
 
-public record struct Point(int X, int Y);
-
-public record struct Rect(Point TopLeft, Point WidthHeight);
-
-public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width, int height, bool overrideIsSigned = false) : IImageBuffer
+public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width, int height, bool? overrideIsSigned = null) : IImageBuffer
 	where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 	where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
 	public ImageBuffer(IMemoryOwner<byte> buffer, Point size, bool overrideIsSigned = false) : this(buffer, size.X, size.Y, overrideIsSigned) { }
@@ -29,10 +25,7 @@ public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width,
 	public int Width { get; } = width;
 	public int Height { get; } = height;
 	public int Stride { get; } = Unsafe.SizeOf<TColor>();
-	public int Components { get; } = Unsafe.SizeOf<TColor>() / Unsafe.SizeOf<T>();
-	public bool IsHDR { get; } = typeof(T) == typeof(float) || typeof(T) == typeof(Half);
-	public bool IsSigned { get; } = overrideIsSigned || typeof(T) == typeof(sbyte) || typeof(T) == typeof(short) || typeof(T) == typeof(int);
-	public int BitDepth { get; } = Unsafe.SizeOf<T>() << 3;
+	public ColorId ColorId { get; } = ColorId.FromPixel<TColor, T>(overrideIsSigned);
 
 	public IImageBuffer Cast<TNewColor, TNew>()
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor<TNew>, IColor
@@ -48,7 +41,7 @@ public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width,
 
 	public IImageBuffer Cast<TNew>()
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew> =>
-		Components switch {
+		ColorId.Components switch {
 			1 => Cast<ColorR<TNew>, TNew>(),
 			2 => Cast<ColorRG<TNew>, TNew>(),
 			3 => Cast<ColorRGB<TNew>, TNew>(),

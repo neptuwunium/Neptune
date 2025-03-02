@@ -59,14 +59,14 @@ public partial class TIFFEncoder : IEncoder {
 				NativeMethods.TIFFSetField(tiff, TIFFTag.ImageWidth, frame.Width);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.ImageLength, frame.Height);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.RowsPerStrip, frame.Height);
-				NativeMethods.TIFFSetField(tiff, TIFFTag.SamplesPerPixel, frame.Components);
-				NativeMethods.TIFFSetField(tiff, TIFFTag.BitsPerSample, frame.BitDepth);
-				NativeMethods.TIFFSetField(tiff, TIFFTag.SampleFormat, (int) (frame.IsHDR ? TIFFSampleFormat.Float : frame.IsSigned ? TIFFSampleFormat.Int : TIFFSampleFormat.UInt));
+				NativeMethods.TIFFSetField(tiff, TIFFTag.SamplesPerPixel, frame.ColorId.Components);
+				NativeMethods.TIFFSetField(tiff, TIFFTag.BitsPerSample, frame.ColorId.Bits);
+				NativeMethods.TIFFSetField(tiff, TIFFTag.SampleFormat, (int) (frame.ColorId.IsHDR ? TIFFSampleFormat.Float : frame.ColorId.IsSigned ? TIFFSampleFormat.Int : TIFFSampleFormat.UInt));
 				NativeMethods.TIFFSetField(tiff, TIFFTag.Orientation, (int) TIFFOrientation.TopLeft);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.PlanarConfig, (int) TIFFPlanarConfig.Contig);
-				NativeMethods.TIFFSetField(tiff, TIFFTag.Photometric, (int) (frame.Components < 3 ? TIFFPhotometric.MinIsBlack : TIFFPhotometric.RGB));
-				NativeMethods.TIFFSetField(tiff, TIFFTag.Compression, (int) (options.Compress ? TIFFCompression.None : frame.IsHDR ? HDRCompression : Compression));
-				if (frame.Components is 2 or 4) {
+				NativeMethods.TIFFSetField(tiff, TIFFTag.Photometric, (int) (frame.ColorId.Components < 3 ? TIFFPhotometric.MinIsBlack : TIFFPhotometric.RGB));
+				NativeMethods.TIFFSetField(tiff, TIFFTag.Compression, (int) (options.Compress ? TIFFCompression.None : frame.ColorId.IsHDR ? HDRCompression : Compression));
+				if (frame.ColorId.Components is 2 or 4) {
 					NativeMethods.TIFFSetFieldArray(tiff, TIFFTag.ExtraSamples, 1, (nint) extraSamples);
 				}
 

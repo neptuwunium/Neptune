@@ -100,8 +100,8 @@ public partial class PNGEncoder : IEncoder {
 	}
 
 	public void Write(Stream stream, EncoderWriteOptions options, IImageBuffer image) {
-		if (image.IsHDR) {
-			using var image16 = image.IsSigned ? image.Cast<short>() : image.Cast<ushort>();
+		if (image.ColorId.IsHDR) {
+			using var image16 = image.ColorId.IsSigned ? image.Cast<short>() : image.Cast<ushort>();
 			WriteCore(stream, options, image16);
 			return;
 		}
@@ -110,7 +110,7 @@ public partial class PNGEncoder : IEncoder {
 	}
 
 	public unsafe void WriteCore(Stream stream, EncoderWriteOptions options, IImageBuffer image) {
-		if (image.IsHDR || image.Components is not (>= 1 and <= 4)) {
+		if (image.ColorId.IsHDR || image.ColorId.Components is not (>= 1 and <= 4)) {
 			throw new NotSupportedException();
 		}
 
@@ -128,14 +128,14 @@ public partial class PNGEncoder : IEncoder {
 
 			NativeMethods.png_set_write_fn(png, nint.Zero, WriteStream, FlushStream);
 			NativeMethods.png_set_compression_level(png, options.Compress ? CompressionLevel : 0);
-			var colorType = image.Components switch {
+			var colorType = image.ColorId.Components switch {
 				                1 => PNGColorType.Gray,
 				                2 => PNGColorType.GrayAlpha,
 				                3 => PNGColorType.RGB,
 				                4 => PNGColorType.RGBA,
 				                _ => throw new UnreachableException(),
 			                };
-			NativeMethods.png_set_IHDR(png, info, image.Width, image.Height, image.BitDepth, colorType, PNGInterlacing.None, PNGCompressionType.Default, PNGFilterType.None);
+			NativeMethods.png_set_IHDR(png, info, image.Width, image.Height, image.ColorId.Bits, colorType, PNGInterlacing.None, PNGCompressionType.Default, PNGFilterType.None);
 			NativeMethods.png_write_info(png, info);
 
 			var rowData = image.Data.Memory;
