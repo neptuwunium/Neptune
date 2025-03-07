@@ -16,17 +16,17 @@ public record struct ColorRGB9e5 : IColor<double> {
 	private const int GreenOffset = 9;
 	private const int BlueOffset = 18;
 	private const int ExponentOffset = 27;
-	private uint bits;
+	private uint Bits;
 
 	/// <summary>
 	///     Range: -24 to 7 inclusive
 	/// </summary>
-	private readonly int Exponent => unchecked((int) (bits >> ExponentOffset) - 24);
+	private readonly int Exponent => unchecked((int) (Bits >> ExponentOffset) - 24);
 
 	private readonly double Scale => double.Pow(2, Exponent);
-	private readonly uint RBits => (bits >> RedOffset) & ChannelBitMask;
-	private readonly uint GBits => (bits >> GreenOffset) & ChannelBitMask;
-	private readonly uint BBits => (bits >> BlueOffset) & ChannelBitMask;
+	private readonly uint RBits => (Bits >> RedOffset) & ChannelBitMask;
+	private readonly uint GBits => (Bits >> GreenOffset) & ChannelBitMask;
+	private readonly uint BBits => (Bits >> BlueOffset) & ChannelBitMask;
 
 	public double R {
 		readonly get => RBits * Scale;
@@ -67,9 +67,7 @@ public record struct ColorRGB9e5 : IColor<double> {
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	public void SetChannels(double r, double g, double b, double a) {
-		SetChannels(r, g, b);
-	}
+	public void SetChannels(double r, double g, double b, double a) => SetChannels(r, g, b);
 
 	static bool IColor.HasRedChannel => true;
 	static bool IColor.HasGreenChannel => true;
@@ -86,7 +84,7 @@ public record struct ColorRGB9e5 : IColor<double> {
 		var gBits = (uint) (g / scale) & ChannelBitMask;
 		var bBits = (uint) (b / scale) & ChannelBitMask;
 		var exponentBits = unchecked((uint) (exponent + 24));
-		bits = (exponentBits << ExponentOffset) | (bBits << BlueOffset) | (gBits << GreenOffset) | (rBits << RedOffset);
+		Bits = (exponentBits << ExponentOffset) | (bBits << BlueOffset) | (gBits << GreenOffset) | (rBits << RedOffset);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]

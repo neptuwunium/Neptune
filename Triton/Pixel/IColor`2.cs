@@ -92,7 +92,7 @@ public interface IColor<out TSelf, TChannelValue> : IColor<TChannelValue>
 	static abstract TSelf Transparent { get; }
 
 	/// <summary>
-	///		Comparison Identifier for this color type.
+	///     Comparison Identifier for this color type.
 	/// </summary>
 	public static ColorId ColorId { get; } = ColorId.FromPixel<TSelf, TChannelValue>();
 }

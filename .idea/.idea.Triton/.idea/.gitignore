@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: 2025 Legiayayana
+#
+# SPDX-License-Identifier: EUPL-1.2
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/projectSettingsUpdater.xml
+/.idea.Triton.iml
+/contentModel.xml
+/modules.xml

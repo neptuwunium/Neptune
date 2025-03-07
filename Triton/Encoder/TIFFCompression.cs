@@ -2,8 +2,11 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Triton.Encoder;
 
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum TIFFCompression {
 	None = 1,
 	CCITTRLE = 2,

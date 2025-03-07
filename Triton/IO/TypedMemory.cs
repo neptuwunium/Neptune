@@ -28,9 +28,7 @@ public sealed class TypedMemory<T> : IMemoryOwner<T> where T : struct {
 
 	public Memory<T> Memory => Length <= 0 ? Memory<T>.Empty : Manager!.Memory;
 
-	~TypedMemory() {
-		Dispose(false);
-	}
+	~TypedMemory() => Dispose(false);
 
 	private void Dispose(bool disposing) {
 		(Manager as IDisposable)?.Dispose();

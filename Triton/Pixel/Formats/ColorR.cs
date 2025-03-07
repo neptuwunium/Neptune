@@ -30,9 +30,7 @@ public record struct ColorR<T>(T R) : IColor<ColorR<T>, T> where T : unmanaged, 
 		a = A;
 	}
 
-	public void SetChannels(T r, T g, T b, T a) {
-		R = r;
-	}
+	public void SetChannels(T r, T g, T b, T a) => R = r;
 
 	static bool IColor.HasRedChannel => true;
 	static bool IColor.HasGreenChannel => false;

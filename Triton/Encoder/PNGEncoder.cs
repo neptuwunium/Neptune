@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -10,7 +11,7 @@ using Triton.Pixel.Formats;
 
 namespace Triton.Encoder;
 
-public partial class PNGEncoder : IEncoder {
+public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder {
 	static PNGEncoder() {
 		PNGVersion = "1.6.0";
 
@@ -24,15 +25,11 @@ public partial class PNGEncoder : IEncoder {
 		}
 	}
 
-	public PNGEncoder(PNGCompressionLevel compressionLevel) => CompressionLevel = compressionLevel;
-
-	public PNGCompressionLevel CompressionLevel { get; set; }
+	public PNGCompressionLevel CompressionLevel { get; set; } = compressionLevel;
 	public static bool IsAvailable { get; }
 	public static string PNGVersion { get; }
 
-	public void Write(Stream stream, EncoderWriteOptions options, ImageCollection image) {
-		Write(stream, options, image[0]);
-	}
+	public void Write(Stream stream, EncoderWriteOptions options, ImageCollection image) => Write(stream, options, image[0]);
 
 	public unsafe ImageCollection Read(Stream stream) {
 		var png = NativeMethods.png_create_read_struct(PNGVersion, nint.Zero, nint.Zero, nint.Zero);
@@ -68,13 +65,7 @@ public partial class PNGEncoder : IEncoder {
 				}
 			}
 
-			var samples = colorType switch {
-				              PNGColorType.Gray => 1,
-				              PNGColorType.GrayAlpha => 2,
-				              PNGColorType.RGB => 3,
-				              PNGColorType.RGBA => 4,
-				              _ => throw new NotSupportedException(),
-			              };
+			var samples = colorType switch { PNGColorType.Gray => 1, PNGColorType.GrayAlpha => 2, PNGColorType.RGB => 3, PNGColorType.RGBA => 4, _ => throw new NotSupportedException() };
 
 			var image = IImageBuffer.Create(width, height, bitDepth, samples, false, false);
 
@@ -93,7 +84,7 @@ public partial class PNGEncoder : IEncoder {
 			NativeMethods.png_destroy_read_struct(ref png, ref info, ref Unsafe.NullRef<nint>());
 		}
 
-		void ReadStream(IntPtr _, IntPtr dataPtr, IntPtr dataSize) {
+		void ReadStream(nint _, nint dataPtr, nint dataSize) {
 			var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
 			stream.ReadExactly(span);
 		}
@@ -128,13 +119,7 @@ public partial class PNGEncoder : IEncoder {
 
 			NativeMethods.png_set_write_fn(png, nint.Zero, WriteStream, FlushStream);
 			NativeMethods.png_set_compression_level(png, options.Compress ? CompressionLevel : 0);
-			var colorType = image.ColorId.Components switch {
-				                1 => PNGColorType.Gray,
-				                2 => PNGColorType.GrayAlpha,
-				                3 => PNGColorType.RGB,
-				                4 => PNGColorType.RGBA,
-				                _ => throw new UnreachableException(),
-			                };
+			var colorType = image.ColorId.Components switch { 1 => PNGColorType.Gray, 2 => PNGColorType.GrayAlpha, 3 => PNGColorType.RGB, 4 => PNGColorType.RGBA, _ => throw new UnreachableException() };
 			NativeMethods.png_set_IHDR(png, info, image.Width, image.Height, image.ColorId.Bits, colorType, PNGInterlacing.None, PNGCompressionType.Default, PNGFilterType.None);
 			NativeMethods.png_write_info(png, info);
 
@@ -159,18 +144,16 @@ public partial class PNGEncoder : IEncoder {
 		GC.KeepAlive(stream);
 		return;
 
-		void WriteStream(IntPtr _, IntPtr dataPtr, IntPtr dataSize) {
+		void WriteStream(nint _, nint dataPtr, nint dataSize) {
 			stream.Flush();
 			var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
 			stream.Write(span);
 		}
 
-		void FlushStream(IntPtr _) {
-			stream.Flush();
-		}
+		void FlushStream(nint _) => stream.Flush();
 	}
 
-	[Flags]
+	[Flags, SuppressMessage("ReSharper", "InconsistentNaming")]
 	internal enum PNGColorType {
 		Gray = 0,
 		Palette = 1,
@@ -201,7 +184,7 @@ public partial class PNGEncoder : IEncoder {
 		Adam7 = 1,
 	}
 
-	[Flags]
+	[Flags, SuppressMessage("ReSharper", "InconsistentNaming")]
 	internal enum PNGTransform : uint {
 		Identity = 0x0000,
 		Strip16 = 0x0001,
@@ -298,9 +281,9 @@ public partial class PNGEncoder : IEncoder {
 		public static partial nint png_get_libpng_ver(nint pngPtr); // for some reason string doesn't work here
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
-		public static partial void png_write_png(nint pngPtr, nint infoPtr, PNGTransform transforms, IntPtr @params);
+		public static partial void png_write_png(nint pngPtr, nint infoPtr, PNGTransform transforms, nint @params);
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
-		public static partial void png_read_png(nint pngPtr, nint infoPtr, PNGTransform transforms, IntPtr @params);
+		public static partial void png_read_png(nint pngPtr, nint infoPtr, PNGTransform transforms, nint @params);
 	}
 }

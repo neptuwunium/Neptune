@@ -12,87 +12,87 @@ public record struct Color<TChannelValue, TChannel1, TChannel2> : IColor<Color<T
 	where TChannelValue : unmanaged, INumberBase<TChannelValue>, IMinMaxValue<TChannelValue>
 	where TChannel1 : IChannel
 	where TChannel2 : IChannel {
-	private TChannelValue value1;
-	private TChannelValue value2;
+	private TChannelValue Value1;
+	private TChannelValue Value2;
 
 	public Color(TChannelValue value1, TChannelValue value2) {
-		this.value1 = value1;
-		this.value2 = value2;
+		Value1 = value1;
+		Value2 = value2;
 	}
 
 	public TChannelValue R {
 		readonly get {
 			if (TChannel1.IsRed) {
-				return TChannel1.GetRed(value1);
+				return TChannel1.GetRed(Value1);
 			}
 
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel2.IsRed) {
-				return TChannel2.GetRed(value2);
+				return TChannel2.GetRed(Value2);
 			}
 
 			return NumericConversion.GetMinimumValueSafe<TChannelValue>();
 		}
 		set {
-			Channel.SetIfRed<TChannel1, TChannelValue>(ref value1, value);
-			Channel.SetIfRed<TChannel2, TChannelValue>(ref value2, value);
+			Channel.SetIfRed<TChannel1, TChannelValue>(ref Value1, value);
+			Channel.SetIfRed<TChannel2, TChannelValue>(ref Value2, value);
 		}
 	}
 
 	public TChannelValue G {
 		readonly get {
 			if (TChannel1.IsGreen) {
-				return TChannel1.GetGreen(value1);
+				return TChannel1.GetGreen(Value1);
 			}
 
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel2.IsGreen) {
-				return TChannel2.GetGreen(value2);
+				return TChannel2.GetGreen(Value2);
 			}
 
 			return NumericConversion.GetMinimumValueSafe<TChannelValue>();
 		}
 		set {
-			Channel.SetIfGreen<TChannel1, TChannelValue>(ref value1, value);
-			Channel.SetIfGreen<TChannel2, TChannelValue>(ref value2, value);
+			Channel.SetIfGreen<TChannel1, TChannelValue>(ref Value1, value);
+			Channel.SetIfGreen<TChannel2, TChannelValue>(ref Value2, value);
 		}
 	}
 
 	public TChannelValue B {
 		readonly get {
 			if (TChannel1.IsBlue) {
-				return TChannel1.GetBlue(value1);
+				return TChannel1.GetBlue(Value1);
 			}
 
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel2.IsBlue) {
-				return TChannel2.GetBlue(value2);
+				return TChannel2.GetBlue(Value2);
 			}
 
 			return NumericConversion.GetMinimumValueSafe<TChannelValue>();
 		}
 		set {
-			Channel.SetIfBlue<TChannel1, TChannelValue>(ref value1, value);
-			Channel.SetIfBlue<TChannel2, TChannelValue>(ref value2, value);
+			Channel.SetIfBlue<TChannel1, TChannelValue>(ref Value1, value);
+			Channel.SetIfBlue<TChannel2, TChannelValue>(ref Value2, value);
 		}
 	}
 
 	public TChannelValue A {
 		readonly get {
 			if (TChannel1.IsAlpha) {
-				return TChannel1.GetAlpha(value1);
+				return TChannel1.GetAlpha(Value1);
 			}
 
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel2.IsAlpha) {
-				return TChannel2.GetAlpha(value2);
+				return TChannel2.GetAlpha(Value2);
 			}
 
 			return NumericConversion.GetMaximumValueSafe<TChannelValue>();
 		}
 		set {
-			Channel.SetIfAlpha<TChannel1, TChannelValue>(ref value1, value);
-			Channel.SetIfAlpha<TChannel2, TChannelValue>(ref value2, value);
+			Channel.SetIfAlpha<TChannel1, TChannelValue>(ref Value1, value);
+			Channel.SetIfAlpha<TChannel2, TChannelValue>(ref Value2, value);
 		}
 	}
 

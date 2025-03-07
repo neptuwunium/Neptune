@@ -13,7 +13,7 @@ namespace Triton.Pixel;
 internal struct UInt4Pair {
 	private const uint HighBitMask = 0xF0u;
 	private const uint LowBitMask = 0x0Fu;
-	private byte bits;
+	private byte Bits;
 
 	/// <summary>
 	///     The value stored in the high bits.
@@ -22,11 +22,11 @@ internal struct UInt4Pair {
 	///     Possible values: any multiple of 17 in the inclusive range [0 - 255].
 	/// </remarks>
 	public byte HighValue {
-		readonly get => (byte) ((bits & HighBitMask) | ((uint) bits >> 4));
+		readonly get => (byte) ((Bits & HighBitMask) | ((uint) Bits >> 4));
 
 		set {
 			unchecked {
-				bits = (byte) ((Convert8BitsTo4Bits(value) << 4) | (bits & LowBitMask));
+				Bits = (byte) ((Convert8BitsTo4Bits(value) << 4) | (Bits & LowBitMask));
 			}
 		}
 	}
@@ -39,13 +39,13 @@ internal struct UInt4Pair {
 	/// </remarks>
 	public byte LowValue {
 		readonly get {
-			var relevantBits = bits & LowBitMask;
+			var relevantBits = Bits & LowBitMask;
 			return (byte) ((relevantBits << 4) | relevantBits);
 		}
 
 		set {
 			unchecked {
-				bits = (byte) (Convert8BitsTo4Bits(value) | (bits & HighBitMask));
+				Bits = (byte) (Convert8BitsTo4Bits(value) | (Bits & HighBitMask));
 			}
 		}
 	}

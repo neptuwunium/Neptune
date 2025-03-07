@@ -6,36 +6,32 @@
 namespace Triton.Pixel.Formats;
 
 public record struct ColorARGB16 : IColor<byte> {
-	private UInt4Pair ar;
-	private UInt4Pair gb;
+	private UInt4Pair Ar;
+	private UInt4Pair Gb;
 
 	public byte B {
-		readonly get => gb.LowValue;
-		set => gb.LowValue = value;
+		readonly get => Gb.LowValue;
+		set => Gb.LowValue = value;
 	}
 
 	public byte G {
-		readonly get => gb.HighValue;
-		set => gb.HighValue = value;
+		readonly get => Gb.HighValue;
+		set => Gb.HighValue = value;
 	}
 
 	public byte R {
-		readonly get => ar.LowValue;
-		set => ar.LowValue = value;
+		readonly get => Ar.LowValue;
+		set => Ar.LowValue = value;
 	}
 
 	public byte A {
-		readonly get => ar.HighValue;
-		set => ar.HighValue = value;
+		readonly get => Ar.HighValue;
+		set => Ar.HighValue = value;
 	}
 
-	public readonly void GetChannels(out byte r, out byte g, out byte b, out byte a) {
-		DefaultColorMethods.GetChannels(this, out r, out g, out b, out a);
-	}
+	public readonly void GetChannels(out byte r, out byte g, out byte b, out byte a) => DefaultColorMethods.GetChannels(this, out r, out g, out b, out a);
 
-	public void SetChannels(byte r, byte g, byte b, byte a) {
-		DefaultColorMethods.SetChannels(ref this, r, g, b, a);
-	}
+	public void SetChannels(byte r, byte g, byte b, byte a) => DefaultColorMethods.SetChannels(ref this, r, g, b, a);
 
 	static bool IColor.HasRedChannel => true;
 	static bool IColor.HasGreenChannel => true;

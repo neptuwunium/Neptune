@@ -11,15 +11,15 @@ namespace Triton.Pixel;
 public record struct Color<TChannelValue, TChannel> : IColor<Color<TChannelValue, TChannel>, TChannelValue>
 	where TChannelValue : unmanaged, INumberBase<TChannelValue>, IMinMaxValue<TChannelValue>
 	where TChannel : IChannel {
-	private readonly TChannelValue value;
+	private readonly TChannelValue Value;
 
-	public Color(TChannelValue value) => this.value = value;
+	public Color(TChannelValue value) => Value = value;
 
 	public TChannelValue R {
 		readonly get {
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel.IsRed) {
-				return TChannel.GetRed(value);
+				return TChannel.GetRed(Value);
 			}
 
 			return NumericConversion.GetMinimumValueSafe<TChannelValue>();
@@ -31,7 +31,7 @@ public record struct Color<TChannelValue, TChannel> : IColor<Color<TChannelValue
 		readonly get {
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel.IsGreen) {
-				return TChannel.GetGreen(value);
+				return TChannel.GetGreen(Value);
 			}
 
 			return NumericConversion.GetMinimumValueSafe<TChannelValue>();
@@ -43,7 +43,7 @@ public record struct Color<TChannelValue, TChannel> : IColor<Color<TChannelValue
 		readonly get {
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel.IsBlue) {
-				return TChannel.GetBlue(value);
+				return TChannel.GetBlue(Value);
 			}
 
 			return NumericConversion.GetMinimumValueSafe<TChannelValue>();
@@ -55,7 +55,7 @@ public record struct Color<TChannelValue, TChannel> : IColor<Color<TChannelValue
 		readonly get {
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel.IsAlpha) {
-				return TChannel.GetAlpha(value);
+				return TChannel.GetAlpha(Value);
 			}
 
 			return NumericConversion.GetMaximumValueSafe<TChannelValue>();

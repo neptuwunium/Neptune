@@ -1,9 +1,22 @@
+// SPDX-FileCopyrightText: 2025 Legiayayana
+//
+// SPDX-License-Identifier: EUPL-1.2
+
 using System.Runtime.CompilerServices;
 
 namespace Triton;
 
 // Color Primitive identifier, for fast pixel format comparisons without branches.
 public record struct ColorId : IEquatable<ColorId?>, IEquatable<uint>, IEquatable<int>, IEquatable<ushort> {
+	public ColorId(ushort value) => Value = value;
+
+	public ColorId(int components, int bits, bool hdr = false, bool signed = false) {
+		Components = components;
+		Bits = bits;
+		IsHDR = hdr;
+		IsSigned = signed;
+	}
+
 	public ushort Value { get; set; }
 
 	// 2 bits for nr of components (0-3)
@@ -33,16 +46,12 @@ public record struct ColorId : IEquatable<ColorId?>, IEquatable<uint>, IEquatabl
 		set => Value = (ushort) ((Value & ~0xFFu) | (byte) value);
 	}
 
-	public ColorId(ushort value) {
-		Value = value;
-	}
-
-	public ColorId(int components, int bits, bool hdr = false, bool signed = false) {
-		Components = components;
-		Bits = bits;
-		IsHDR = hdr;
-		IsSigned = signed;
-	}
+	public bool Equals(ColorId other) => other.Value == Value;
+	public bool Equals(ColorId? other) => other != null && other.Value.Value == Value;
+	public bool Equals(int other) => other == Value;
+	public bool Equals(uint other) => other == Value;
+	public bool Equals(ushort other) => other == Value;
+	public bool Equals<TColor, T>() where TColor : struct where T : unmanaged => FromPixel<TColor, T>().Equals(this);
 
 	public static ColorId FromPixel<TColor, T>(bool? overrideIsSigned = null) where TColor : struct where T : unmanaged {
 		var components = Unsafe.SizeOf<TColor>() / Unsafe.SizeOf<T>();
@@ -65,13 +74,6 @@ public record struct ColorId : IEquatable<ColorId?>, IEquatable<uint>, IEquatabl
 
 		return new ColorId(components, bits, isHDR, isSigned);
 	}
-
-	public bool Equals(ushort other) => other == Value;
-	public bool Equals(uint other) => other == Value;
-	public bool Equals(int other) => other == Value;
-	public bool Equals(ColorId other) => other.Value == Value;
-	public bool Equals(ColorId? other) => other != null && other.Value.Value == Value;
-	public bool Equals<TColor, T>() where TColor : struct where T : unmanaged => FromPixel<TColor, T>().Equals(this);
 
 	public override int GetHashCode() => Value;
 }

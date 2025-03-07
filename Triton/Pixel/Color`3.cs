@@ -13,109 +13,109 @@ public record struct Color<TChannelValue, TChannel1, TChannel2, TChannel3> : ICo
 	where TChannel1 : IChannel
 	where TChannel2 : IChannel
 	where TChannel3 : IChannel {
-	private TChannelValue value1;
-	private TChannelValue value2;
-	private TChannelValue value3;
+	private TChannelValue Value1;
+	private TChannelValue Value2;
+	private TChannelValue Value3;
 
 	public Color(TChannelValue value1, TChannelValue value2, TChannelValue value3) {
-		this.value1 = value1;
-		this.value2 = value2;
-		this.value3 = value3;
+		Value1 = value1;
+		Value2 = value2;
+		Value3 = value3;
 	}
 
 	public TChannelValue R {
 		readonly get {
 			if (TChannel1.IsRed) {
-				return TChannel1.GetRed(value1);
+				return TChannel1.GetRed(Value1);
 			}
 
 			if (TChannel2.IsRed) {
-				return TChannel2.GetRed(value2);
+				return TChannel2.GetRed(Value2);
 			}
 
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel3.IsRed) {
-				return TChannel3.GetRed(value3);
+				return TChannel3.GetRed(Value3);
 			}
 
 			return NumericConversion.GetMinimumValueSafe<TChannelValue>();
 		}
 		set {
-			Channel.SetIfRed<TChannel1, TChannelValue>(ref value1, value);
-			Channel.SetIfRed<TChannel2, TChannelValue>(ref value2, value);
-			Channel.SetIfRed<TChannel3, TChannelValue>(ref value3, value);
+			Channel.SetIfRed<TChannel1, TChannelValue>(ref Value1, value);
+			Channel.SetIfRed<TChannel2, TChannelValue>(ref Value2, value);
+			Channel.SetIfRed<TChannel3, TChannelValue>(ref Value3, value);
 		}
 	}
 
 	public TChannelValue G {
 		readonly get {
 			if (TChannel1.IsGreen) {
-				return TChannel1.GetGreen(value1);
+				return TChannel1.GetGreen(Value1);
 			}
 
 			if (TChannel2.IsGreen) {
-				return TChannel2.GetGreen(value2);
+				return TChannel2.GetGreen(Value2);
 			}
 
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel3.IsGreen) {
-				return TChannel3.GetGreen(value3);
+				return TChannel3.GetGreen(Value3);
 			}
 
 			return NumericConversion.GetMinimumValueSafe<TChannelValue>();
 		}
 		set {
-			Channel.SetIfGreen<TChannel1, TChannelValue>(ref value1, value);
-			Channel.SetIfGreen<TChannel2, TChannelValue>(ref value2, value);
-			Channel.SetIfGreen<TChannel3, TChannelValue>(ref value3, value);
+			Channel.SetIfGreen<TChannel1, TChannelValue>(ref Value1, value);
+			Channel.SetIfGreen<TChannel2, TChannelValue>(ref Value2, value);
+			Channel.SetIfGreen<TChannel3, TChannelValue>(ref Value3, value);
 		}
 	}
 
 	public TChannelValue B {
 		readonly get {
 			if (TChannel1.IsBlue) {
-				return TChannel1.GetBlue(value1);
+				return TChannel1.GetBlue(Value1);
 			}
 
 			if (TChannel2.IsBlue) {
-				return TChannel2.GetBlue(value2);
+				return TChannel2.GetBlue(Value2);
 			}
 
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel3.IsBlue) {
-				return TChannel3.GetBlue(value3);
+				return TChannel3.GetBlue(Value3);
 			}
 
 			return NumericConversion.GetMinimumValueSafe<TChannelValue>();
 		}
 		set {
-			Channel.SetIfBlue<TChannel1, TChannelValue>(ref value1, value);
-			Channel.SetIfBlue<TChannel2, TChannelValue>(ref value2, value);
-			Channel.SetIfBlue<TChannel3, TChannelValue>(ref value3, value);
+			Channel.SetIfBlue<TChannel1, TChannelValue>(ref Value1, value);
+			Channel.SetIfBlue<TChannel2, TChannelValue>(ref Value2, value);
+			Channel.SetIfBlue<TChannel3, TChannelValue>(ref Value3, value);
 		}
 	}
 
 	public TChannelValue A {
 		readonly get {
 			if (TChannel1.IsAlpha) {
-				return TChannel1.GetAlpha(value1);
+				return TChannel1.GetAlpha(Value1);
 			}
 
 			if (TChannel2.IsAlpha) {
-				return TChannel2.GetAlpha(value2);
+				return TChannel2.GetAlpha(Value2);
 			}
 
 			// ReSharper disable once ConvertIfStatementToReturnStatement
 			if (TChannel3.IsAlpha) {
-				return TChannel3.GetAlpha(value3);
+				return TChannel3.GetAlpha(Value3);
 			}
 
 			return NumericConversion.GetMaximumValueSafe<TChannelValue>();
 		}
 		set {
-			Channel.SetIfAlpha<TChannel1, TChannelValue>(ref value1, value);
-			Channel.SetIfAlpha<TChannel2, TChannelValue>(ref value2, value);
-			Channel.SetIfAlpha<TChannel3, TChannelValue>(ref value3, value);
+			Channel.SetIfAlpha<TChannel1, TChannelValue>(ref Value1, value);
+			Channel.SetIfAlpha<TChannel2, TChannelValue>(ref Value2, value);
+			Channel.SetIfAlpha<TChannel3, TChannelValue>(ref Value3, value);
 		}
 	}
 

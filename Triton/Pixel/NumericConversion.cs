@@ -177,7 +177,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nint) ConvertByte<int>(value);
 				return Unsafe.As<nint, TTo>(ref converted);
 			} else {
@@ -187,7 +187,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nuint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nuint) ConvertByte<uint>(value);
 				return Unsafe.As<nuint, TTo>(ref converted);
 			} else {
@@ -231,7 +231,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(NFloat)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (NFloat) ConvertByte<float>(value);
 				return Unsafe.As<NFloat, TTo>(ref converted);
 			} else {
@@ -292,7 +292,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nint) ConvertUInt16<int>(value);
 				return Unsafe.As<nint, TTo>(ref converted);
 			} else {
@@ -302,7 +302,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nuint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nuint) ConvertUInt16<uint>(value);
 				return Unsafe.As<nuint, TTo>(ref converted);
 			} else {
@@ -346,7 +346,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(NFloat)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (NFloat) ConvertUInt16<float>(value);
 				return Unsafe.As<NFloat, TTo>(ref converted);
 			} else {
@@ -411,7 +411,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nint) ConvertUInt32<int>(value);
 				return Unsafe.As<nint, TTo>(ref converted);
 			} else {
@@ -421,7 +421,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nuint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nuint) ConvertUInt32<uint>(value);
 				return Unsafe.As<nuint, TTo>(ref converted);
 			} else {
@@ -465,7 +465,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(NFloat)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (NFloat) ConvertUInt32<float>(value);
 				return Unsafe.As<NFloat, TTo>(ref converted);
 			} else {
@@ -488,10 +488,10 @@ public static class NumericConversion {
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	private static TTo ConvertIntPtr<TTo>(nint value) where TTo : unmanaged => IntPtr.Size == sizeof(int) ? ConvertInt32<TTo>((int) value) : ConvertInt64<TTo>(value);
+	private static TTo ConvertIntPtr<TTo>(nint value) where TTo : unmanaged => nint.Size == sizeof(int) ? ConvertInt32<TTo>((int) value) : ConvertInt64<TTo>(value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	private static TTo ConvertUIntPtr<TTo>(nuint value) where TTo : unmanaged => IntPtr.Size == sizeof(int) ? ConvertUInt32<TTo>((uint) value) : ConvertUInt64<TTo>(value);
+	private static TTo ConvertUIntPtr<TTo>(nuint value) where TTo : unmanaged => nint.Size == sizeof(int) ? ConvertUInt32<TTo>((uint) value) : ConvertUInt64<TTo>(value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	private static TTo ConvertInt64<TTo>(long value) where TTo : unmanaged => ConvertUInt64<TTo>(ChangeSign(value));
@@ -541,7 +541,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nint) ConvertUInt64<int>(value);
 				return Unsafe.As<nint, TTo>(ref converted);
 			} else {
@@ -551,7 +551,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nuint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nuint) ConvertUInt64<uint>(value);
 				return Unsafe.As<nuint, TTo>(ref converted);
 			} else {
@@ -593,7 +593,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(NFloat)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (NFloat) ConvertUInt64<float>(value);
 				return Unsafe.As<NFloat, TTo>(ref converted);
 			} else {
@@ -663,7 +663,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nint) ConvertUInt128<int>(value);
 				return Unsafe.As<nint, TTo>(ref converted);
 			} else {
@@ -673,7 +673,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nuint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nuint) ConvertUInt128<uint>(value);
 				return Unsafe.As<nuint, TTo>(ref converted);
 			} else {
@@ -718,7 +718,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(NFloat)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (NFloat) ConvertUInt128<float>(value);
 				return Unsafe.As<NFloat, TTo>(ref converted);
 			} else {
@@ -773,7 +773,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nint) ConvertHalf<int>(value);
 				return Unsafe.As<nint, TTo>(ref converted);
 			} else {
@@ -783,7 +783,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nuint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nuint) ConvertHalf<uint>(value);
 				return Unsafe.As<nuint, TTo>(ref converted);
 			} else {
@@ -822,7 +822,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(NFloat)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (NFloat) ConvertHalf<float>(value);
 				return Unsafe.As<NFloat, TTo>(ref converted);
 			} else {
@@ -883,7 +883,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nint) ConvertSingle<int>(value);
 				return Unsafe.As<nint, TTo>(ref converted);
 			} else {
@@ -893,7 +893,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nuint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nuint) ConvertSingle<uint>(value);
 				return Unsafe.As<nuint, TTo>(ref converted);
 			} else {
@@ -936,7 +936,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(NFloat)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (NFloat) ConvertSingle<float>(value);
 				return Unsafe.As<NFloat, TTo>(ref converted);
 			} else {
@@ -959,7 +959,7 @@ public static class NumericConversion {
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	private static TTo ConvertNFloat<TTo>(NFloat value) where TTo : unmanaged => IntPtr.Size == sizeof(int) ? ConvertSingle<TTo>((float) value) : ConvertDouble<TTo>(value);
+	private static TTo ConvertNFloat<TTo>(NFloat value) where TTo : unmanaged => nint.Size == sizeof(int) ? ConvertSingle<TTo>((float) value) : ConvertDouble<TTo>(value);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	private static TTo ConvertDouble<TTo>(double value) where TTo : unmanaged {
@@ -1000,7 +1000,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nint) ConvertDouble<int>(value);
 				return Unsafe.As<nint, TTo>(ref converted);
 			} else {
@@ -1010,7 +1010,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nuint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nuint) ConvertDouble<uint>(value);
 				return Unsafe.As<nuint, TTo>(ref converted);
 			} else {
@@ -1054,7 +1054,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(NFloat)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (NFloat) ConvertDouble<float>(value);
 				return Unsafe.As<NFloat, TTo>(ref converted);
 			} else {
@@ -1114,7 +1114,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nint) ConvertDecimal<int>(value);
 				return Unsafe.As<nint, TTo>(ref converted);
 			} else {
@@ -1124,7 +1124,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(nuint)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (nuint) ConvertDecimal<uint>(value);
 				return Unsafe.As<nuint, TTo>(ref converted);
 			} else {
@@ -1168,7 +1168,7 @@ public static class NumericConversion {
 		}
 
 		if (typeof(TTo) == typeof(NFloat)) {
-			if (IntPtr.Size == sizeof(int)) {
+			if (nint.Size == sizeof(int)) {
 				var converted = (NFloat) ConvertDecimal<float>(value);
 				return Unsafe.As<NFloat, TTo>(ref converted);
 			} else {
