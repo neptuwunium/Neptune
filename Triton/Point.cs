@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace Triton;
 
-public record struct Point<T>(T X, T Y) :
+public readonly record struct Point<T>(T X, T Y) :
 	IDivisionOperators<Point<T>, Point<T>, Point<T>>,
 	IDivisionOperators<Point<T>, T, Point<T>>,
 	IMultiplyOperators<Point<T>, Point<T>, Point<T>>,
@@ -28,8 +28,8 @@ public record struct Point<T>(T X, T Y) :
 	public static Point<T> operator *(Point<T> left, Point<T> right) => new(left.X * right.X, left.Y * right.Y);
 	static Point<T> IUnaryNegationOperators<Point<T>, Point<T>>.operator -(Point<T> value) => new(-value.X, -value.Y);
 	static Point<T> IUnaryPlusOperators<Point<T>, Point<T>>.operator +(Point<T> value) => new(+value.X, +value.Y);
-	public static Point<T> operator ++(Point<T> value) => new(++value.X, ++value.Y);
-	public static Point<T> operator --(Point<T> value) => new(--value.X, --value.Y);
+	public static Point<T> operator ++(Point<T> value) => new(value.X + T.One, value.Y + T.One);
+	public static Point<T> operator --(Point<T> value) => new(value.X - T.One, value.Y - T.One);
 	public static Point<T> operator +(Point<T> left, T right) => new(left.X + right, left.Y + right);
 	public static Point<T> operator -(Point<T> left, T right) => new(left.X - right, left.Y - right);
 	public static Point<T> operator /(Point<T> left, T right) => new(left.X / right, left.Y / right);
