@@ -5,6 +5,7 @@
 namespace Triton.Encoder;
 
 public interface IEncoder {
+	public static abstract bool IsAvailable { get; }
 	public void Write(Stream stream, EncoderWriteOptions options, ImageCollection frames);
 	public ImageCollection Read(Stream stream);
 }

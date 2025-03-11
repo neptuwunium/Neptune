@@ -4,7 +4,7 @@
 
 namespace Triton.Encoder;
 
-public class EXREncoder : IEncoder {
+public class TGAEncoder : IEncoder {
 	public static bool IsAvailable { get; } = false;
 	public void Write(Stream stream, EncoderWriteOptions options, ImageCollection frames) => throw new NotImplementedException();
 	public ImageCollection Read(Stream stream) => throw new NotImplementedException();
