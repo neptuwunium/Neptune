@@ -27,18 +27,19 @@ public interface IImageBuffer : IDisposable {
 
 	public IImageBuffer CreateSubImage(int width, int height);
 
-	public IImageBuffer CreateSubImage(Point size);
+	public IImageBuffer CreateSubImage(Point<int> size);
 
 	public void PremultiplyAlpha();
 	public void StraightAlpha();
 
 	public IColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear);
+	public IColor Sample(Point<float> target, SamplingOperation operation = SamplingOperation.Bilinear);
 
 	public void Draw(IColor pixel, int x, int y, PixelOperation operation = PixelOperation.Copy);
-	public void Draw(IColor pixel, Point target, PixelOperation operation = PixelOperation.Copy);
+	public void Draw(IColor pixel, Point<int> target, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy);
-	public void Draw(IImageBuffer image, Point target, PixelOperation operation = PixelOperation.Copy);
-	public void Draw(IImageBuffer image, Point target, Rect crop, PixelOperation operation = PixelOperation.Copy);
+	public void Draw(IImageBuffer image, Point<int> target, PixelOperation operation = PixelOperation.Copy);
+	public void Draw(IImageBuffer image, Point<int> target, Rect<int> crop, PixelOperation operation = PixelOperation.Copy);
 
 	public void Clear();
 
@@ -50,11 +51,11 @@ public interface IImageBuffer : IDisposable {
 		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
-	public void Clear<TColor, T>(TColor color, Point target, PixelOperation operation = PixelOperation.Copy)
+	public void Clear<TColor, T>(TColor color, Point<int> target, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
-	public void Clear<TColor, T>(TColor color, Rect target, PixelOperation operation = PixelOperation.Copy)
+	public void Clear<TColor, T>(TColor color, Rect<int> target, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
@@ -74,7 +75,7 @@ public interface IImageBuffer : IDisposable {
 			_ => throw new NotSupportedException(),
 		};
 
-	static IImageBuffer Create<T>(Point size, int samples) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => Create<T>(size.X, size.Y, samples);
+	static IImageBuffer Create<T>(Point<int> size, int samples) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => Create<T>(size.X, size.Y, samples);
 
 	static IImageBuffer Create<T>(int width, int height, int samples) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> =>
 		samples switch {

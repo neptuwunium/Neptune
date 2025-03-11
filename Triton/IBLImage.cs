@@ -8,7 +8,7 @@ namespace Triton;
 
 public sealed class IBLImage : IDisposable {
 	// DXGI Order.
-	private static readonly Point[] CrossToTile = [
+	private static readonly Point<int>[] CrossToTile = [
 		new(2, 1), // X+
 		new(0, 1), // X-
 		new(1, 0), // Y+
@@ -53,7 +53,7 @@ public sealed class IBLImage : IDisposable {
 		return FromCrop(image, size, order, CrossToTile);
 	}
 
-	public static IBLImage FromCrop(IImageBuffer image, int size, CubemapOrder? order, params Point[] crops) {
+	public static IBLImage FromCrop(IImageBuffer image, int size, CubemapOrder? order, params Point<int>[] crops) {
 		if (crops.Length != 6) {
 			throw new InvalidOperationException("Must have six crop factors");
 		}
@@ -61,11 +61,11 @@ public sealed class IBLImage : IDisposable {
 		var collection = new ImageCollection(6);
 
 		var orderSelector = order ?? CubemapOrder.DXGIOrder;
-		var rect = new Point(size, size);
+		var rect = new Point<int>(size, size);
 		for (var i = 0; i < 6; ++i) {
 			var (tileX, tileY) = crops[orderSelector[i]];
 			var frame = image.CreateSubImage(rect);
-			frame.Draw(image, new Point(), new Rect(new Point(tileX * size, tileY * size), rect));
+			frame.Draw(image, new Point<int>(), new Rect<int>(new Point<int>(tileX * size, tileY * size), rect));
 			collection.Add(frame);
 		}
 
