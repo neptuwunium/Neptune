@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace Triton.Pixel;
 
+[SuppressMessage("ReSharper", "InvertIf")]
 public static class NumericConversion {
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	internal static T GetMinimumValueSafe<T>() where T : unmanaged, INumberBase<T>, IMinMaxValue<T> =>
@@ -43,8 +44,8 @@ public static class NumericConversion {
 			return ThrowOrReturnDefault<TTo>();
 		}
 
-		var SignBit = TFrom.One << (Unsafe.SizeOf<TFrom>() * 8 - 1);
-		var converted = SignBit ^ value;
+		var signBit = TFrom.One << (Unsafe.SizeOf<TFrom>() * 8 - 1);
+		var converted = signBit ^ value;
 		return Unsafe.As<TFrom, TTo>(ref converted);
 	}
 
@@ -56,8 +57,8 @@ public static class NumericConversion {
 			return ThrowOrReturnDefault<TTo>();
 		}
 
-		var SignBit = TTo.One << (Unsafe.SizeOf<TTo>() * 8 - 1);
-		return SignBit ^ Unsafe.As<TFrom, TTo>(ref value);
+		var signBit = TTo.One << (Unsafe.SizeOf<TTo>() * 8 - 1);
+		return signBit ^ Unsafe.As<TFrom, TTo>(ref value);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]

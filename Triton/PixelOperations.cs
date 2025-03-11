@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Triton.Pixel;
@@ -9,6 +10,7 @@ using Triton.Pixel.Formats;
 
 namespace Triton;
 
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public static class PixelOperations<TColor, T>
 	where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
 	where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {

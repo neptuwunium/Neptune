@@ -23,15 +23,15 @@ public sealed class SizedMemoryOwner<T> : IMemoryOwner<T> where T : struct {
 	public int Length { get; }
 
 	public void Dispose() {
-		Dispose(true);
+		Free();
 		GC.SuppressFinalize(this);
 	}
 
 	public Memory<T> Memory => UnderlyingOwner!.Memory.Slice(Offset, Length - Offset);
 
-	~SizedMemoryOwner() => Dispose(false);
+	~SizedMemoryOwner() => Free();
 
-	private void Dispose(bool disposing) {
+	private void Free() {
 		UnderlyingOwner?.Dispose();
 		UnderlyingOwner = null;
 	}

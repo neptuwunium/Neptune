@@ -22,15 +22,15 @@ public sealed class TypedMemory<T> : IMemoryOwner<T> where T : struct {
 	public int Length { get; set; }
 
 	public void Dispose() {
-		Dispose(true);
+		Free();
 		GC.SuppressFinalize(this);
 	}
 
 	public Memory<T> Memory => Length <= 0 ? Memory<T>.Empty : Manager!.Memory;
 
-	~TypedMemory() => Dispose(false);
+	~TypedMemory() => Free();
 
-	private void Dispose(bool disposing) {
+	private void Free() {
 		(Manager as IDisposable)?.Dispose();
 		Manager = null;
 	}

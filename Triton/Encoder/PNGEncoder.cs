@@ -15,13 +15,15 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 	static PNGEncoder() {
 		PNGVersion = "1.6.0";
 
-		if (NativeLibrary.TryLoad(NativeMethods.LibraryName, Assembly.GetExecutingAssembly(), NativeMethods.SearchPath, out var ptr)) {
-			NativeLibrary.Free(ptr);
-			IsAvailable = true;
-			var pngPtr = NativeMethods.png_get_libpng_ver(nint.Zero);
-			if (pngPtr != nint.Zero) {
-				PNGVersion = Marshal.PtrToStringAnsi(pngPtr) ?? PNGVersion;
-			}
+		if (!NativeLibrary.TryLoad(NativeMethods.LibraryName, Assembly.GetExecutingAssembly(), NativeMethods.SearchPath, out var ptr)) {
+			return;
+		}
+
+		NativeLibrary.Free(ptr);
+		IsAvailable = true;
+		var pngPtr = NativeMethods.png_get_libpng_ver(nint.Zero);
+		if (pngPtr != nint.Zero) {
+			PNGVersion = Marshal.PtrToStringAnsi(pngPtr) ?? PNGVersion;
 		}
 	}
 
@@ -65,7 +67,15 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 				}
 			}
 
-			var samples = colorType switch { PNGColorType.Gray => 1, PNGColorType.GrayAlpha => 2, PNGColorType.RGB => 3, PNGColorType.RGBA => 4, _ => throw new NotSupportedException() };
+			var samples = colorType switch {
+				PNGColorType.Gray => 1,
+				PNGColorType.GrayAlpha => 2,
+				PNGColorType.RGB => 3,
+				PNGColorType.RGBA => 4,
+				PNGColorType.Palette => throw new NotSupportedException(),
+				PNGColorType.PaletteColor => throw new NotSupportedException(),
+				_ => throw new NotSupportedException(),
+			};
 
 			var image = IImageBuffer.Create(width, height, bitDepth, samples, false, false);
 
@@ -213,10 +223,10 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 
 	private static partial class NativeMethods {
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void png_flush(nint png);
+		public delegate void PNGFlush(nint png);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void png_rw(nint png, nint ptr, nint size);
+		public delegate void PNGReadWrite(nint png, nint ptr, nint size);
 
 		internal const string LibraryName = "png";
 		internal const DllImportSearchPath SearchPath = DllImportSearchPath.SafeDirectories | DllImportSearchPath.AssemblyDirectory | DllImportSearchPath.ApplicationDirectory;
@@ -237,11 +247,11 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 		public static partial void png_destroy_read_struct(ref nint pngPtr, ref nint infoPtr, ref nint infoEndPtr);
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
-		public static partial void png_set_write_fn(nint pngPtr, nint ioPtr, [MarshalAs(UnmanagedType.FunctionPtr)] png_rw? write, [MarshalAs(UnmanagedType.FunctionPtr)] png_flush? flush);
+		public static partial void png_set_write_fn(nint pngPtr, nint ioPtr, [MarshalAs(UnmanagedType.FunctionPtr)] PNGReadWrite? write, [MarshalAs(UnmanagedType.FunctionPtr)] PNGFlush? flush);
 
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
-		public static partial void png_set_read_fn(nint pngPtr, nint ioPtr, [MarshalAs(UnmanagedType.FunctionPtr)] png_rw? write);
+		public static partial void png_set_read_fn(nint pngPtr, nint ioPtr, [MarshalAs(UnmanagedType.FunctionPtr)] PNGReadWrite? write);
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void png_set_IHDR(nint pngPtr, nint infoPtr, int width, int height, int bitDepth, PNGColorType colorType, PNGInterlacing interlaceMethod, PNGCompressionType compressionMethod, PNGFilterType filterMethod);

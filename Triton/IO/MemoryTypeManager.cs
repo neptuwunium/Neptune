@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace Triton.IO;
 
 public class MemoryTypeManager<TTo, TFrom>(Memory<TFrom> buffer) : MemoryManager<TTo> where TTo : struct
-																					  where TFrom : struct {
+	where TFrom : struct {
 	private static readonly int ToSize = Unsafe.SizeOf<TTo>();
 	private static readonly int FromSize = Unsafe.SizeOf<TFrom>();
 	private MemoryHandle? Handle { get; set; }
@@ -44,12 +44,13 @@ public class MemoryTypeManager<TTo, TFrom>(Memory<TFrom> buffer) : MemoryManager
 
 	public override void Unpin() {
 		ObjectDisposedException.ThrowIf(Disposed, this);
-		RefCount--;
-		if (RefCount <= 0) {
-			RefCount = 0;
-			Handle?.Dispose();
-			Handle = null;
+		if (--RefCount > 0) {
+			return;
 		}
+
+		RefCount = 0;
+		Handle?.Dispose();
+		Handle = null;
 	}
 
 	protected override bool TryGetArray(out ArraySegment<TTo> segment) {

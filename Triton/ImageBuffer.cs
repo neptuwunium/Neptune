@@ -62,18 +62,22 @@ public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width,
 	public IImageBuffer CreateSubImage(Point size) => new ImageBuffer<TColor, T>(size.X, size.Y);
 
 	public void PremulitplyAlpha() {
-		if (TColor.HasAlphaChannel) {
-			foreach (ref var pixel in ColorData.Memory.Span) {
-				PixelOperations<TColor, T>.PremultiplyPixel(ref pixel);
-			}
+		if (!TColor.HasAlphaChannel) {
+			return;
+		}
+
+		foreach (ref var pixel in ColorData.Memory.Span) {
+			PixelOperations<TColor, T>.PremultiplyPixel(ref pixel);
 		}
 	}
 
 	public void UnmultiplyAlpha() {
-		if (TColor.HasAlphaChannel) {
-			foreach (ref var pixel in ColorData.Memory.Span) {
-				PixelOperations<TColor, T>.UnmultiplyPixel(ref pixel);
-			}
+		if (!TColor.HasAlphaChannel) {
+			return;
+		}
+
+		foreach (ref var pixel in ColorData.Memory.Span) {
+			PixelOperations<TColor, T>.UnmultiplyPixel(ref pixel);
 		}
 	}
 
