@@ -29,8 +29,8 @@ public interface IImageBuffer : IDisposable {
 
 	public IImageBuffer CreateSubImage(Point size);
 
-	public void PremulitplyAlpha();
-	public void UnmultiplyAlpha();
+	public void PremultiplyAlpha();
+	public void StraightAlpha();
 
 	public IColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear);
 

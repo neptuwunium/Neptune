@@ -61,7 +61,7 @@ public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width,
 	public IImageBuffer CreateSubImage(int width, int height) => new ImageBuffer<TColor, T>(width, height);
 	public IImageBuffer CreateSubImage(Point size) => new ImageBuffer<TColor, T>(size.X, size.Y);
 
-	public void PremulitplyAlpha() {
+	public void PremultiplyAlpha() {
 		if (!TColor.HasAlphaChannel) {
 			return;
 		}
@@ -71,7 +71,7 @@ public sealed class ImageBuffer<TColor, T>(IMemoryOwner<byte> buffer, int width,
 		}
 	}
 
-	public void UnmultiplyAlpha() {
+	public void StraightAlpha() {
 		if (!TColor.HasAlphaChannel) {
 			return;
 		}
