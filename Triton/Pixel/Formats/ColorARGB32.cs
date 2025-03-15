@@ -5,7 +5,7 @@
 
 namespace Triton.Pixel.Formats;
 
-public record struct ColorARGB32 : IColor<byte> {
+public record struct ColorARGB32 : IColor<ColorARGB32, byte> {
 	public byte A { get; set; }
 	public byte R { get; set; }
 	public byte G { get; set; }
@@ -21,6 +21,9 @@ public record struct ColorARGB32 : IColor<byte> {
 	static bool IColor.HasAlphaChannel => true;
 	static bool IColor.ChannelsAreFullyUtilized => true;
 	static Type IColor.ChannelType => typeof(byte);
+	public static ColorARGB32 Black => new() { A = 0xFF };
+	public static ColorARGB32 White => new() { R = 0xFF, G = 0xFF, B = 0xFF, A = 0xFF };
+	public static ColorARGB32 Transparent => Black with { A = 0 };
 
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B}, A: {A} }}";
 }

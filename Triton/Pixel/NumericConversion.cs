@@ -25,9 +25,8 @@ public static class NumericConversion {
 			: T.MaxValue;
 
 #if DEBUG
-	[DoesNotReturn]
+	[DoesNotReturn, MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 #endif
-	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	private static T ThrowOrReturnDefault<T>() where T : struct {
 	#if DEBUG
 		throw new InvalidCastException();

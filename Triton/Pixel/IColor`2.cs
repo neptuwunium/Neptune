@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace Triton.Pixel;
@@ -73,9 +74,29 @@ namespace Triton.Pixel;
 ///         </item>
 ///     </list>
 /// </typeparam>
-public interface IColor<out TSelf, TChannelValue> : IColor<TChannelValue>
+public interface IColor<out TSelf, TChannelValue> : IColor
 	where TSelf : unmanaged, IColor<TSelf, TChannelValue>
-	where TChannelValue : unmanaged {
+	where TChannelValue : unmanaged, INumberBase<TChannelValue> {
+	/// <summary>
+	///     The red channel
+	/// </summary>
+	TChannelValue R { get; set; }
+
+	/// <summary>
+	///     The green channel
+	/// </summary>
+	TChannelValue G { get; set; }
+
+	/// <summary>
+	///     The blue channel
+	/// </summary>
+	TChannelValue B { get; set; }
+
+	/// <summary>
+	///     The alpha channel
+	/// </summary>
+	TChannelValue A { get; set; }
+
 	/// <summary>
 	///     A black pixel.
 	/// </summary>
@@ -95,4 +116,7 @@ public interface IColor<out TSelf, TChannelValue> : IColor<TChannelValue>
 	///     Comparison Identifier for this color type.
 	/// </summary>
 	public static ColorId ColorId { get; } = ColorId.FromPixel<TSelf, TChannelValue>();
+
+	void GetChannels(out TChannelValue r, out TChannelValue g, out TChannelValue b, out TChannelValue a);
+	void SetChannels(TChannelValue r, TChannelValue g, TChannelValue b, TChannelValue a);
 }

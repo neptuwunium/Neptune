@@ -8,7 +8,7 @@ namespace Triton.Pixel.Formats;
 /// <summary>
 ///     Also called RGB 565
 /// </summary>
-public record struct ColorRGB16 : IColor<byte> {
+public record struct ColorRGB16 : IColor<ColorRGB16, byte> {
 	private ushort Bits;
 
 	/// <summary>
@@ -50,6 +50,9 @@ public record struct ColorRGB16 : IColor<byte> {
 	static bool IColor.HasAlphaChannel => false;
 	static bool IColor.ChannelsAreFullyUtilized => false;
 	static Type IColor.ChannelType => typeof(byte);
+	public static ColorRGB16 Black => new();
+	public static ColorRGB16 White => new() { R = 0xF8, G = 0xFC, B = 0xF8 };
+	public static ColorRGB16 Transparent => Black;
 
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B} }}";
 }

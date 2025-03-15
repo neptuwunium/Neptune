@@ -28,8 +28,8 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 	}
 
 	public PNGCompressionLevel CompressionLevel { get; set; } = compressionLevel;
-	public static bool IsAvailable { get; }
 	public static string PNGVersion { get; }
+	public static bool IsAvailable { get; }
 
 	public void Write(Stream stream, EncoderWriteOptions options, ImageCollection image) => Write(stream, options, image[0]);
 
@@ -68,14 +68,14 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 			}
 
 			var samples = colorType switch {
-				PNGColorType.Gray => 1,
-				PNGColorType.GrayAlpha => 2,
-				PNGColorType.RGB => 3,
-				PNGColorType.RGBA => 4,
-				PNGColorType.Palette => throw new NotSupportedException(),
-				PNGColorType.PaletteColor => throw new NotSupportedException(),
-				_ => throw new NotSupportedException(),
-			};
+							  PNGColorType.Gray => 1,
+							  PNGColorType.GrayAlpha => 2,
+							  PNGColorType.RGB => 3,
+							  PNGColorType.RGBA => 4,
+							  PNGColorType.Palette => throw new NotSupportedException(),
+							  PNGColorType.PaletteColor => throw new NotSupportedException(),
+							  _ => throw new NotSupportedException(),
+						  };
 
 			var image = IImageBuffer.Create(width, height, bitDepth, samples, false, false);
 
@@ -105,6 +105,11 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 			using var image16 = image.ColorId.IsSigned ? image.Cast<short>() : image.Cast<ushort>();
 			WriteCore(stream, options, image16);
 			return;
+		}
+
+		if (!image.IsCanonized) {
+			using var imageRGBA = image.Cast(image.ColorId.Components);
+			WriteCore(stream, options, imageRGBA);
 		}
 
 		WriteCore(stream, options, image);

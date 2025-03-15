@@ -10,7 +10,7 @@ namespace Triton.Pixel.Formats;
 /// <summary>
 ///     9 bits each for RGB and 5 bits for an exponent
 /// </summary>
-public record struct ColorRGB9e5 : IColor<double> {
+public record struct ColorRGB9e5 : IColor<ColorRGB9e5, double> {
 	private const int ChannelBitMask = 0x1FF;
 	private const int RedOffset = 0;
 	private const int GreenOffset = 9;
@@ -75,6 +75,17 @@ public record struct ColorRGB9e5 : IColor<double> {
 	static bool IColor.HasAlphaChannel => false;
 	static bool IColor.ChannelsAreFullyUtilized => false;
 	static Type IColor.ChannelType => typeof(double);
+	public static ColorRGB9e5 Black => new();
+
+	public static ColorRGB9e5 White {
+		get {
+			var color = new ColorRGB9e5();
+			color.SetChannels(1.0, 1.0, 1.0);
+			return color;
+		}
+	}
+
+	public static ColorRGB9e5 Transparent => Black;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	public void SetChannels(double r, double g, double b) {

@@ -9,7 +9,7 @@ using Triton.Pixel.Formats;
 namespace Triton;
 
 public static class SamplingOperations<TColor, T>
-	where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
+	where TColor : unmanaged, IColor<TColor, T>, IColor
 	where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
 	public static TColor SamplePixel(SamplingOperation operation, float x, float y, ImageBuffer<TColor, T> image) {
 		x *= image.Width;

@@ -15,9 +15,10 @@ public interface IImageBuffer : IDisposable {
 	public int Height { get; }
 	public int Stride { get; }
 	public ColorId ColorId { get; }
+	public bool IsCanonized { get; }
 
 	public IImageBuffer Cast<TNewColor, TNew>()
-		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor<TNew>, IColor
+		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew>;
 
 	public IImageBuffer Cast<TNew>()
@@ -44,19 +45,19 @@ public interface IImageBuffer : IDisposable {
 	public void Clear();
 
 	public void Clear<TColor, T>(TColor color, PixelOperation operation = PixelOperation.Copy)
-		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
+		where TColor : unmanaged, IColor<TColor, T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
 	public void Clear<TColor, T>(TColor color, int x, int y, PixelOperation operation = PixelOperation.Copy)
-		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
+		where TColor : unmanaged, IColor<TColor, T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
 	public void Clear<TColor, T>(TColor color, Point<int> target, PixelOperation operation = PixelOperation.Copy)
-		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
+		where TColor : unmanaged, IColor<TColor, T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
 	public void Clear<TColor, T>(TColor color, Rect<int> target, PixelOperation operation = PixelOperation.Copy)
-		where TColor : unmanaged, IColor<TColor, T>, IColor<T>, IColor
+		where TColor : unmanaged, IColor<TColor, T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
 	static IImageBuffer Create(int width, int height, int bitDepth, int samples, bool isFloat, bool isSigned) =>

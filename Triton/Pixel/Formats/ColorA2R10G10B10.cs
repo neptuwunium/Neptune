@@ -4,27 +4,27 @@
 
 namespace Triton.Pixel.Formats;
 
-public record struct ColorR10G10B10A2 : IColor<ColorR10G10B10A2, float> {
+public record struct ColorA2R10G10B10 : IColor<ColorA2R10G10B10, float> {
 	public uint Value { get; set; }
 
 	public float R {
-		readonly get => (Value & 0x3FF) / 1023.0f;
-		set => Value = (Value & 0xFFFFFC00U) | (uint) (value * 0x3FF);
+		readonly get => ((Value >> 3) & 0x3FF) / 1023.0f;
+		set => Value = (Value & 0xFFFFE007U) | ((uint) (value * 0x3FF) << 3);
 	}
 
 	public float G {
-		readonly get => ((Value >> 10) & 0x3FF) / 1023.0f;
-		set => Value = (Value & 0xFFF003FFU) | ((uint) (value * 0x3FF) << 10);
+		readonly get => ((Value >> 13) & 0x3FF) / 1023.0f;
+		set => Value = (Value & 0xFF801FFFU) | ((uint) (value * 0x3FF) << 13);
 	}
 
 	public float B {
-		readonly get => ((Value >> 20) & 0x3FF) / 1023.0f;
-		set => Value = (Value & 0xC00FFFFFU) | ((uint) (value * 0x3FF) << 20);
+		readonly get => ((Value >> 23) & 0x3FF) / 1023.0f;
+		set => Value = (Value & 0x7FFFFFU) | ((uint) (value * 0x3FF) << 23);
 	}
 
 	public float A {
-		readonly get => ((Value >> 30) & 3) / 3f;
-		set => Value = (Value & 0x3FFFFFFFU) | ((uint) (value * 3) << 30);
+		readonly get => (Value & 3) / 3f;
+		set => Value = (Value & 0xFFFFFFFCU) | (uint) (value * 3);
 	}
 
 	public readonly void GetChannels(out float r, out float g, out float b, out float a) {
@@ -48,10 +48,10 @@ public record struct ColorR10G10B10A2 : IColor<ColorR10G10B10A2, float> {
 	static bool IColor.ChannelsAreFullyUtilized => false;
 	static Type IColor.ChannelType => typeof(float);
 
-	public static ColorR10G10B10A2 Black => new() { A = 1 };
+	public static ColorA2R10G10B10 Black => new() { A = 1 };
 
-	public static ColorR10G10B10A2 White => new() { R = 1, G = 1, B = 1, A = 1 };
-	public static ColorR10G10B10A2 Transparent => Black with { A = 0 };
+	public static ColorA2R10G10B10 White => new() { R = 1, G = 1, B = 1, A = 1 };
+	public static ColorA2R10G10B10 Transparent => Black with { A = 0 };
 
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B}, A: {A} }}";
 }
