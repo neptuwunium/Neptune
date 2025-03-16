@@ -22,7 +22,9 @@ public readonly record struct Point<T>(T X, T Y) :
 	IDecrementOperators<Point<T>>,
 	IMinMaxValue<Point<T>>
 	where T : INumber<T>, IMinMaxValue<T> {
-	public static Point<T> Zero { get; } = new(T.Zero, T.Zero);
+	public Point(T value) : this(value, value) { }
+
+	public static Point<T> Zero { get; } = new(T.Zero);
 	public static Point<T> operator +(Point<T> left, Point<T> right) => new(left.X + right.X, left.Y + right.Y);
 	public static Point<T> operator +(Point<T> left, T right) => new(left.X + right, left.Y + right);
 	public static Point<T> operator --(Point<T> value) => new(value.X - T.One, value.Y - T.One);

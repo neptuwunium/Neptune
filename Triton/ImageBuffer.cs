@@ -131,8 +131,8 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		PixelOperations<TColor, T>.BlendPixel(operation, colorPixel, ref dstPixel);
 	}
 
-	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy) => Draw(image, new Point<int>(x, y), new Rect<int>(default, new Point<int>(image.Width, image.Height)), operation);
-	public void Draw(IImageBuffer image, Point<int> target, PixelOperation operation = PixelOperation.Copy) => Draw(image, target, new Rect<int>(default, new Point<int>(image.Width, image.Height)), operation);
+	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy) => Draw(image, new Point<int>(x, y), new Rect<int>(default(int), new Point<int>(image.Width, image.Height)), operation);
+	public void Draw(IImageBuffer image, Point<int> target, PixelOperation operation = PixelOperation.Copy) => Draw(image, target, new Rect<int>(default(int), new Point<int>(image.Width, image.Height)), operation);
 
 	public void Draw(IImageBuffer image, Point<int> target, Rect<int> crop, PixelOperation operation = PixelOperation.Copy) {
 		ImageBuffer<TColor, T>? convertedImage = null;
