@@ -245,8 +245,8 @@ public static class PixelOperations<TColor, T>
 		var (Sc, Sa, Dc, Da) = LoadColor(srcPixel, dstPixel);
 
 		var DcPrime = new Vector3(OverlayFloat(Sc.X, Dc.X, Sa, Da),
-								  OverlayFloat(Sc.Y, Dc.Y, Sa, Da),
-								  OverlayFloat(Sc.Z, Dc.Z, Sa, Da));
+			OverlayFloat(Sc.Y, Dc.Y, Sa, Da),
+			OverlayFloat(Sc.Z, Dc.Z, Sa, Da));
 		var DaPrime = Sa + Da - Sa * Da;
 
 		dstPixel = FlushColor(DcPrime, DaPrime);
@@ -299,8 +299,8 @@ public static class PixelOperations<TColor, T>
 		var (Sc, Sa, Dc, Da) = LoadColor(srcPixel, dstPixel);
 
 		var DcPrime = new Vector3(ColorDodgeFloat(Sc.X, Dc.X, Sa, Da),
-								  ColorDodgeFloat(Sc.Y, Dc.Y, Sa, Da),
-								  ColorDodgeFloat(Sc.Z, Dc.Z, Sa, Da));
+			ColorDodgeFloat(Sc.Y, Dc.Y, Sa, Da),
+			ColorDodgeFloat(Sc.Z, Dc.Z, Sa, Da));
 		var DaPrime = Sa + Da - Sa * Da;
 
 		dstPixel = FlushColor(DcPrime, DaPrime);
@@ -310,10 +310,10 @@ public static class PixelOperations<TColor, T>
 		var isOpaque = Math.Abs(Sca - Sa) <= float.Epsilon;
 
 		return isOpaque switch {
-				   true when Math.Abs(Da) <= float.Epsilon => Sca * (1 - Da),
-				   true => Sa * Da + Sca * (1 - Da) + Dca * (1 - Sa),
-				   _ => Sa * Da * Math.Min(1, Dca / Da * Sa / (Sa - Sca)) + Sca * (1 - Da) + Dca * (1 - Sa),
-			   };
+			true when Math.Abs(Da) <= float.Epsilon => Sca * (1 - Da),
+			true => Sa * Da + Sca * (1 - Da) + Dca * (1 - Sa),
+			_ => Sa * Da * Math.Min(1, Dca / Da * Sa / (Sa - Sca)) + Sca * (1 - Da) + Dca * (1 - Sa),
+		};
 	}
 
 	// if Sca == 0 and Dca == Da
@@ -327,8 +327,8 @@ public static class PixelOperations<TColor, T>
 		var (Sc, Sa, Dc, Da) = LoadColor(srcPixel, dstPixel);
 
 		var DcPrime = new Vector3(ColorBurnFloat(Sc.X, Dc.X, Sa, Da),
-								  ColorBurnFloat(Sc.Y, Dc.Y, Sa, Da),
-								  ColorBurnFloat(Sc.Z, Dc.Z, Sa, Da));
+			ColorBurnFloat(Sc.Y, Dc.Y, Sa, Da),
+			ColorBurnFloat(Sc.Z, Dc.Z, Sa, Da));
 		var DaPrime = Sa + Da - Sa * Da;
 
 		dstPixel = FlushColor(DcPrime, DaPrime);
@@ -338,10 +338,10 @@ public static class PixelOperations<TColor, T>
 		var isTransparent = Math.Abs(Sca) <= float.Epsilon;
 
 		return isTransparent switch {
-				   true when Math.Abs(Sca - Sa) <= float.Epsilon => Sa * Da + Dca * (1 - Sa),
-				   true => Dca * (1 - Sa),
-				   _ => Sa * Da * (1 - Math.Min(1, (1 - Dca / Da) * Sa / Sca)) + Sca * (1 - Da) + Dca * (1 - Sa),
-			   };
+			true when Math.Abs(Sca - Sa) <= float.Epsilon => Sa * Da + Dca * (1 - Sa),
+			true => Dca * (1 - Sa),
+			_ => Sa * Da * (1 - Math.Min(1, (1 - Dca / Da) * Sa / Sca)) + Sca * (1 - Da) + Dca * (1 - Sa),
+		};
 	}
 
 	// if 2 * Sca <= Sa
@@ -353,8 +353,8 @@ public static class PixelOperations<TColor, T>
 		var (Sc, Sa, Dc, Da) = LoadColor(srcPixel, dstPixel);
 
 		var DcPrime = new Vector3(HardLightFloat(Sc.X, Dc.X, Sa, Da),
-								  HardLightFloat(Sc.Y, Dc.Y, Sa, Da),
-								  HardLightFloat(Sc.Z, Dc.Z, Sa, Da));
+			HardLightFloat(Sc.Y, Dc.Y, Sa, Da),
+			HardLightFloat(Sc.Z, Dc.Z, Sa, Da));
 		var DaPrime = Sa + Da - Sa * Da;
 
 		dstPixel = FlushColor(DcPrime, DaPrime);
@@ -380,8 +380,8 @@ public static class PixelOperations<TColor, T>
 		var (Sc, Sa, Dc, Da) = LoadColor(srcPixel, dstPixel);
 
 		var DcPrime = new Vector3(SoftLightFloat(Sc.X, Dc.X, Sa, Da),
-								  SoftLightFloat(Sc.Y, Dc.Y, Sa, Da),
-								  SoftLightFloat(Sc.Z, Dc.Z, Sa, Da));
+			SoftLightFloat(Sc.Y, Dc.Y, Sa, Da),
+			SoftLightFloat(Sc.Z, Dc.Z, Sa, Da));
 		var DaPrime = Sa + Da - Sa * Da;
 
 		dstPixel = FlushColor(DcPrime, DaPrime);
@@ -394,10 +394,10 @@ public static class PixelOperations<TColor, T>
 		var Dc25 = Math.Abs(4 * Dca - Da) <= float.Epsilon;
 
 		return Sc50 switch {
-				   true => Dca * (Sa + (2 * Sca - Sa) * (1 - m)) + Sca * (1 - Da) + Dca * (1 - Sa),
-				   false when Dc25 => (float) (Da * (2 * Sca - Sa) * (16 * Math.Pow(m, 3) - 12 * Math.Pow(m, 2) - 3 * m) + Sca - Sca * Da + Dca),
-				   _ => (float) (Da * (2 * Sca - Sa) * (Math.Pow(m, 0.5) - m)) + Sca - Sca * Da + Dca,
-			   };
+			true => Dca * (Sa + (2 * Sca - Sa) * (1 - m)) + Sca * (1 - Da) + Dca * (1 - Sa),
+			false when Dc25 => (float) (Da * (2 * Sca - Sa) * (16 * Math.Pow(m, 3) - 12 * Math.Pow(m, 2) - 3 * m) + Sca - Sca * Da + Dca),
+			_ => (float) (Da * (2 * Sca - Sa) * (Math.Pow(m, 0.5) - m)) + Sca - Sca * Da + Dca,
+		};
 	}
 
 	// Dca' = Sca + Dca - 2 * min(Sca * Da, Dca * Sa)

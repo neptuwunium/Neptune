@@ -68,14 +68,14 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 			}
 
 			var samples = colorType switch {
-							  PNGColorType.Gray => 1,
-							  PNGColorType.GrayAlpha => 2,
-							  PNGColorType.RGB => 3,
-							  PNGColorType.RGBA => 4,
-							  PNGColorType.Palette => throw new NotSupportedException(),
-							  PNGColorType.PaletteColor => throw new NotSupportedException(),
-							  _ => throw new NotSupportedException(),
-						  };
+				PNGColorType.Gray => 1,
+				PNGColorType.GrayAlpha => 2,
+				PNGColorType.RGB => 3,
+				PNGColorType.RGBA => 4,
+				PNGColorType.Palette => throw new NotSupportedException(),
+				PNGColorType.PaletteColor => throw new NotSupportedException(),
+				_ => throw new NotSupportedException(),
+			};
 
 			var image = IImageBuffer.Create(width, height, bitDepth, samples, false, false);
 
