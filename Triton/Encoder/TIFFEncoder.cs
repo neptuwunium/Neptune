@@ -76,7 +76,7 @@ public partial class TIFFEncoder : IEncoder {
 				NativeMethods.TIFFSetField(tiff, TIFFTag.Orientation, (int) TIFFOrientation.TopLeft);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.PlanarConfig, (int) TIFFPlanarConfig.Contig);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.Photometric, (int) (frameMut.ColorId.Components < 3 ? TIFFPhotometric.MinIsBlack : TIFFPhotometric.RGB));
-				NativeMethods.TIFFSetField(tiff, TIFFTag.Compression, (int) (options.Compress ? TIFFCompression.None : frameMut.ColorId.IsHDR ? HDRCompression : Compression));
+				NativeMethods.TIFFSetField(tiff, TIFFTag.Compression, (int) (!options.Compress ? TIFFCompression.None : frameMut.ColorId.IsHDR ? HDRCompression : Compression));
 				if (frameMut.ColorId.Components is 2 or 4) {
 					NativeMethods.TIFFSetFieldArray(tiff, TIFFTag.ExtraSamples, 1, (nint) extraSamples);
 				}
