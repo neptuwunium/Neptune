@@ -38,7 +38,7 @@ public static class RgbConverter {
 		where TSourceColor : unmanaged, IColor<TSourceColor, TSourceChannel>
 		where TDestinationChannel : unmanaged, INumberBase<TDestinationChannel>
 		where TDestinationColor : unmanaged, IColor<TDestinationColor, TDestinationChannel> {
-		for (var i = 0; i < sourceSpan.Length; i++) {
+		for (var i = 0; i < Math.Min(sourceSpan.Length, destinationSpan.Length); i++) {
 			destinationSpan[i] = sourceSpan[i].Convert<TSourceColor, TSourceChannel, TDestinationColor, TDestinationChannel>();
 		}
 	}

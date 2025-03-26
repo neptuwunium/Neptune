@@ -60,6 +60,13 @@ public partial class TIFFEncoder : IEncoder {
 
 			foreach (var frame in frames) {
 				var frameMut = frame;
+
+				IImageBuffer? image = null;
+				if (!frameMut.IsCanonized) {
+					image = frameMut.Cast(frameMut.ColorId.Components);
+					frameMut = image;
+				}
+
 				NativeMethods.TIFFSetField(tiff, TIFFTag.ImageWidth, frameMut.Width);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.ImageLength, frameMut.Height);
 				NativeMethods.TIFFSetField(tiff, TIFFTag.RowsPerStrip, frameMut.Height);
@@ -72,12 +79,6 @@ public partial class TIFFEncoder : IEncoder {
 				NativeMethods.TIFFSetField(tiff, TIFFTag.Compression, (int) (options.Compress ? TIFFCompression.None : frameMut.ColorId.IsHDR ? HDRCompression : Compression));
 				if (frameMut.ColorId.Components is 2 or 4) {
 					NativeMethods.TIFFSetFieldArray(tiff, TIFFTag.ExtraSamples, 1, (nint) extraSamples);
-				}
-
-				IImageBuffer? image = null;
-				if (!frameMut.IsCanonized) {
-					image = frameMut.Cast(frameMut.ColorId.Components);
-					frameMut = image;
 				}
 
 				try {
@@ -245,13 +246,20 @@ public partial class TIFFEncoder : IEncoder {
 
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8), DefaultDllImportSearchPaths(SearchPath)]
 		public static partial nint TIFFClientOpen(string name, string mode, nint handle,
-			[MarshalAs(UnmanagedType.FunctionPtr)] TIFFReadWriteProc readProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)] TIFFReadWriteProc writeProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)] TIFFSeekProc seekProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)] TIFFCloseProc closeProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)] TIFFSizeProc sizeProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)] TIFFMapFileProc? mapProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)] TIFFUnmapFileProc? unmapProc);
+			[MarshalAs(UnmanagedType.FunctionPtr)]
+			TIFFReadWriteProc readProc,
+			[MarshalAs(UnmanagedType.FunctionPtr)]
+			TIFFReadWriteProc writeProc,
+			[MarshalAs(UnmanagedType.FunctionPtr)]
+			TIFFSeekProc seekProc,
+			[MarshalAs(UnmanagedType.FunctionPtr)]
+			TIFFCloseProc closeProc,
+			[MarshalAs(UnmanagedType.FunctionPtr)]
+			TIFFSizeProc sizeProc,
+			[MarshalAs(UnmanagedType.FunctionPtr)]
+			TIFFMapFileProc? mapProc,
+			[MarshalAs(UnmanagedType.FunctionPtr)]
+			TIFFUnmapFileProc? unmapProc);
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void TIFFSetField(nint tiff, TIFFTag tag, int value);
