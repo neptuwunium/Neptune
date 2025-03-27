@@ -30,8 +30,13 @@ public partial class TIFFEncoder : IEncoder {
 	public static bool IsAvailable { get; }
 
 	public unsafe void Write(Stream stream, EncoderWriteOptions options, ImageCollection frames) {
+		var readProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.TIFFReadWriteProc) ReadProc);
+		var writeProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.TIFFReadWriteProc) WriteProc);
+		var seekProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.TIFFSeekProc) SeekProc);
+		var closeProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.TIFFCloseProc) CloseProc);
+		var sizeProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.TIFFSizeProc) SizeProc);
 		var tiff = NativeMethods.TIFFClientOpen(stream is FileStream fs ? Path.GetFileName(fs.Name) : "TritonImage", "w", nint.Zero,
-			ReadProc, WriteProc, SeekProc, CloseProc, _ => (ulong) stream.Length, null, null);
+			readProc, writeProc, seekProc, closeProc, sizeProc, nint.Zero, nint.Zero);
 		if (tiff == nint.Zero) {
 			throw new OutOfMemoryException();
 		}
@@ -77,10 +82,11 @@ public partial class TIFFEncoder : IEncoder {
 			NativeMethods.TIFFClose(tiff);
 		}
 
-		GC.KeepAlive((object?) ReadProc);
-		GC.KeepAlive((object?) WriteProc);
-		GC.KeepAlive((object?) SeekProc);
-		GC.KeepAlive((object?) CloseProc);
+		GC.KeepAlive((NativeMethods.TIFFReadWriteProc)  ReadProc);
+		GC.KeepAlive((NativeMethods.TIFFReadWriteProc)  WriteProc);
+		GC.KeepAlive((NativeMethods.TIFFSeekProc)  SeekProc);
+		GC.KeepAlive((NativeMethods.TIFFCloseProc)  CloseProc);
+		GC.KeepAlive((NativeMethods.TIFFSizeProc)  SizeProc);
 		GC.KeepAlive(stream);
 		return;
 
@@ -110,11 +116,20 @@ public partial class TIFFEncoder : IEncoder {
 			stream.Close();
 			return 0;
 		}
+
+		ulong SizeProc(nint _) {
+			return (ulong) stream.Length;
+		}
 	}
 
 	public unsafe ImageCollection Read(Stream stream) {
+		var readProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.TIFFReadWriteProc) ReadProc);
+		var writeProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.TIFFReadWriteProc) WriteProc);
+		var seekProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.TIFFSeekProc) SeekProc);
+		var closeProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.TIFFCloseProc) CloseProc);
+		var sizeProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.TIFFSizeProc) SizeProc);
 		var tiff = NativeMethods.TIFFClientOpen(stream is FileStream fs ? Path.GetFileName(fs.Name) : "TritonImage", "r", nint.Zero,
-			ReadProc, WriteProc, SeekProc, CloseProc, _ => (ulong) stream.Length, null, null);
+			readProc, writeProc, seekProc, closeProc, sizeProc, nint.Zero, nint.Zero);
 		if (tiff == nint.Zero) {
 			throw new OutOfMemoryException();
 		}
@@ -148,10 +163,11 @@ public partial class TIFFEncoder : IEncoder {
 				}
 			}
 
-			GC.KeepAlive((object?) ReadProc);
-			GC.KeepAlive((object?) WriteProc);
-			GC.KeepAlive((object?) SeekProc);
-			GC.KeepAlive((object?) CloseProc);
+			GC.KeepAlive((NativeMethods.TIFFReadWriteProc)  ReadProc);
+			GC.KeepAlive((NativeMethods.TIFFReadWriteProc)  WriteProc);
+			GC.KeepAlive((NativeMethods.TIFFSeekProc)  SeekProc);
+			GC.KeepAlive((NativeMethods.TIFFCloseProc)  CloseProc);
+			GC.KeepAlive((NativeMethods.TIFFSizeProc)  SizeProc);
 			GC.KeepAlive(stream);
 			return frames;
 		} finally {
@@ -183,6 +199,10 @@ public partial class TIFFEncoder : IEncoder {
 			stream.Flush();
 			stream.Close();
 			return 0;
+		}
+
+		ulong SizeProc(nint _) {
+			return (ulong) stream.Length;
 		}
 	}
 
@@ -249,6 +269,9 @@ public partial class TIFFEncoder : IEncoder {
 	}
 
 	private static partial class NativeMethods {
+		internal const string LibraryName = "tiff";
+		internal const DllImportSearchPath SearchPath = DllImportSearchPath.SafeDirectories | DllImportSearchPath.AssemblyDirectory | DllImportSearchPath.ApplicationDirectory;
+
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int TIFFCloseProc(nint userdata);
 
@@ -267,25 +290,15 @@ public partial class TIFFEncoder : IEncoder {
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void TIFFUnmapFileProc(nint userdata, nint @base, ulong size);
 
-		internal const string LibraryName = "tiff";
-		internal const DllImportSearchPath SearchPath = DllImportSearchPath.SafeDirectories | DllImportSearchPath.AssemblyDirectory | DllImportSearchPath.ApplicationDirectory;
-
 		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8), DefaultDllImportSearchPaths(SearchPath)]
 		public static partial nint TIFFClientOpen(string name, string mode, nint handle,
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			TIFFReadWriteProc readProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			TIFFReadWriteProc writeProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			TIFFSeekProc seekProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			TIFFCloseProc closeProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			TIFFSizeProc sizeProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			TIFFMapFileProc? mapProc,
-			[MarshalAs(UnmanagedType.FunctionPtr)]
-			TIFFUnmapFileProc? unmapProc);
+			nint readProc,
+			nint writeProc,
+			nint seekProc,
+			nint closeProc,
+			nint sizeProc,
+			nint mapProc,
+			nint unmapProc);
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void TIFFSetField(nint tiff, TIFFTag tag, int value);

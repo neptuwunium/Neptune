@@ -35,6 +35,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 	public void Write(Stream stream, EncoderWriteOptions options, ImageCollection image) => Write(stream, options, image[0]);
 
 	public unsafe ImageCollection Read(Stream stream) {
+		var readProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.PNGReadWrite) ReadStream);
 		var png = NativeMethods.png_create_read_struct(PNGVersion, nint.Zero, nint.Zero, nint.Zero);
 		if (png == nint.Zero) {
 			throw new OutOfMemoryException();
@@ -48,7 +49,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 				throw new OutOfMemoryException();
 			}
 
-			NativeMethods.png_set_read_fn(png, nint.Zero, ReadStream);
+			NativeMethods.png_set_read_fn(png, nint.Zero, readProc);
 
 			if (!NativeMethods.png_get_IHDR(png, info, out var width, out var height, out var bitDepth, out var colorType, out _, out _, out _)) {
 				throw new NotSupportedException();
@@ -89,7 +90,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 				row.CopyTo(rowData[(rowIndex * image.Width * image.Stride)..]);
 			}
 
-			GC.KeepAlive((object?) ReadStream);
+			GC.KeepAlive((NativeMethods.PNGReadWrite) ReadStream);
 			GC.KeepAlive(stream);
 			return [image];
 		} finally {
@@ -118,6 +119,9 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 	}
 
 	public unsafe void WriteCore(Stream stream, EncoderWriteOptions options, IImageBuffer image) {
+		var writeProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.PNGReadWrite) WriteStream);
+		var flushProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.PNGFlush) FlushStream);
+		
 		if (image.ColorId.IsHDR || image.ColorId.Components is not (>= 1 and <= 4)) {
 			throw new NotSupportedException();
 		}
@@ -134,7 +138,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 				throw new OutOfMemoryException();
 			}
 
-			NativeMethods.png_set_write_fn(png, nint.Zero, WriteStream, FlushStream);
+			NativeMethods.png_set_write_fn(png, nint.Zero, writeProc, flushProc);
 			NativeMethods.png_set_compression_level(png, options.Compress ? CompressionLevel : 0);
 			var colorType = image.ColorId.Components switch { 1 => PNGColorType.Gray, 2 => PNGColorType.GrayAlpha, 3 => PNGColorType.RGB, 4 => PNGColorType.RGBA, _ => throw new UnreachableException() };
 			NativeMethods.png_set_IHDR(png, info, image.Width, image.Height, image.ColorId.Bits, colorType, PNGInterlacing.None, PNGCompressionType.Default, PNGFilterType.None);
@@ -158,8 +162,8 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 			NativeMethods.png_destroy_write_struct(ref png, ref info);
 		}
 
-		GC.KeepAlive((object?) WriteStream);
-		GC.KeepAlive((object?) FlushStream);
+		GC.KeepAlive((NativeMethods.PNGReadWrite) WriteStream);
+		GC.KeepAlive((NativeMethods.PNGFlush) FlushStream);
 		GC.KeepAlive(stream);
 		return;
 
@@ -256,11 +260,11 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 		public static partial void png_destroy_read_struct(ref nint pngPtr, ref nint infoPtr, ref nint infoEndPtr);
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
-		public static partial void png_set_write_fn(nint pngPtr, nint ioPtr, [MarshalAs(UnmanagedType.FunctionPtr)] PNGReadWrite? write, [MarshalAs(UnmanagedType.FunctionPtr)] PNGFlush? flush);
+		public static partial void png_set_write_fn(nint pngPtr, nint ioPtr, nint write, nint flush);
 
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
-		public static partial void png_set_read_fn(nint pngPtr, nint ioPtr, [MarshalAs(UnmanagedType.FunctionPtr)] PNGReadWrite? write);
+		public static partial void png_set_read_fn(nint pngPtr, nint ioPtr, nint write);
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void png_set_IHDR(nint pngPtr, nint infoPtr, int width, int height, int bitDepth, PNGColorType colorType, PNGInterlacing interlaceMethod, PNGCompressionType compressionMethod, PNGFilterType filterMethod);
