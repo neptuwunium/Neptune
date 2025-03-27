@@ -31,26 +31,7 @@ public partial class TIFFEncoder : IEncoder {
 
 	public unsafe void Write(Stream stream, EncoderWriteOptions options, ImageCollection frames) {
 		var tiff = NativeMethods.TIFFClientOpen(stream is FileStream fs ? Path.GetFileName(fs.Name) : "TritonImage", "w", nint.Zero,
-			(_, dataPtr, dataSize) => {
-				var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
-				return stream.Read(span);
-			}, (_, dataPtr, dataSize) => {
-				stream.Flush();
-				var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
-				stream.Write(span);
-				return dataSize;
-			}, (_, offset, whence) => {
-				var off = long.CreateChecked(offset);
-				if (whence == 2) {
-					off = -off;
-				}
-
-				return (ulong) stream.Seek(off, (SeekOrigin) whence);
-			}, _ => {
-				stream.Flush();
-				stream.Close();
-				return 0;
-			}, _ => (ulong) stream.Length, null, null);
+			ReadProc, WriteProc, SeekProc, CloseProc, _ => (ulong) stream.Length, null, null);
 		if (tiff == nint.Zero) {
 			throw new OutOfMemoryException();
 		}
@@ -96,31 +77,44 @@ public partial class TIFFEncoder : IEncoder {
 			NativeMethods.TIFFClose(tiff);
 		}
 
+		GC.KeepAlive((object?) ReadProc);
+		GC.KeepAlive((object?) WriteProc);
+		GC.KeepAlive((object?) SeekProc);
+		GC.KeepAlive((object?) CloseProc);
 		GC.KeepAlive(stream);
+		return;
+
+		nint ReadProc(nint _, nint dataPtr, nint dataSize) {
+			var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
+			return stream.Read(span);
+		}
+
+		nint WriteProc(nint _, nint dataPtr, nint dataSize) {
+			stream.Flush();
+			var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
+			stream.Write(span);
+			return dataSize;
+		}
+
+		ulong SeekProc(nint _, ulong offset, int whence) {
+			var off = long.CreateChecked(offset);
+			if (whence == 2) {
+				off = -off;
+			}
+
+			return (ulong) stream.Seek(off, (SeekOrigin) whence);
+		}
+
+		int CloseProc(nint _) {
+			stream.Flush();
+			stream.Close();
+			return 0;
+		}
 	}
 
 	public unsafe ImageCollection Read(Stream stream) {
 		var tiff = NativeMethods.TIFFClientOpen(stream is FileStream fs ? Path.GetFileName(fs.Name) : "TritonImage", "r", nint.Zero,
-			(_, dataPtr, dataSize) => {
-				var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
-				return stream.Read(span);
-			}, (_, dataPtr, dataSize) => {
-				stream.Flush();
-				var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
-				stream.Write(span);
-				return dataSize;
-			}, (_, offset, whence) => {
-				var off = long.CreateChecked(offset);
-				if (whence == 2) {
-					off = -off;
-				}
-
-				return (ulong) stream.Seek(off, (SeekOrigin) whence);
-			}, _ => {
-				stream.Flush();
-				stream.Close();
-				return 0;
-			}, _ => (ulong) stream.Length, null, null);
+			ReadProc, WriteProc, SeekProc, CloseProc, _ => (ulong) stream.Length, null, null);
 		if (tiff == nint.Zero) {
 			throw new OutOfMemoryException();
 		}
@@ -154,10 +148,41 @@ public partial class TIFFEncoder : IEncoder {
 				}
 			}
 
+			GC.KeepAlive((object?) ReadProc);
+			GC.KeepAlive((object?) WriteProc);
+			GC.KeepAlive((object?) SeekProc);
+			GC.KeepAlive((object?) CloseProc);
 			GC.KeepAlive(stream);
 			return frames;
 		} finally {
 			NativeMethods.TIFFClose(tiff);
+		}
+
+		nint ReadProc(nint _, nint dataPtr, nint dataSize) {
+			var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
+			return stream.Read(span);
+		}
+
+		nint WriteProc(nint _, nint dataPtr, nint dataSize) {
+			stream.Flush();
+			var span = new Span<byte>((byte*) dataPtr, int.CreateChecked(dataSize));
+			stream.Write(span);
+			return dataSize;
+		}
+
+		ulong SeekProc(nint _, ulong offset, int whence) {
+			var off = long.CreateChecked(offset);
+			if (whence == 2) {
+				off = -off;
+			}
+
+			return (ulong) stream.Seek(off, (SeekOrigin) whence);
+		}
+
+		int CloseProc(nint _) {
+			stream.Flush();
+			stream.Close();
+			return 0;
 		}
 	}
 

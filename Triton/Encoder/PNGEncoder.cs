@@ -89,6 +89,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 				row.CopyTo(rowData[(rowIndex * image.Width * image.Stride)..]);
 			}
 
+			GC.KeepAlive((object?) ReadStream);
 			GC.KeepAlive(stream);
 			return [image];
 		} finally {
@@ -157,6 +158,8 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 			NativeMethods.png_destroy_write_struct(ref png, ref info);
 		}
 
+		GC.KeepAlive((object?) WriteStream);
+		GC.KeepAlive((object?) FlushStream);
 		GC.KeepAlive(stream);
 		return;
 
