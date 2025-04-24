@@ -12,6 +12,7 @@ public record struct ColorId : IEquatable<ColorId?>, IEquatable<uint>, IEquatabl
 	public ColorId(ushort value) => Value = value;
 
 	public ColorId(int components, int bits, bool hdr = false, bool signed = false) {
+		Value = 0;
 		Components = components;
 		Bits = bits;
 		IsHDR = hdr;
