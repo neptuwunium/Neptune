@@ -11,6 +11,8 @@ namespace Triton.Encoder;
 
 public partial class TIFFEncoder : IEncoder {
 	static TIFFEncoder() {
+		NativeHelper.Register();
+		
 		if (!NativeLibrary.TryLoad(NativeMethods.LibraryName, Assembly.GetExecutingAssembly(), NativeMethods.SearchPath, out var ptr)) {
 			return;
 		}
@@ -82,11 +84,11 @@ public partial class TIFFEncoder : IEncoder {
 			NativeMethods.TIFFClose(tiff);
 		}
 
-		GC.KeepAlive((NativeMethods.TIFFReadWriteProc)  ReadProc);
-		GC.KeepAlive((NativeMethods.TIFFReadWriteProc)  WriteProc);
-		GC.KeepAlive((NativeMethods.TIFFSeekProc)  SeekProc);
-		GC.KeepAlive((NativeMethods.TIFFCloseProc)  CloseProc);
-		GC.KeepAlive((NativeMethods.TIFFSizeProc)  SizeProc);
+		GC.KeepAlive((NativeMethods.TIFFReadWriteProc) ReadProc);
+		GC.KeepAlive((NativeMethods.TIFFReadWriteProc) WriteProc);
+		GC.KeepAlive((NativeMethods.TIFFSeekProc) SeekProc);
+		GC.KeepAlive((NativeMethods.TIFFCloseProc) CloseProc);
+		GC.KeepAlive((NativeMethods.TIFFSizeProc) SizeProc);
 		GC.KeepAlive(stream);
 		return;
 
@@ -117,9 +119,7 @@ public partial class TIFFEncoder : IEncoder {
 			return 0;
 		}
 
-		ulong SizeProc(nint _) {
-			return (ulong) stream.Length;
-		}
+		ulong SizeProc(nint _) => (ulong) stream.Length;
 	}
 
 	public unsafe ImageCollection Read(Stream stream) {
@@ -163,11 +163,11 @@ public partial class TIFFEncoder : IEncoder {
 				}
 			}
 
-			GC.KeepAlive((NativeMethods.TIFFReadWriteProc)  ReadProc);
-			GC.KeepAlive((NativeMethods.TIFFReadWriteProc)  WriteProc);
-			GC.KeepAlive((NativeMethods.TIFFSeekProc)  SeekProc);
-			GC.KeepAlive((NativeMethods.TIFFCloseProc)  CloseProc);
-			GC.KeepAlive((NativeMethods.TIFFSizeProc)  SizeProc);
+			GC.KeepAlive((NativeMethods.TIFFReadWriteProc) ReadProc);
+			GC.KeepAlive((NativeMethods.TIFFReadWriteProc) WriteProc);
+			GC.KeepAlive((NativeMethods.TIFFSeekProc) SeekProc);
+			GC.KeepAlive((NativeMethods.TIFFCloseProc) CloseProc);
+			GC.KeepAlive((NativeMethods.TIFFSizeProc) SizeProc);
 			GC.KeepAlive(stream);
 			return frames;
 		} finally {
@@ -201,9 +201,7 @@ public partial class TIFFEncoder : IEncoder {
 			return 0;
 		}
 
-		ulong SizeProc(nint _) {
-			return (ulong) stream.Length;
-		}
+		ulong SizeProc(nint _) => (ulong) stream.Length;
 	}
 
 	internal enum TIFFTag : uint {

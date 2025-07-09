@@ -49,6 +49,9 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	public IMemoryOwner<TColor> ColorData { get; }
 	public IMemoryOwner<T> ValueData { get; }
 
+	public ref TColor this[int key] => ref ColorData.Memory.Span[key];
+	public ref TColor this[int x, int y] => ref ColorData.Memory.Span[y * Width + x];
+
 	public IMemoryOwner<byte> Data { get; }
 	public int Width { get; }
 	public int Height { get; }
@@ -56,9 +59,6 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	public int Stride { get; } = Unsafe.SizeOf<TColor>();
 	public bool IsCanonized { get; }
 	public ColorId ColorId { get; }
-
-	public ref TColor this[int key] => ref ColorData.Memory.Span[key];
-	public ref TColor this[int x, int y] => ref ColorData.Memory.Span[y * Width + x];
 
 	public IImageBuffer Cast<TNewColor, TNew>()
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor
@@ -94,9 +94,6 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	IImageBuffer IImageBuffer.CreateSubImage(int width, int height) => new ImageBuffer<TColor, T>(width, height);
 	IImageBuffer IImageBuffer.CreateSubImage(Point<int> size) => new ImageBuffer<TColor, T>(size.X, size.Y);
 
-	public ImageBuffer<TColor, T> CreateSubImage(int width, int height) => new(width, height);
-	public ImageBuffer<TColor, T> CreateSubImage(Point<int> size) => new(size.X, size.Y);
-
 	public void PremultiplyAlpha() {
 		if (!TColor.HasAlphaChannel) {
 			return;
@@ -122,7 +119,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 
 	IImageBuffer IImageBuffer.Resize(int x, int y, SamplingOperation operation) => Resize(x, y, operation);
 	IImageBuffer IImageBuffer.Resize(Point<int> target, SamplingOperation operation) => Resize(target, operation);
-	
+
 	IImageBuffer IImageBuffer.Rotate(float degrees, float? x, float? y, SamplingOperation operation) => Rotate(degrees, x, y, operation);
 	IImageBuffer IImageBuffer.Rotate(float degrees, Point<float>? target, SamplingOperation operation) => Rotate(degrees, target, operation);
 
@@ -191,12 +188,6 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 
 	IImageBuffer IImageBuffer.Clone() => Clone();
 
-	public ImageBuffer<TColor, T> Clone() {
-		var image = new ImageBuffer<TColor, T>(Size);
-		Data.Memory.CopyTo(image.Data.Memory);
-		return image;
-	}
-	
 	public void Clear() => Clear<TColor, T>(TColor.Transparent);
 	public void Clear(Rect<int> area) => Clear<TColor, T>(TColor.Transparent, area);
 
@@ -249,6 +240,37 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		ValueData.Dispose();
 	}
 
+	public void Flip() {
+		var sp = ColorData.Memory.Span;
+		for (var y = 0; y < Height; y++) {
+			for (var x = 0; x < Width / 2; x++) {
+				var left = y * Width + x;
+				var right = y * Width + (Width - 1 - x);
+				(sp[left], sp[right]) = (sp[right], sp[left]);
+			}
+		}
+	}
+
+	public void Flop() {
+		var sp = ColorData.Memory.Span;
+		for (var y = 0; y < Height / 2; y++) {
+			for (var x = 0; x < Width; x++) {
+				var left = y * Width + x;
+				var right = (Height - 1 - y) * Width + x;
+				(sp[left], sp[right]) = (sp[right], sp[left]);
+			}
+		}
+	}
+
+	public ImageBuffer<TColor, T> CreateSubImage(int width, int height) => new(width, height);
+	public ImageBuffer<TColor, T> CreateSubImage(Point<int> size) => new(size.X, size.Y);
+
+	public ImageBuffer<TColor, T> Clone() {
+		var image = new ImageBuffer<TColor, T>(Size);
+		Data.Memory.CopyTo(image.Data.Memory);
+		return image;
+	}
+
 	public TColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat) {
 		if (x > Width || x < 0) {
 			return TColor.Transparent;
@@ -270,7 +292,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 
 		var s = new Point<float>(Width, Height) / width;
 		var spt = newImage.ColorData.Memory.Span;
-		
+
 		for (var y = 0; y < height; y++) {
 			for (var x = 0; x < width; x++) {
 				var p = (new Point<float>(x, y) + 0.5f) * s - 0.5f;
@@ -280,28 +302,6 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 
 		return newImage;
 	}
-	
-	public void Flip() {
-		var sp = ColorData.Memory.Span;
-		for (var y = 0; y < Height; y++) {
-			for (var x = 0; x < Width / 2; x++) {
-				var left = y * Width + x;
-				var right = y * Width + (Width - 1 - x);
-				(sp[left], sp[right]) = (sp[right], sp[left]);
-			}
-		}
-	}
-	
-	public void Flop() {
-		var sp = ColorData.Memory.Span;
-		for (var y = 0; y < Height / 2; y++) {
-			for (var x = 0; x < Width; x++) {
-				var left = y * Width + x;
-				var right = (Height - 1 - y) * Width + x;
-				(sp[left], sp[right]) = (sp[right], sp[left]);
-			}
-		}
-	}
 
 	public ImageBuffer<TColor, T> Rotate(float degrees, float? x = null, float? y = null, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Extend) => Rotate(degrees, new Point<float>(x ?? Width / 2f, y ?? Height / 2f), operation, wrap);
 
@@ -309,7 +309,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		var radians = degrees * (MathF.PI / 180f);
 
 		var newImage = new ImageBuffer<TColor, T>(Size);
-		
+
 		var p = pivot ?? new Point<float>(Width, Height) / 2f;
 		var cos = MathF.Cos(-radians);
 		var sin = MathF.Sin(-radians);

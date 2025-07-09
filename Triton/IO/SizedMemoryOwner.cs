@@ -9,12 +9,11 @@ using System.Runtime.InteropServices;
 namespace Triton.IO;
 
 public sealed class SizedMemoryOwner<T> : IMemoryOwner<T> where T : struct {
-	public static SizedMemoryOwner<T> Empty { get; } = new(0); 
 	public SizedMemoryOwner(FileInfo info) : this((int) info.Length) {
 		if (Length == 0) {
 			return;
 		}
-		
+
 		using var stream = new FileStream(info.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 		stream.ReadExactly(MemoryMarshal.AsBytes(Memory.Span));
 	}
@@ -25,6 +24,8 @@ public sealed class SizedMemoryOwner<T> : IMemoryOwner<T> where T : struct {
 			UnderlyingOwner = MemoryPool<T>.Shared.Rent(length);
 		}
 	}
+
+	public static SizedMemoryOwner<T> Empty { get; } = new(0);
 
 	public IMemoryOwner<T>? UnderlyingOwner { get; private set; }
 	public int Offset { get; set; }

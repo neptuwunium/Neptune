@@ -52,7 +52,7 @@ public interface IImageBuffer : IDisposable {
 
 	public void Flip();
 	public void Flop();
-	
+
 	public void Clear();
 	public void Clear(Rect<int> area);
 	public IImageBuffer Clone();

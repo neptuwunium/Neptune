@@ -1,0 +1,4 @@
+#!/bin/sh
+
+mkdir -p ../out
+podman build -t waterfall-build/libpng -v $(realpath ../out):/app/out .

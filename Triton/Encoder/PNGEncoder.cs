@@ -15,6 +15,8 @@ namespace Triton.Encoder;
 public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder {
 	static PNGEncoder() {
 		PNGVersion = "1.6.0";
+		
+		NativeHelper.Register();
 
 		if (!NativeLibrary.TryLoad(NativeMethods.LibraryName, Assembly.GetExecutingAssembly(), NativeMethods.SearchPath, out var ptr)) {
 			return;
@@ -69,6 +71,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 				}
 			}
 
+			// ReSharper disable RedundantSwitchExpressionArms
 			var samples = colorType switch {
 				PNGColorType.Gray => 1,
 				PNGColorType.GrayAlpha => 2,
@@ -78,6 +81,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 				PNGColorType.PaletteColor => throw new NotSupportedException(),
 				_ => throw new NotSupportedException(),
 			};
+			// ReSharper restore RedundantSwitchExpressionArms
 
 			var image = IImageBuffer.Create(width, height, bitDepth, samples, false, false);
 
@@ -121,7 +125,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 	public unsafe void WriteCore(Stream stream, EncoderWriteOptions options, IImageBuffer image) {
 		var writeProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.PNGReadWrite) WriteStream);
 		var flushProc = Marshal.GetFunctionPointerForDelegate((NativeMethods.PNGFlush) FlushStream);
-		
+
 		if (image.ColorId.IsHDR || image.ColorId.Components is not (>= 1 and <= 4)) {
 			throw new NotSupportedException();
 		}
