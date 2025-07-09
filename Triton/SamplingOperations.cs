@@ -12,13 +12,30 @@ namespace Triton;
 public static class SamplingOperations<TColor, T>
 	where TColor : unmanaged, IColor<TColor, T>, IColor
 	where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
-	public static TColor SamplePixel(SamplingOperation operation, float x, float y, ImageBuffer<TColor, T> image) {
+	public static TColor SamplePixel(SamplingOperation operation, SamplingWrap wrap, float x, float y, ImageBuffer<TColor, T> image) {
 		x *= image.Width;
 		y *= image.Height;
 		y = image.Height - y;
 
-		if (Handle1D(ref x, ref y, image, out var samplePixel)) {
-			return samplePixel;
+		switch (wrap) {
+			case SamplingWrap.Repeat: {
+				x %= image.Width;
+				y %= image.Height;
+				break;
+			}
+			case SamplingWrap.Clip: {
+				if (x >= image.Width || y >= image.Height || x < 0 || y < 0) {
+					return TColor.Transparent;
+				}
+
+				break;
+			}
+			case SamplingWrap.Extend: {
+				x = Math.Clamp(x, 0, image.Width);
+				y = Math.Clamp(y, 0, image.Height);
+				break;
+			}
+			default: throw new ArgumentOutOfRangeException(nameof(wrap), wrap, null);
 		}
 
 		switch (operation) {
@@ -32,28 +49,6 @@ public static class SamplingOperations<TColor, T>
 			}
 			default: throw new ArgumentOutOfRangeException(nameof(operation), operation, null);
 		}
-	}
-
-	public static bool Handle1D(ref float x, ref float y, ImageBuffer<TColor, T> image, out TColor samplePixel) {
-		if (image.Width == 0 || image.Height == 0) {
-			samplePixel = TColor.Transparent;
-			return true;
-		}
-
-		// todo: wrap enumeration? atm it "repeats".
-		x %= image.Width;
-		y %= image.Height;
-
-		var sx = (int) Math.Round(x);
-		var sy = (int) Math.Round(y);
-
-		if (image.Width == 1 || image.Height == 1) {
-			samplePixel = image.ColorData.Memory.Span[sy * image.Width + sx];
-			return true;
-		}
-
-		samplePixel = default;
-		return false;
 	}
 
 	public static TColor BilinearSample(float x, float y, ImageBuffer<TColor, T> image) {

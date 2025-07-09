@@ -9,6 +9,7 @@ namespace Triton;
 
 public readonly record struct Rect<T>(Point<T> TopLeft, Point<T> WidthHeight) : IMinMaxValue<Rect<T>> where T : INumber<T>, IMinMaxValue<T> {
 	public Rect(T topLeft, T widthHeight) : this(new Point<T>(topLeft), new Point<T>(widthHeight)) { }
+	public Rect(T top, T left, T width, T height) : this(new Point<T>(top, left), new Point<T>(width, height)) { }
 	public Rect(Point<T> topLeft, T widthHeight) : this(topLeft, new Point<T>(widthHeight)) { }
 	public Rect(T topLeft, Point<T> widthHeight) : this(new Point<T>(topLeft), widthHeight) { }
 

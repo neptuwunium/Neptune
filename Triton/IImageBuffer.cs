@@ -14,6 +14,7 @@ public interface IImageBuffer : IDisposable {
 	public IMemoryOwner<byte> Data { get; }
 	public int Width { get; }
 	public int Height { get; }
+	public Point<int> Size { get; }
 	public int Stride { get; }
 	public ColorId ColorId { get; }
 	public bool IsCanonized { get; }
@@ -34,8 +35,14 @@ public interface IImageBuffer : IDisposable {
 	public void PremultiplyAlpha();
 	public void StraightAlpha();
 
-	public IColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear);
-	public IColor Sample(Point<float> target, SamplingOperation operation = SamplingOperation.Bilinear);
+	public IColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat);
+	public IColor Sample(Point<float> target, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat);
+
+	public IImageBuffer Resize(int x, int y, SamplingOperation operation = SamplingOperation.Bilinear);
+	public IImageBuffer Resize(Point<int> target, SamplingOperation operation = SamplingOperation.Bilinear);
+
+	public IImageBuffer Rotate(float degrees, float? x = null, float? y = null, SamplingOperation operation = SamplingOperation.Bilinear);
+	public IImageBuffer Rotate(float degrees, Point<float>? pivot = null, SamplingOperation operation = SamplingOperation.Bilinear);
 
 	public void Draw(IColor pixel, int x, int y, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IColor pixel, Point<int> target, PixelOperation operation = PixelOperation.Copy);
@@ -43,7 +50,12 @@ public interface IImageBuffer : IDisposable {
 	public void Draw(IImageBuffer image, Point<int> target, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IImageBuffer image, Point<int> target, Rect<int> crop, PixelOperation operation = PixelOperation.Copy);
 
+	public void Flip();
+	public void Flop();
+	
 	public void Clear();
+	public void Clear(Rect<int> area);
+	public IImageBuffer Clone();
 
 	public void Clear<TColor, T>(TColor color, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor
