@@ -48,7 +48,7 @@ public record struct ColorId : IEquatable<ColorId?>, IEquatable<uint>, IEquatabl
 
 	public ChannelLayout Layout {
 		get => (ChannelLayout) ((Value >> 8) & 0xf);
-		set => Value = (ushort) ((Value & ~(0xf << 8)) | (((ushort) value << 8) & 0xF));
+		set => Value = (ushort) ((Value & ~(0xf << 8)) | (((ushort) value & 0xF) << 8));
 	}
 
 	public int Bits {
