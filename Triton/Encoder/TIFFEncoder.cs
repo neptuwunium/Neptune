@@ -288,7 +288,7 @@ public partial class TIFFEncoder : IEncoder {
 		internal const string LibraryName = "tiff";
 		internal const DllImportSearchPath SearchPath = DllImportSearchPath.SafeDirectories | DllImportSearchPath.AssemblyDirectory | DllImportSearchPath.ApplicationDirectory;
 
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8), DefaultDllImportSearchPaths(SearchPath)]
 		public static partial nint TIFFClientOpen(string name, string mode, nint handle,
 			nint readProc,
 			nint writeProc,

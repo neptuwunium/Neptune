@@ -29,7 +29,7 @@ RUN curl https://download.sourceforge.net/libpng/libpng-${PNG_VERSION}.tar.gz --
 	cd libpng-${PNG_VERSION} && \
 	mkdir build && cd build && \
 	cmake .. -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=${CC} -DCMAKE_C_FLAGS="${CFLAGS}" \
-        -DZLIB_INCLUDE_DIR=/app/out/include -DCMAKE_FIND_ROOT_PATH=/usr/x86_64-w64-mingw32,/app/out \
+		-DZLIB_INCLUDE_DIR=/app/out/include -DCMAKE_FIND_ROOT_PATH=/usr/x86_64-w64-mingw32,/app/out \
 		-DPNG_TOOLS=OFF -DPNG_TESTS=OFF \
 		-DCMAKE_RC_COMPILER=x86_64-w64-mingw32-windres -DPNG_SHARED=ON -DCMAKE_INSTALL_PREFIX=/app/out && \
 	make -j$(nproc) && make install

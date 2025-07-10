@@ -29,7 +29,7 @@ namespace Triton.Pixel;
 ///         </item>
 ///         <item>
 ///             <see cref="short" />
-///         </item
+///         </item>
 ///         <item>
 ///             <see cref="ushort" />
 ///         </item>
