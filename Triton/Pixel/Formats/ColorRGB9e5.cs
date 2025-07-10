@@ -75,6 +75,7 @@ public record struct ColorRGB9e5 : IColor<ColorRGB9e5, double> {
 	static bool IColor.HasAlphaChannel => false;
 	static bool IColor.ChannelsAreFullyUtilized => false;
 	static Type IColor.ChannelType => typeof(double);
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.RedFirst;
 	public static ColorRGB9e5 Black => new();
 
 	public static ColorRGB9e5 White {

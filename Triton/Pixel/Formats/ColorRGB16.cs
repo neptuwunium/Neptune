@@ -50,6 +50,7 @@ public record struct ColorRGB16 : IColor<ColorRGB16, byte> {
 	static bool IColor.HasAlphaChannel => false;
 	static bool IColor.ChannelsAreFullyUtilized => false;
 	static Type IColor.ChannelType => typeof(byte);
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.RedFirst;
 	public static ColorRGB16 Black => new();
 	public static ColorRGB16 White => new() { R = 0xF8, G = 0xFC, B = 0xF8 };
 	public static ColorRGB16 Transparent => Black;

@@ -11,16 +11,6 @@ namespace Triton.Pixel;
 
 public static class RgbConverter {
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	public static int Convert<TSourceColor, TSourceChannel, TDestinationColor, TDestinationChannel>(ReadOnlySpan<byte> input, int width, int height, out byte[] output)
-		where TSourceChannel : unmanaged, INumberBase<TSourceChannel>
-		where TSourceColor : unmanaged, IColor<TSourceColor, TSourceChannel>
-		where TDestinationChannel : unmanaged, INumberBase<TDestinationChannel>
-		where TDestinationColor : unmanaged, IColor<TDestinationColor, TDestinationChannel> {
-		output = new byte[width * height * Unsafe.SizeOf<TDestinationColor>()];
-		return Convert<TSourceColor, TSourceChannel, TDestinationColor, TDestinationChannel>(input, width, height, output);
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	public static int Convert<TSourceColor, TSourceChannel, TDestinationColor, TDestinationChannel>(ReadOnlySpan<byte> input, int width, int height, Span<byte> output)
 		where TSourceChannel : unmanaged, INumberBase<TSourceChannel>
 		where TSourceColor : unmanaged, IColor<TSourceColor, TSourceChannel>

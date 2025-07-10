@@ -21,6 +21,7 @@ public record struct ColorBGRA32 : IColor<ColorBGRA32, byte> {
 	static bool IColor.HasAlphaChannel => true;
 	static bool IColor.ChannelsAreFullyUtilized => true;
 	static Type IColor.ChannelType => typeof(byte);
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.BlueFirst;
 	public static ColorBGRA32 Black => new() { A = 0xFF };
 	public static ColorBGRA32 White => new() { R = 0xFF, G = 0xFF, B = 0xFF, A = 0xFF };
 	public static ColorBGRA32 Transparent => Black with { A = 0 };

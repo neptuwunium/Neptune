@@ -117,6 +117,12 @@ public record struct Color<TChannelValue, TChannel1, TChannel2> : IColor<Color<T
 	static bool IColor.ChannelsAreFullyUtilized => TChannel1.FullyUtilized && TChannel2.FullyUtilized;
 	static Type IColor.ChannelType => typeof(TChannelValue);
 
+	static ChannelLayout IColor.ChannelLayout => TChannel1.IsRed ? ChannelLayout.RedFirst :
+		TChannel1.IsGreen ? ChannelLayout.GreenFirst :
+		TChannel1.IsBlue ? ChannelLayout.BlueFirst :
+		TChannel2.IsRed ? ChannelLayout.AlphaRedFirst :
+		TChannel2.IsGreen ? ChannelLayout.AlphaGreenFirst : ChannelLayout.AlphaBlueFirst;
+
 	public static Color<TChannelValue, TChannel1, TChannel2> Black => new(TChannel1.GetBlack<TChannelValue>(), TChannel2.GetBlack<TChannelValue>());
 
 	public static Color<TChannelValue, TChannel1, TChannel2> White => new(TChannel1.GetWhite<TChannelValue>(), TChannel2.GetWhite<TChannelValue>());

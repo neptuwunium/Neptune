@@ -8,7 +8,6 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using Triton.IO;
 using Triton.Pixel;
-using Triton.Pixel.Channels;
 using Triton.Pixel.Formats;
 
 namespace Triton;
@@ -28,22 +27,10 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		Width = width;
 		Height = height;
 		Size = new Point<int>(width, height);
-		ColorId = ColorId.FromPixel<TColor, T>(overrideIsSigned);
-
-		var type = typeof(TColor);
-
-		IsCanonized = type == typeof(Color<T, R>) ||
-			type == typeof(Color<T, G>) ||
-			type == typeof(Color<T, B>) ||
-			type == typeof(Color<T, A>) ||
-			type == typeof(Color<T, R, G>) ||
-			type == typeof(Color<T, R, G, B>) ||
-			type == typeof(Color<T, R, G, B, A>) ||
-			type == typeof(ColorA<T>) ||
-			type == typeof(ColorR<T>) ||
-			type == typeof(ColorRG<T>) ||
-			type == typeof(ColorRGB<T>) ||
-			type == typeof(ColorRGBA<T>);
+		ColorId = IColor<TColor, T>.ColorId;
+		if (overrideIsSigned.HasValue) {
+			ColorId = ColorId with { IsSigned = overrideIsSigned.Value };
+		}
 	}
 
 	public IMemoryOwner<TColor> ColorData { get; }
@@ -57,7 +44,6 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	public int Height { get; }
 	public Point<int> Size { get; }
 	public int Stride { get; } = Unsafe.SizeOf<TColor>();
-	public bool IsCanonized { get; }
 	public ColorId ColorId { get; }
 
 	public IImageBuffer Cast<TNewColor, TNew>()

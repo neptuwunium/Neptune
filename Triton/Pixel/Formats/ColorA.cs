@@ -42,7 +42,7 @@ public record struct ColorA<T> : IColor<ColorA<T>, T> where T : unmanaged, INumb
 	static bool IColor.HasAlphaChannel => true;
 	static bool IColor.ChannelsAreFullyUtilized => true;
 	static Type IColor.ChannelType => typeof(T);
-
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.RedFirst;
 	public static ColorA<T> Black => new(NumericConversion.GetMaximumValueSafe<T>());
 	public static ColorA<T> White => new(NumericConversion.GetMinimumValueSafe<T>());
 	public static ColorA<T> Transparent => White;

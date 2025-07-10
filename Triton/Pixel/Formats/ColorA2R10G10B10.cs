@@ -47,6 +47,7 @@ public record struct ColorA2R10G10B10 : IColor<ColorA2R10G10B10, float> {
 	static bool IColor.HasAlphaChannel => true;
 	static bool IColor.ChannelsAreFullyUtilized => false;
 	static Type IColor.ChannelType => typeof(float);
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.AlphaRedFirst;
 
 	public static ColorA2R10G10B10 Black => new() { A = 1 };
 

@@ -83,6 +83,7 @@ public record struct Color<TChannelValue, TChannel> : IColor<Color<TChannelValue
 	static bool IColor.HasAlphaChannel => TChannel.IsAlpha;
 	static bool IColor.ChannelsAreFullyUtilized => TChannel.FullyUtilized;
 	static Type IColor.ChannelType => typeof(TChannelValue);
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.RedFirst; // just simpler.
 
 	public static Color<TChannelValue, TChannel> Black => new(TChannel.GetBlack<TChannelValue>());
 

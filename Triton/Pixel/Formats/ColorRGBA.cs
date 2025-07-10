@@ -28,6 +28,7 @@ public record struct ColorRGBA<T>(T R, T G, T B, T A) : IColor<ColorRGBA<T>, T> 
 	static bool IColor.HasAlphaChannel => true;
 	static bool IColor.ChannelsAreFullyUtilized => true;
 	static Type IColor.ChannelType => typeof(T);
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.RedFirst;
 
 	public static ColorRGBA<T> Black => new(NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());
 	public static ColorRGBA<T> White => new(NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());

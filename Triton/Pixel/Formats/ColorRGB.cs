@@ -32,6 +32,7 @@ public record struct ColorRGB<T>(T R, T G, T B) : IColor<ColorRGB<T>, T> where T
 	static bool IColor.HasAlphaChannel => false;
 	static bool IColor.ChannelsAreFullyUtilized => true;
 	static Type IColor.ChannelType => typeof(T);
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.RedFirst;
 
 	public static ColorRGB<T> Black => new(NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>());
 	public static ColorRGB<T> White => new(NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());

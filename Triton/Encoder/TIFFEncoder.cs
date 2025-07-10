@@ -12,7 +12,7 @@ namespace Triton.Encoder;
 public partial class TIFFEncoder : IEncoder {
 	static TIFFEncoder() {
 		NativeHelper.Register();
-		
+
 		if (!NativeLibrary.TryLoad(NativeMethods.LibraryName, Assembly.GetExecutingAssembly(), NativeMethods.SearchPath, out var ptr)) {
 			return;
 		}
@@ -51,7 +51,7 @@ public partial class TIFFEncoder : IEncoder {
 				var frameMut = frame;
 
 				IImageBuffer? image = null;
-				if (!frameMut.IsCanonized) {
+				if (frameMut.ColorId.Layout != ChannelLayout.RedFirst) {
 					image = frameMut.Cast(frameMut.ColorId.Components);
 					frameMut = image;
 				}
@@ -267,9 +267,6 @@ public partial class TIFFEncoder : IEncoder {
 	}
 
 	private static partial class NativeMethods {
-		internal const string LibraryName = "tiff";
-		internal const DllImportSearchPath SearchPath = DllImportSearchPath.SafeDirectories | DllImportSearchPath.AssemblyDirectory | DllImportSearchPath.ApplicationDirectory;
-
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int TIFFCloseProc(nint userdata);
 
@@ -288,7 +285,10 @@ public partial class TIFFEncoder : IEncoder {
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void TIFFUnmapFileProc(nint userdata, nint @base, ulong size);
 
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8), DefaultDllImportSearchPaths(SearchPath)]
+		internal const string LibraryName = "tiff";
+		internal const DllImportSearchPath SearchPath = DllImportSearchPath.SafeDirectories | DllImportSearchPath.AssemblyDirectory | DllImportSearchPath.ApplicationDirectory;
+
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)] [DefaultDllImportSearchPaths(SearchPath)]
 		public static partial nint TIFFClientOpen(string name, string mode, nint handle,
 			nint readProc,
 			nint writeProc,

@@ -45,4 +45,9 @@ public interface IColor {
 	///     The type of the channels.
 	/// </summary>
 	static abstract Type ChannelType { get; }
+
+	/// <summary>
+	///     The Color Channel arrangement.
+	/// </summary>
+	static abstract ChannelLayout ChannelLayout { get; }
 }

@@ -17,7 +17,6 @@ public interface IImageBuffer : IDisposable {
 	public Point<int> Size { get; }
 	public int Stride { get; }
 	public ColorId ColorId { get; }
-	public bool IsCanonized { get; }
 
 	public IImageBuffer Cast<TNewColor, TNew>()
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor

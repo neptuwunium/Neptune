@@ -5,42 +5,10 @@
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Triton.Pixel.Formats;
 
 namespace Triton.Pixel;
 
 public static class Color {
-	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	internal static void SetBlack<TThis, TThisChannel>(this ref TThis color)
-		where TThisChannel : unmanaged, INumberBase<TThisChannel>
-		where TThis : unmanaged, IColor<TThis, TThisChannel> =>
-		color.SetChannels(
-			NumericConversion.GetMinimumValue<TThisChannel>(),
-			NumericConversion.GetMinimumValue<TThisChannel>(),
-			NumericConversion.GetMinimumValue<TThisChannel>(),
-			NumericConversion.GetMaximumValue<TThisChannel>());
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	internal static void SetWhite<TThis, TThisChannel>(this ref TThis color)
-		where TThisChannel : unmanaged, INumberBase<TThisChannel>
-		where TThis : unmanaged, IColor<TThis, TThisChannel> =>
-		color.SetChannels(
-			NumericConversion.GetMaximumValue<TThisChannel>(),
-			NumericConversion.GetMaximumValue<TThisChannel>(),
-			NumericConversion.GetMaximumValue<TThisChannel>(),
-			NumericConversion.GetMaximumValue<TThisChannel>());
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	internal static void SetConvertedChannels<TThis, TThisChannel, TSourceChannel>(this ref TThis color, TSourceChannel r, TSourceChannel g, TSourceChannel b)
-		where TThisChannel : unmanaged, INumberBase<TThisChannel>
-		where TSourceChannel : unmanaged
-		where TThis : unmanaged, IColor<TThis, TThisChannel> =>
-		color.SetChannels(
-			NumericConversion.Convert<TSourceChannel, TThisChannel>(r),
-			NumericConversion.Convert<TSourceChannel, TThisChannel>(g),
-			NumericConversion.Convert<TSourceChannel, TThisChannel>(b),
-			NumericConversion.GetMaximumValue<TThisChannel>());
-
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	internal static void SetConvertedChannels<TThis, TThisChannel, TSourceChannel>(this ref TThis color, TSourceChannel r, TSourceChannel g, TSourceChannel b, TSourceChannel a)
 		where TThisChannel : unmanaged, INumberBase<TThisChannel>
@@ -51,20 +19,6 @@ public static class Color {
 			NumericConversion.Convert<TSourceChannel, TThisChannel>(g),
 			NumericConversion.Convert<TSourceChannel, TThisChannel>(b),
 			NumericConversion.Convert<TSourceChannel, TThisChannel>(a));
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	internal static void SetConvertedChannels<TThis, TThisChannel, TSourceChannel>(this ref TThis color, ColorRGB<TSourceChannel> rgb, TSourceChannel a)
-		where TThisChannel : unmanaged, INumberBase<TThisChannel>
-		where TSourceChannel : unmanaged, INumberBase<TSourceChannel>, IMinMaxValue<TSourceChannel>
-		where TThis : unmanaged, IColor<TThis, TThisChannel> =>
-		color.SetChannels(
-			NumericConversion.Convert<TSourceChannel, TThisChannel>(rgb.R),
-			NumericConversion.Convert<TSourceChannel, TThisChannel>(rgb.G),
-			NumericConversion.Convert<TSourceChannel, TThisChannel>(rgb.B),
-			NumericConversion.Convert<TSourceChannel, TThisChannel>(a));
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-	public static int GetChannelCount<T>() where T : IColor => (T.HasRedChannel ? 1 : 0) + (T.HasGreenChannel ? 1 : 0) + (T.HasBlueChannel ? 1 : 0) + (T.HasAlphaChannel ? 1 : 0);
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	public static TTarget Convert<TThis, TThisChannelValue, TTarget, TTargetChannelValue>(this TThis color)

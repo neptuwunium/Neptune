@@ -15,7 +15,7 @@ namespace Triton.Encoder;
 public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder {
 	static PNGEncoder() {
 		PNGVersion = "1.6.0";
-		
+
 		NativeHelper.Register();
 
 		if (!NativeLibrary.TryLoad(NativeMethods.LibraryName, Assembly.GetExecutingAssembly(), NativeMethods.SearchPath, out var ptr)) {
@@ -114,7 +114,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 			return;
 		}
 
-		if (!image.IsCanonized) {
+		if (image.ColorId.Layout is not (ChannelLayout.RedFirst or ChannelLayout.BlueFirst)) {
 			using var imageRGBA = image.Cast(image.ColorId.Components);
 			WriteCore(stream, options, imageRGBA);
 		}
@@ -146,6 +146,11 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 			NativeMethods.png_set_compression_level(png, options.Compress ? CompressionLevel : 0);
 			var colorType = image.ColorId.Components switch { 1 => PNGColorType.Gray, 2 => PNGColorType.GrayAlpha, 3 => PNGColorType.RGB, 4 => PNGColorType.RGBA, _ => throw new UnreachableException() };
 			NativeMethods.png_set_IHDR(png, info, image.Width, image.Height, image.ColorId.Bits, colorType, PNGInterlacing.None, PNGCompressionType.Default, PNGFilterType.None);
+
+			if (image.ColorId.Layout is ChannelLayout.BlueFirst or ChannelLayout.AlphaBlueFirst) {
+				NativeMethods.png_set_bgr(png);
+			}
+
 			NativeMethods.png_write_info(png, info);
 
 			var rowData = image.Data.Memory;
@@ -276,6 +281,9 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
 		[return: MarshalAs(UnmanagedType.I4)]
 		public static partial bool png_get_IHDR(nint pngPtr, nint infoPtr, out int width, out int height, out int bitDepth, out PNGColorType colorType, out PNGInterlacing interlaceMethod, out PNGCompressionType compressionMethod, out PNGFilterType filterMethod);
+
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
+		public static partial void png_set_bgr(nint pngPtr);
 
 		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void png_set_expand(nint pngPtr);
