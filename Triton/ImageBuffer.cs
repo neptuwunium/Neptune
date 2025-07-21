@@ -109,6 +109,45 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	IImageBuffer IImageBuffer.Rotate(float degrees, float? x, float? y, SamplingOperation operation) => Rotate(degrees, x, y, operation);
 	IImageBuffer IImageBuffer.Rotate(float degrees, Point<float>? target, SamplingOperation operation) => Rotate(degrees, target, operation);
 
+	public void Alpha(float alpha, int x, int y, PixelOperation operation = PixelOperation.Copy) => Alpha(alpha, new Point<int>(x, y), operation);
+
+	public void Alpha(float alpha, Point<int> target, PixelOperation operation = PixelOperation.Copy) {
+		if (target.X > Width || target.X < 0) {
+			return;
+		}
+
+		if (target.Y > Height || target.Y < 0) {
+			return;
+		}
+
+		var dstImagePixels = ColorData.Memory.Span;
+		ref var dstPixel = ref dstImagePixels[target.Y * Width + target.X];
+		var copy = dstPixel;
+		var tF = alpha * float.CreateSaturating(TColor.White.A);
+		PixelOperations<TColor, T>.BlendPixel(operation, TColor.Transparent with { A = T.CreateSaturating(tF) }, ref copy);
+		dstPixel.A = copy.A;
+	}
+
+	public void Clear(int x, int y, PixelOperation operation = PixelOperation.Copy) => Clear(new Point<int>(x, y), operation);
+
+	public void Clear(Point<int> target, PixelOperation operation = PixelOperation.Copy) {
+		if (target.X > Width || target.X < 0) {
+			return;
+		}
+
+		if (target.Y > Height || target.Y < 0) {
+			return;
+		}
+
+		var dstImagePixels = ColorData.Memory.Span;
+		if (TColor.HasAlphaChannel) {
+			ref var dstPixel = ref dstImagePixels[target.Y * Width + target.X];
+			dstPixel.A = TColor.Transparent.A;
+		} else {
+			dstImagePixels[target.Y * Width + target.X] = TColor.Transparent;
+		}
+	}
+
 	public void Draw(IColor pixel, int x, int y, PixelOperation operation = PixelOperation.Copy) => Draw(pixel, new Point<int>(x, y), operation);
 
 	public void Draw(IColor pixel, Point<int> target, PixelOperation operation = PixelOperation.Copy) {

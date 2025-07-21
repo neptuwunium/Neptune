@@ -43,6 +43,10 @@ public interface IImageBuffer : IDisposable {
 	public IImageBuffer Rotate(float degrees, float? x = null, float? y = null, SamplingOperation operation = SamplingOperation.Bilinear);
 	public IImageBuffer Rotate(float degrees, Point<float>? pivot = null, SamplingOperation operation = SamplingOperation.Bilinear);
 
+	public void Alpha(float alpha, int x, int y, PixelOperation operation = PixelOperation.Copy);
+	public void Alpha(float alpha, Point<int> target, PixelOperation operation = PixelOperation.Copy);
+	public void Clear(int x, int y, PixelOperation operation = PixelOperation.Copy);
+	public void Clear(Point<int> target, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IColor pixel, int x, int y, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IColor pixel, Point<int> target, PixelOperation operation = PixelOperation.Copy);
 	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy);
