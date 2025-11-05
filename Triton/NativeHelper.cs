@@ -9,6 +9,7 @@ internal static class NativeHelper {
 	public static void Register() {
 		if (!Initialized) {
 			NativeLibrary.SetDllImportResolver(typeof(NativeHelper).Assembly, DllImportResolver);
+			Initialized = true;
 		}
 	}
 
