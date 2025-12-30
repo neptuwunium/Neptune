@@ -7,7 +7,7 @@ public record struct ColorBGR<T>(T B, T G, T R) : IColor<ColorBGR<T>, T> where T
 		get => NumericConversion.GetMaximumValueSafe<T>();
 		set { }
 	}
-	
+
 	public readonly void GetChannels(out T r, out T g, out T b, out T a) {
 		r = R;
 		g = G;
