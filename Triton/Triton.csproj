@@ -19,9 +19,6 @@ You may choose either license when using or modifying this code.
 		<None Update="runtimes\win-x64\native\libpng.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<None Update="runtimes\win-x64\native\libzlib1.dll">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 
 </Project>
