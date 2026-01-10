@@ -44,7 +44,7 @@ public sealed class SizedMemoryOwner<T> : IMemoryOwner<T> where T : struct {
 		GC.SuppressFinalize(this);
 	}
 
-	public Memory<T> Memory => UnderlyingOwner!.Memory.Slice(Offset, Length - Offset);
+	public Memory<T> Memory => UnderlyingOwner!.Memory.Slice(Offset, Length);
 
 	~SizedMemoryOwner() => Free();
 
