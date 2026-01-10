@@ -46,11 +46,11 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	public int Stride { get; } = Unsafe.SizeOf<TColor>();
 	public ColorId ColorId { get; }
 
-	public IImageBuffer Cast<TNewColor, TNew>()
+	public ImageBuffer<TNewColor, TNew> Cast<TNewColor, TNew>()
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew> {
 		if (typeof(TNewColor) == typeof(TColor) && typeof(TNew) == typeof(T)) {
-			return this;
+			return (ImageBuffer<TNewColor, TNew>) (object) this;
 		}
 
 		var buffer = new ImageBuffer<TNewColor, TNew>(Width, Height);

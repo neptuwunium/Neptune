@@ -25,8 +25,16 @@ public sealed class SizedMemoryOwner<T> : IMemoryOwner<T> where T : struct {
 		}
 	}
 
+	public SizedMemoryOwner(IMemoryOwner<T> owner, int offset, int length, bool shouldDispose = true) {
+		ShouldDispose = shouldDispose;
+		UnderlyingOwner = owner;
+		Offset = offset;
+		Length = length;
+	}
+
 	public static SizedMemoryOwner<T> Empty { get; } = new(0);
 
+	private bool ShouldDispose { get; }
 	public IMemoryOwner<T>? UnderlyingOwner { get; private set; }
 	public int Offset { get; set; }
 	public int Length { get; }
@@ -41,7 +49,10 @@ public sealed class SizedMemoryOwner<T> : IMemoryOwner<T> where T : struct {
 	~SizedMemoryOwner() => Free();
 
 	private void Free() {
-		UnderlyingOwner?.Dispose();
+		if (ShouldDispose) {
+			UnderlyingOwner?.Dispose();
+		}
+
 		UnderlyingOwner = null;
 	}
 
