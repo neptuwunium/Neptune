@@ -18,7 +18,8 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 
 		NativeHelper.Register();
 
-		if (!NativeLibrary.TryLoad(NativeMethods.LibraryName, Assembly.GetExecutingAssembly(), NativeMethods.SearchPath, out var ptr)) {
+		var ptr = NativeHelper.DllImportResolver(NativeMethods.LibraryName, Assembly.GetExecutingAssembly(), NativeMethods.SearchPath);
+		if (ptr == nint.Zero) {
 			return;
 		}
 
