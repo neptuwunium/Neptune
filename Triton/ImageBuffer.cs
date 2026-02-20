@@ -169,13 +169,13 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		PixelOperations<TColor, T>.BlendPixel(operation, colorPixel, ref dstPixel);
 	}
 
-	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy) => Draw(image, new Point<int>(x, y), new Rect<int>(default(int), new Point<int>(image.Width, image.Height)), operation);
-	public void Draw(IImageBuffer image, Point<int> target, PixelOperation operation = PixelOperation.Copy) => Draw(image, target, new Rect<int>(default(int), new Point<int>(image.Width, image.Height)), operation);
+	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy) => Draw(image, new Point<int>(x, y), new Rect<int>(0, new Point<int>(image.Width, image.Height)), operation);
+	public void Draw(IImageBuffer image, Point<int> target, PixelOperation operation = PixelOperation.Copy) => Draw(image, target, new Rect<int>(0, new Point<int>(image.Width, image.Height)), operation);
 
 	public void Draw(IImageBuffer image, Point<int> target, Rect<int> crop, PixelOperation operation = PixelOperation.Copy) {
 		ImageBuffer<TColor, T>? convertedImage = null;
 		if (image is not ImageBuffer<TColor, T> imageBuffer) {
-			imageBuffer = (ImageBuffer<TColor, T>) image.Cast<TColor, T>();
+			imageBuffer = image.Cast<TColor, T>();
 			convertedImage = imageBuffer;
 		}
 
@@ -296,7 +296,11 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		return image;
 	}
 
-	public TColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat) {
+	public TColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat) => Sample(new Point<float>(x, y), operation, wrap);
+
+	public TColor Sample(Point<float> target, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat) {
+		var (x, y) = target;
+		
 		if (x > Width || x < 0) {
 			return TColor.Transparent;
 		}
@@ -308,11 +312,13 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		return SamplingOperations<TColor, T>.SamplePixel(operation, wrap, x, y, this);
 	}
 
-	public TColor Sample(Point<float> target, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat) => Sample(target.X, target.Y, operation, wrap);
-
 	public ImageBuffer<TColor, T> Resize(Point<int> target, SamplingOperation operation = SamplingOperation.Bilinear) => Resize(target.X, target.Y, operation);
 
 	public ImageBuffer<TColor, T> Resize(int width, int height, SamplingOperation operation = SamplingOperation.Bilinear) {
+		if (width == Width && height == Height) {
+			return Clone();
+		}
+
 		var newImage = new ImageBuffer<TColor, T>(width, height);
 
 		var s = new Point<float>(Width, Height) / width;
