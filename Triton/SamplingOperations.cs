@@ -16,11 +16,13 @@ public static class SamplingOperations<TColor, T>
 		x *= image.Width;
 		y *= image.Height;
 		y = image.Height - y;
+		x = Math.Clamp(x, 0, image.Width - 1);
+		y = Math.Clamp(y, 0, image.Height - 1);
 
 		switch (wrap) {
 			case SamplingWrap.Repeat: {
-				x %= image.Width;
-				y %= image.Height;
+				x = (x % image.Width + image.Width) % image.Width;
+				y = (y % image.Height + image.Height) % image.Height;
 				break;
 			}
 			case SamplingWrap.Clip: {
