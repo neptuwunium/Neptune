@@ -8,12 +8,12 @@ internal static class NativeHelper {
 
 	public static void Register() {
 		if (!Initialized) {
-			NativeLibrary.SetDllImportResolver(typeof(NativeHelper).Assembly, DllImportResolver);
+			NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), DllImportResolver);
 			Initialized = true;
 		}
 	}
 
-	private static nint DllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath) {
+	public static nint DllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath) {
 		if (NativeLibrary.TryLoad(libraryName, assembly, searchPath, out var handle)) {
 			return handle;
 		}
