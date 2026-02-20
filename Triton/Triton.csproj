@@ -16,7 +16,13 @@ You may choose either license when using or modifying this code.
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Update="runtimes\win-x64\native\libpng.dll">
+		<None Update="runtimes\**\*.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="runtimes\**\*.so">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="runtimes\**\*.dylib">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

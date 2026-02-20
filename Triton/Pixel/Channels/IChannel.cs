@@ -8,21 +8,21 @@ using System.Numerics;
 namespace Triton.Pixel.Channels;
 
 public interface IChannel {
-	public static virtual bool IsRed => false;
-	public static virtual bool IsGreen => false;
-	public static virtual bool IsBlue => false;
-	public static virtual bool IsAlpha => false;
-	public static virtual bool FullyUtilized => true;
+	static virtual bool IsRed => false;
+	static virtual bool IsGreen => false;
+	static virtual bool IsBlue => false;
+	static virtual bool IsAlpha => false;
+	static virtual bool FullyUtilized => true;
 
-	public static virtual T GetBlack<T>() where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => NumericConversion.GetMinimumValueSafe<T>();
-	public static virtual T GetWhite<T>() where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => NumericConversion.GetMaximumValueSafe<T>();
-	public static virtual T GetTransparent<T>() where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => NumericConversion.GetMinimumValueSafe<T>();
-	public static virtual T GetRed<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;
-	public static virtual T GetGreen<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;
-	public static virtual T GetBlue<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;
-	public static virtual T GetAlpha<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;
-	public static virtual void SetRed<T>(ref T field, T value) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field = value;
-	public static virtual void SetGreen<T>(ref T field, T value) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field = value;
-	public static virtual void SetBlue<T>(ref T field, T value) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field = value;
-	public static virtual void SetAlpha<T>(ref T field, T value) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field = value;
+	static virtual T GetBlack<T>() where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => NumericConversion.GetMinimumValueSafe<T>();
+	static virtual T GetWhite<T>() where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => NumericConversion.GetMaximumValueSafe<T>();
+	static virtual T GetTransparent<T>() where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => NumericConversion.GetMinimumValueSafe<T>();
+	static virtual T GetRed<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;
+	static virtual T GetGreen<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;
+	static virtual T GetBlue<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;
+	static virtual T GetAlpha<T>(T field) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field;
+	static virtual void SetRed<T>(ref T field, T value) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field = value;
+	static virtual void SetGreen<T>(ref T field, T value) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field = value;
+	static virtual void SetBlue<T>(ref T field, T value) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field = value;
+	static virtual void SetAlpha<T>(ref T field, T value) where T : unmanaged, INumberBase<T>, IMinMaxValue<T> => field = value;
 }

@@ -11,68 +11,68 @@ using Triton.Pixel.Formats;
 namespace Triton;
 
 public interface IImageBuffer : IDisposable {
-	public IMemoryOwner<byte> Data { get; }
-	public int Width { get; }
-	public int Height { get; }
-	public Point<int> Size { get; }
-	public int Stride { get; }
-	public ColorId ColorId { get; }
+	IMemoryOwner<byte> Data { get; }
+	int Width { get; }
+	int Height { get; }
+	Point<int> Size { get; }
+	int Stride { get; }
+	ColorId ColorId { get; }
 
-	public ImageBuffer<TNewColor, TNew> Cast<TNewColor, TNew>()
+	ImageBuffer<TNewColor, TNew> Cast<TNewColor, TNew>()
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew>;
 
-	public IImageBuffer Cast<TNew>()
+	IImageBuffer Cast<TNew>()
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew>;
 
-	public IImageBuffer Cast(int components);
+	IImageBuffer Cast(int components);
 
-	public IImageBuffer CreateSubImage(int width, int height);
+	IImageBuffer CreateSubImage(int width, int height);
 
-	public IImageBuffer CreateSubImage(Point<int> size);
+	IImageBuffer CreateSubImage(Point<int> size);
 
-	public void PremultiplyAlpha();
-	public void StraightAlpha();
+	void PremultiplyAlpha();
+	void StraightAlpha();
 
-	public IColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat);
-	public IColor Sample(Point<float> target, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat);
+	IColor Sample(float x, float y, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat);
+	IColor Sample(Point<float> target, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat);
 
-	public IImageBuffer Resize(int x, int y, SamplingOperation operation = SamplingOperation.Bilinear);
-	public IImageBuffer Resize(Point<int> target, SamplingOperation operation = SamplingOperation.Bilinear);
+	IImageBuffer Resize(int x, int y, SamplingOperation operation = SamplingOperation.Bilinear);
+	IImageBuffer Resize(Point<int> target, SamplingOperation operation = SamplingOperation.Bilinear);
 
-	public IImageBuffer Rotate(float degrees, float? x = null, float? y = null, SamplingOperation operation = SamplingOperation.Bilinear);
-	public IImageBuffer Rotate(float degrees, Point<float>? pivot = null, SamplingOperation operation = SamplingOperation.Bilinear);
+	IImageBuffer Rotate(float degrees, float? x = null, float? y = null, SamplingOperation operation = SamplingOperation.Bilinear);
+	IImageBuffer Rotate(float degrees, Point<float>? pivot = null, SamplingOperation operation = SamplingOperation.Bilinear);
 
-	public void Alpha(float alpha, int x, int y, PixelOperation operation = PixelOperation.Copy);
-	public void Alpha(float alpha, Point<int> target, PixelOperation operation = PixelOperation.Copy);
-	public void Clear(int x, int y, PixelOperation operation = PixelOperation.Copy);
-	public void Clear(Point<int> target, PixelOperation operation = PixelOperation.Copy);
-	public void Draw(IColor pixel, int x, int y, PixelOperation operation = PixelOperation.Copy);
-	public void Draw(IColor pixel, Point<int> target, PixelOperation operation = PixelOperation.Copy);
-	public void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy);
-	public void Draw(IImageBuffer image, Point<int> target, PixelOperation operation = PixelOperation.Copy);
-	public void Draw(IImageBuffer image, Point<int> target, Rect<int> crop, PixelOperation operation = PixelOperation.Copy);
+	void Alpha(float alpha, int x, int y, PixelOperation operation = PixelOperation.Copy);
+	void Alpha(float alpha, Point<int> target, PixelOperation operation = PixelOperation.Copy);
+	void Clear(int x, int y, PixelOperation operation = PixelOperation.Copy);
+	void Clear(Point<int> target, PixelOperation operation = PixelOperation.Copy);
+	void Draw(IColor pixel, int x, int y, PixelOperation operation = PixelOperation.Copy);
+	void Draw(IColor pixel, Point<int> target, PixelOperation operation = PixelOperation.Copy);
+	void Draw(IImageBuffer image, int x, int y, PixelOperation operation = PixelOperation.Copy);
+	void Draw(IImageBuffer image, Point<int> target, PixelOperation operation = PixelOperation.Copy);
+	void Draw(IImageBuffer image, Point<int> target, Rect<int> crop, PixelOperation operation = PixelOperation.Copy);
 
-	public void Flip();
-	public void Flop();
+	void Flip();
+	void Flop();
 
-	public void Clear();
-	public void Clear(Rect<int> area);
-	public IImageBuffer Clone();
+	void Clear();
+	void Clear(Rect<int> area);
+	IImageBuffer Clone();
 
-	public void Clear<TColor, T>(TColor color, PixelOperation operation = PixelOperation.Copy)
+	void Clear<TColor, T>(TColor color, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
-	public void Clear<TColor, T>(TColor color, int x, int y, PixelOperation operation = PixelOperation.Copy)
+	void Clear<TColor, T>(TColor color, int x, int y, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
-	public void Clear<TColor, T>(TColor color, Point<int> target, PixelOperation operation = PixelOperation.Copy)
+	void Clear<TColor, T>(TColor color, Point<int> target, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 
-	public void Clear<TColor, T>(TColor color, Rect<int> target, PixelOperation operation = PixelOperation.Copy)
+	void Clear<TColor, T>(TColor color, Rect<int> target, PixelOperation operation = PixelOperation.Copy)
 		where TColor : unmanaged, IColor<TColor, T>, IColor
 		where T : unmanaged, INumberBase<T>, IMinMaxValue<T>;
 

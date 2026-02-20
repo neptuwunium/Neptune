@@ -115,7 +115,7 @@ public interface IColor<out TSelf, TChannelValue> : IColor
 	/// <summary>
 	///     Comparison Identifier for this color type.
 	/// </summary>
-	public static ColorId ColorId { get; } = ColorId.FromPixel<TSelf, TChannelValue>();
+	static ColorId ColorId { get; } = ColorId.FromPixel<TSelf, TChannelValue>();
 
 	void GetChannels(out TChannelValue r, out TChannelValue g, out TChannelValue b, out TChannelValue a);
 	void SetChannels(TChannelValue r, TChannelValue g, TChannelValue b, TChannelValue a);
