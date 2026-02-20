@@ -45,4 +45,50 @@ public readonly record struct Point<T>(T X, T Y) :
 	public Point<TOther> CastChecked<TOther>() where TOther : INumber<TOther>, IMinMaxValue<TOther> => new(TOther.CreateChecked(X), TOther.CreateChecked(Y));
 	public Point<TOther> CastSaturating<TOther>() where TOther : INumber<TOther>, IMinMaxValue<TOther> => new(TOther.CreateSaturating(X), TOther.CreateSaturating(Y));
 	public Point<TOther> CastTruncating<TOther>() where TOther : INumber<TOther>, IMinMaxValue<TOther> => new(TOther.CreateTruncating(X), TOther.CreateTruncating(Y));
+
+	public Point<T> ByOrigin(PointOrigin origin, Point<T> point) {
+		var offsetX = T.Zero;
+		var offsetY = T.Zero;
+		var two = T.One + T.One;
+		var (referenceX, referenceY) = point;
+		switch (origin) {
+			case PointOrigin.TopCenter:
+				offsetX = referenceX / two;
+				break;
+
+			case PointOrigin.TopRight:
+				offsetX = referenceX;
+				break;
+
+			case PointOrigin.CenterLeft:
+				offsetY = referenceY / two;
+				break;
+
+			case PointOrigin.Center:
+				offsetX = referenceX / two;
+				offsetY = referenceY / two;
+				break;
+
+			case PointOrigin.CenterRight:
+				offsetX = referenceX;
+				offsetY = referenceY / two;
+				break;
+
+			case PointOrigin.BottomLeft:
+				offsetY = referenceY;
+				break;
+
+			case PointOrigin.BottomCenter:
+				offsetX = referenceX / two;
+				offsetY = referenceY;
+				break;
+
+			case PointOrigin.BottomRight:
+				offsetX = referenceX;
+				offsetY = referenceY;
+				break;
+		}
+		
+		return new Point<T>(X + offsetX, Y + offsetY);
+	}
 }
