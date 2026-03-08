@@ -1,5 +1,5 @@
-// SPDX-FileCopyrightText: 2022 - 2025 ds5678
-// SPDX-FileCopyrightText: 2025 Legiayayana
+// SPDX-FileCopyrightText: 2022 - 2026 ds5678
+// SPDX-FileCopyrightText: 2026 Neptuwunium
 //
 // SPDX-License-Identifier: MIT
 
