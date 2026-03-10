@@ -32,7 +32,7 @@ public static class Color {
 
 		TTarget destination = default;
 		color.GetChannels(out var r, out var g, out var b, out var a);
-		if (!TThis.ChannelsAreFullyUtilized && r is not Half or float or double) {
+		if (!TThis.ChannelsAreFullyUtilized && r is not (Half or float or double)) {
 			TTarget.White.GetChannels(out var rW, out var gW, out var bW, out var aW);
 			var rF = float.CreateChecked(r) / float.CreateChecked(rW);
 			var gF = float.CreateChecked(g) / float.CreateChecked(gW);
