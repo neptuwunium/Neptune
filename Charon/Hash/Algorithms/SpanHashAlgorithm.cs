@@ -1,0 +1,39 @@
+// SPDX-FileCopyrightText: 2023-2026 Neptuwunium
+//
+// SPDX-License-Identifier: EUPL-1.2
+
+using System.Numerics;
+using System.Security.Cryptography;
+
+namespace Charon.Hash.Algorithms;
+
+public abstract class SpanHashAlgorithm<T> : HashAlgorithm
+	where T : unmanaged, INumber<T> {
+	protected SpanHashAlgorithm() {
+		unsafe {
+			HashSizeValue = sizeof(T) * 8;
+		}
+	}
+
+	public T Value { get; set; }
+
+	public abstract void Reset();
+
+	protected override byte[] HashFinal() {
+		var tmp = GetValueFinal();
+		Reset();
+		return MemoryMarshal.AsBytes(new Span<T>(ref tmp)).ToArray();
+	}
+
+	public virtual T ComputeHashValue(ReadOnlySpan<byte> bytes) {
+		HashCore(bytes);
+		return GetValueFinal();
+	}
+
+	public byte[] ComputeHash(ReadOnlySpan<byte> bytes) {
+		HashCore(bytes);
+		return HashFinal();
+	}
+
+	protected abstract T GetValueFinal();
+}

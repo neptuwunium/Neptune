@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2026 Neptuwunium
 //
-// SPDX-License-Identifier: 0BSD
+// SPDX-License-Identifier: EUPL-1.2
 
 using System.Text.Json.Serialization;
 
-namespace GLTF.Scaffold;
+namespace Ceres;
 
 /// <summary>
 ///     An object pointing to a buffer view containing the deviating accessor values. The number of elements is equal

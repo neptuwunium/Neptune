@@ -1,0 +1,17 @@
+<!--
+SPDX-FileCopyrightText: 2026 Neptuwunium
+
+SPDX-License-Identifier: EUPL-1.2
+-->
+
+<Solution>
+  <Project Path="Ceres/Ceres.csproj" />
+  <Project Path="Charon/Charon.csproj" />
+  <Project Path="Pluto/Pluto.csproj" />
+  <Project Path="Pluto.SourceGen/Pluto.SourceGen.csproj" />
+  <Project Path="Pluto.Tests/Pluto.Tests.csproj" />
+  <Project Path="Sedna/Sedna.csproj" />
+  <Project Path="Sedna.Avalonia/Sedna.Avalonia.csproj" />
+  <Project Path="Sedna.SDL/Sedna.SDL.csproj" />
+  <Project Path="Triton/Triton.csproj" />
+</Solution>

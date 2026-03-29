@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2026 Neptuwunium
 //
-// SPDX-License-Identifier: 0BSD
+// SPDX-License-Identifier: EUPL-1.2
 
 using System.Text.Json.Serialization;
 
-namespace GLTF.Scaffold;
+namespace Ceres;
 
 /// <summary>Metadata about the glTF asset.</summary>
 public class Asset : Property {
@@ -14,7 +14,7 @@ public class Asset : Property {
 
 	/// <summary>Tool that generated this glTF model.  Useful for debugging.</summary>
 	[JsonPropertyName("generator")]
-	public string Generator { get; set; } = "glTFScaffold";
+	public string Generator { get; set; } = "Ceres";
 
 	/// <summary>The glTF version in the form of `&lt;major&gt;.&lt;minor&gt;` that this asset targets.</summary>
 	[JsonPropertyName("version")]

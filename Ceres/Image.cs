@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2026 Neptuwunium
 //
-// SPDX-License-Identifier: 0BSD
+// SPDX-License-Identifier: EUPL-1.2
 
 using System.Text.Json.Serialization;
 
-namespace GLTF.Scaffold;
+namespace Ceres;
 
 /// <summary>Image data used to create a texture. Image <b>MAY</b> be referenced by an URI (or IRI) or a buffer view index.</summary>
 public class Image : ChildOfRootProperty {

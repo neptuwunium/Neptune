@@ -1,9 +1,15 @@
+<!--
+SPDX-FileCopyrightText: 2026 Neptuwunium
+
+SPDX-License-Identifier: EUPL-1.2
+-->
+
 # TODO
 
 ## Milestone 1 - Setup
 
 - [ ] Project Setup
-- [ ] Dependency Setup (ppy.SDL3-CS, DragonLib, Triton, glTFScaffold)
+- [ ] Dependency Setup (ppy.SDL3-CS, Pluto, Triton, glTFScaffold)
 - [ ] Avalonia Setup (NativeControlHost)
 - [ ] SDL Setup (SDL_Renderer, SDL_GPUDevice)
 - [ ] Render Loop Setup

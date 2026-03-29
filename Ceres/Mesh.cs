@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2026 Neptuwunium
 //
-// SPDX-License-Identifier: 0BSD
+// SPDX-License-Identifier: EUPL-1.2
 
 using System.Text.Json.Serialization;
 
-namespace GLTF.Scaffold;
+namespace Ceres;
 
 /// <summary>A set of primitives to be rendered. Its global transform is defined by a node that references it.</summary>
 public class Mesh : ChildOfRootProperty {

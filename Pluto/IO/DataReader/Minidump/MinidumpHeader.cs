@@ -1,0 +1,18 @@
+// SPDX-FileCopyrightText: 2024-2026 Neptuwunium
+//
+// SPDX-License-Identifier: EUPL-1.2
+
+using System.Runtime.InteropServices;
+
+namespace Pluto.IO.DataReader.Minidump;
+
+[StructLayout(LayoutKind.Sequential, Pack = 4)]
+public record struct MinidumpHeader {
+	public uint Signature { get; set; }
+	public uint Version { get; set; }
+	public int NumberOfStreams { get; set; }
+	public uint StreamDirectoryRVA { get; set; }
+	public uint Checksum { get; set; }
+	public uint Timestamp { get; set; }
+	public MinidumpFlags Flags { get; set; }
+}

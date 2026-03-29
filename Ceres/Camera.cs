@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2026 Neptuwunium
 //
-// SPDX-License-Identifier: 0BSD
+// SPDX-License-Identifier: EUPL-1.2
 
 using System.Text.Json.Serialization;
 
-namespace GLTF.Scaffold;
+namespace Ceres;
 
 /// <summary>
 ///     A camera's projection. A node <b>MAY</b> reference a camera to apply a transform to place the camera in the

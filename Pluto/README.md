@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2024-2026 Neptuwunium
 SPDX-License-Identifier: EUPL-1.2
 -->
 
-# DragonLib
+# Pluto
 
 Common library for my projects.
 

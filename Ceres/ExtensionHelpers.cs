@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: 2023-2026 Neptuwunium
 //
-// SPDX-License-Identifier: 0BSD
+// SPDX-License-Identifier: EUPL-1.2
 
 using System.Numerics;
 
-namespace GLTF.Scaffold;
+namespace Ceres;
 
 public static class ExtensionHelpers {
 	public static List<double> ToGLTF(this Vector2 vector) => [vector.X, vector.Y];
