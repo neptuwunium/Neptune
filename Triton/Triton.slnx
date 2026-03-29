@@ -1,0 +1,15 @@
+<!--
+SPDX-FileCopyrightText: 2026 Neptuwunium
+
+SPDX-License-Identifier: EUPL-1.2 OR LGPL-3.0-or-later
+You may choose either license when using or modifying this code.
+-->
+
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Triton/Triton.csproj" />
+</Solution>
