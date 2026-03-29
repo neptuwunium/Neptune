@@ -97,7 +97,7 @@ public static class NumberExtensions {
 	}
 
 	extension<T>(T left) where T : IBinaryInteger<T>, IAdditionOperators<T, T, T> {
-		public T DivideByRoundUp(T right) => (left - T.One) / right + T.One;
+		public T DivideByRoundUp(T right) => left % right == T.Zero ? left / right : (left - T.One) / right + T.One;
 
 		public T GreatestCommonDivisor(T right) {
 			while (right != T.Zero) {

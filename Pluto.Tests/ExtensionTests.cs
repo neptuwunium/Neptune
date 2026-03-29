@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System.Text;
+using Pluto.Extensions;
 
 namespace Pluto.Tests;
 
@@ -213,63 +214,63 @@ public class ExtensionTests {
 	[Test]
 	public void ReadUTF16String() {
 		var test = Encoding.Unicode.GetBytes("ABCDE\0FGHIJ").AsSpan();
-		var str = test.As<ushort>().ReadString(Encoding.Unicode);
+		var str = test.As<byte, ushort>().ReadString(Encoding.Unicode);
 		Assert.That(str, Is.EqualTo("ABCDE"));
 	}
 
 	[Test]
 	public void ReadUTF16StringLimit() {
 		var test = Encoding.Unicode.GetBytes("ABCDE\0FGHIJ").AsSpan();
-		var str = test.As<ushort>().ReadString(Encoding.Unicode, 3);
+		var str = test.As<byte, ushort>().ReadString(Encoding.Unicode, 3);
 		Assert.That(str, Is.EqualTo("ABC"));
 	}
 
 	[Test]
 	public void ReadUTF16StringNull() {
 		var test = Encoding.Unicode.GetBytes("\0").AsSpan();
-		var str = test.As<ushort>().ReadString(Encoding.Unicode);
+		var str = test.As<byte, ushort>().ReadString(Encoding.Unicode);
 		Assert.That(str, Is.Null);
 	}
 
 	[Test]
-	public void ReadUTF16StringBE() {
+	public void ReadUTF16StringBigEndian() {
 		var test = Encoding.BigEndianUnicode.GetBytes("ABCDE\0FGHIJ").AsSpan();
-		var str = test.As<ushort>().ReadString(Encoding.BigEndianUnicode);
+		var str = test.As<byte, ushort>().ReadString(Encoding.BigEndianUnicode);
 		Assert.That(str, Is.EqualTo("ABCDE"));
 	}
 
 	[Test]
-	public void ReadUTF16StringLimitBE() {
+	public void ReadUTF16StringLimitBigEndian() {
 		var test = Encoding.BigEndianUnicode.GetBytes("ABCDE\0FGHIJ").AsSpan();
-		var str = test.As<ushort>().ReadString(Encoding.BigEndianUnicode, 3);
+		var str = test.As<byte, ushort>().ReadString(Encoding.BigEndianUnicode, 3);
 		Assert.That(str, Is.EqualTo("ABC"));
 	}
 
 	[Test]
-	public void ReadUTF16StringBENull() {
+	public void ReadUTF16StringBigEndianNull() {
 		var test = Encoding.BigEndianUnicode.GetBytes("\0").AsSpan();
-		var str = test.As<ushort>().ReadString(Encoding.BigEndianUnicode);
+		var str = test.As<byte, ushort>().ReadString(Encoding.BigEndianUnicode);
 		Assert.That(str, Is.Null);
 	}
 
 	[Test]
 	public void ReadUTF32String() {
 		var test = Encoding.UTF32.GetBytes("ABCDE\0FGHIJ").AsSpan();
-		var str = test.As<uint>().ReadString(Encoding.UTF32);
+		var str = test.As<byte, uint>().ReadString(Encoding.UTF32);
 		Assert.That(str, Is.EqualTo("ABCDE"));
 	}
 
 	[Test]
 	public void ReadUTF32StringLimit() {
 		var test = Encoding.UTF32.GetBytes("ABCDE\0FGHIJ").AsSpan();
-		var str = test.As<uint>().ReadString(Encoding.UTF32, 3);
+		var str = test.As<byte, uint>().ReadString(Encoding.UTF32, 3);
 		Assert.That(str, Is.EqualTo("ABC"));
 	}
 
 	[Test]
 	public void ReadUTF32StringNull() {
 		var test = Encoding.UTF32.GetBytes("\0").AsSpan();
-		var str = test.As<uint>().ReadString(Encoding.UTF32);
+		var str = test.As<byte, uint>().ReadString(Encoding.UTF32);
 		Assert.That(str, Is.Null);
 	}
 
@@ -359,13 +360,6 @@ public class ExtensionTests {
 	}
 
 	[Test]
-	public void ToHexOctetsNull() {
-		string? input = null;
-		var output = input.ToHexOctets();
-		Assert.That(output, Is.Empty);
-	}
-
-	[Test]
 	public void ToHexOctetsInvalid() => Assert.Throws<FormatException>(() => "00 11 22 3".ToHexOctets());
 
 	[Test]
@@ -384,6 +378,12 @@ public class ExtensionTests {
 	public void DivideByRoundUpZero() {
 		var n = 0.DivideByRoundUp(2);
 		Assert.That(n, Is.EqualTo(0));
+	}
+
+	[Test]
+	public void DivideByRoundUpInexact() {
+		var n = 10.DivideByRoundUp(6);
+		Assert.That(n, Is.EqualTo(2));
 	}
 
 	[Test]
@@ -407,66 +407,66 @@ public class ExtensionTests {
 	[Test]
 	public void GetHighNibble() {
 		const byte TEST = 0xab;
-		Assert.That(TEST.GetHighNibble(), Is.EqualTo(0xa));
+		Assert.That(TEST.HighNibble, Is.EqualTo(0xa));
 	}
 
 	[Test]
 	public void GetLowNibble() {
 		const byte TEST = 0xab;
-		Assert.That(TEST.GetLowNibble(), Is.EqualTo(0xb));
+		Assert.That(TEST.LowNibble, Is.EqualTo(0xb));
 	}
 
 	[Test]
 	public void GetSignedHighNibble() {
 		const byte TEST = 0xab;
-		Assert.That(TEST.GetHighNibbleSigned(), Is.EqualTo(-0x6));
+		Assert.That(TEST.SignedHighNibble, Is.EqualTo(-0x6));
 	}
 
 	[Test]
 	public void GetSignedLowNibble() {
 		const byte TEST = 0xab;
-		Assert.That(TEST.GetLowNibbleSigned(), Is.EqualTo(-0x5));
+		Assert.That(TEST.SignedLowNibble, Is.EqualTo(-0x5));
 	}
 
 	[Test]
 	public void GetHumanReadableBytesB() {
-		var amount = 1L.GetHumanReadableBytes();
+		var amount = 1L.HumanReadableBytes;
 		Assert.That(amount, Is.EqualTo("1 B"));
 	}
 
 	[Test]
 	public void GetHumanReadableBytesKB() {
-		var amount = 0x400UL.GetHumanReadableBytes();
+		var amount = 0x400UL.HumanReadableBytes;
 		Assert.That(amount, Is.EqualTo("1 KiB"));
 	}
 
 	[Test]
 	public void GetHumanReadableBytesMB() {
-		var amount = 0x100000UL.GetHumanReadableBytes();
+		var amount = 0x100000UL.HumanReadableBytes;
 		Assert.That(amount, Is.EqualTo("1 MiB"));
 	}
 
 	[Test]
 	public void GetHumanReadableBytesGB() {
-		var amount = 0x40000000UL.GetHumanReadableBytes();
+		var amount = 0x40000000UL.HumanReadableBytes;
 		Assert.That(amount, Is.EqualTo("1 GiB"));
 	}
 
 	[Test]
 	public void GetHumanReadableBytesTB() {
-		var amount = 0x10000000000UL.GetHumanReadableBytes();
+		var amount = 0x10000000000UL.HumanReadableBytes;
 		Assert.That(amount, Is.EqualTo("1 TiB"));
 	}
 
 	[Test]
 	public void GetHumanReadableBytesPB() {
-		var amount = 0x4000000000000UL.GetHumanReadableBytes();
+		var amount = 0x4000000000000UL.HumanReadableBytes;
 		Assert.That(amount, Is.EqualTo("1 PiB"));
 	}
 
 	[Test]
 	public void GetHumanReadableBytesEB() {
-		var amount = 0x1000000000000000UL.GetHumanReadableBytes();
+		var amount = 0x1000000000000000UL.HumanReadableBytes;
 		Assert.That(amount, Is.EqualTo("1 EiB"));
 	}
 }
