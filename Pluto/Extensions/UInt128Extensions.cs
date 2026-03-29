@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace Charon;
+namespace Pluto.Extensions;
 
-internal static class UInt128Extensions {
+public static class UInt128Extensions {
 	extension(ref UInt128 v) {
 		public ulong Low {
 			get => (ulong) v;

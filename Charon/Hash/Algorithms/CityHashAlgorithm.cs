@@ -12,6 +12,7 @@
 using System.Buffers.Binary;
 using System.Numerics;
 using System.Text;
+using Pluto.Extensions;
 
 namespace Charon.Hash.Algorithms;
 

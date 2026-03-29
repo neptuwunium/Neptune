@@ -2,15 +2,15 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-using System.Buffers;
 using System.Numerics;
+using Pluto.IO.Binary;
 using Triton.Pixel;
 using Triton.Pixel.Formats;
 
 namespace Triton;
 
 public interface IImageBuffer : IDisposable {
-	IMemoryOwner<byte> Data { get; }
+	IRentedArray<byte> Data { get; }
 	int Width { get; }
 	int Height { get; }
 	Point<int> Size { get; }

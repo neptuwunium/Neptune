@@ -2,10 +2,9 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-using System.Buffers;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Triton.IO;
+using Pluto.IO.Binary;
 using Triton.Pixel;
 using Triton.Pixel.Formats;
 
@@ -14,14 +13,14 @@ namespace Triton;
 public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	where TColor : unmanaged, IColor<TColor, T>, IColor
 	where T : unmanaged, INumberBase<T>, IMinMaxValue<T> {
-	public ImageBuffer(IMemoryOwner<byte> buffer, Point<int> size, bool overrideIsSigned = false) : this(buffer, size.X, size.Y, overrideIsSigned) { }
-	public ImageBuffer(int width, int height) : this(new SizedMemoryOwner<byte>(Unsafe.SizeOf<TColor>() * width * height), width, height) => Clear();
-	public ImageBuffer(Point<int> size) : this(new SizedMemoryOwner<byte>(Unsafe.SizeOf<TColor>() * size.X * size.Y), size.X, size.Y) => Clear();
-	public ImageBuffer() : this(SizedMemoryOwner<byte>.Empty, 0, 0) { }
+	public ImageBuffer(IRentedArray<byte> buffer, Point<int> size, bool overrideIsSigned = false) : this(buffer, size.X, size.Y, overrideIsSigned) { }
+	public ImageBuffer(int width, int height) : this(new RentedArray<byte>(Unsafe.SizeOf<TColor>() * width * height), width, height) => Clear();
+	public ImageBuffer(Point<int> size) : this(new RentedArray<byte>(Unsafe.SizeOf<TColor>() * size.X * size.Y), size.X, size.Y) => Clear();
+	public ImageBuffer() : this(RentedArray<byte>.Empty, 0, 0) { }
 
-	public ImageBuffer(IMemoryOwner<byte> buffer, int width, int height, bool? overrideIsSigned = null) {
-		ColorData = new TypedMemory<TColor>(buffer, 0);
-		ValueData = new TypedMemory<T>(buffer, 0);
+	public ImageBuffer(IRentedArray<byte> buffer, int width, int height, bool? overrideIsSigned = null) {
+		ColorData = new UnownedCovariantArray<TColor>(buffer);
+		ValueData = new UnownedCovariantArray<T>(buffer);
 		Data = buffer;
 		Width = width;
 		Height = height;
@@ -32,13 +31,13 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		}
 	}
 
-	public IMemoryOwner<TColor> ColorData { get; }
-	public IMemoryOwner<T> ValueData { get; }
+	public IRentedArray<TColor> ColorData { get; }
+	public IRentedArray<T> ValueData { get; }
 
 	public ref TColor this[int key] => ref ColorData.Memory.Span[key];
 	public ref TColor this[int x, int y] => ref ColorData.Memory.Span[y * Width + x];
 
-	public IMemoryOwner<byte> Data { get; }
+	public IRentedArray<byte> Data { get; }
 	public int Width { get; }
 	public int Height { get; }
 	public Point<int> Size { get; }

@@ -30,4 +30,8 @@ SPDX-License-Identifier: EUPL-1.2
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Pluto\Pluto.csproj" />
+	</ItemGroup>
+
 </Project>
