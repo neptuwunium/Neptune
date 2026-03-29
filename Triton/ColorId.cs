@@ -50,9 +50,10 @@ public record struct ColorId : IEquatable<ColorId?>, IEquatable<uint>, IEquatabl
 		set => Value = (ushort) ((Value & ~(0xf << 8)) | (((ushort) value & 0xF) << 8));
 	}
 
+	// minimum number of bits is 1, so we can save 1 bit by assuming 1 is 0.
 	public int Bits {
-		get => Value & 0xFF;
-		set => Value = (ushort) ((Value & ~0xFFu) | (byte) value);
+		get => (Value & 0xFF) + 1;
+		set => Value = (ushort) ((Value & ~0xFFu) | (byte) (value - 1));
 	}
 
 	public bool Equals(ColorId other) => other.Value == Value;
@@ -75,7 +76,7 @@ public record struct ColorId : IEquatable<ColorId?>, IEquatable<uint>, IEquatabl
 			throw new InvalidOperationException("Too many color channels");
 		}
 
-		if (bits > 255) {
+		if (bits > 256) {
 			throw new InvalidOperationException("Too many bits per color channel");
 		}
 
