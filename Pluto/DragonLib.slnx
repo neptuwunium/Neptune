@@ -1,0 +1,10 @@
+<!--
+SPDX-FileCopyrightText: 2024-2026 Neptuwunium
+
+SPDX-License-Identifier: EUPL-1.2
+-->
+
+<Solution>
+	<Project Path="DragonLib.Tests/DragonLib.Tests.csproj"/>
+	<Project Path="DragonLib/DragonLib.csproj"/>
+</Solution>
