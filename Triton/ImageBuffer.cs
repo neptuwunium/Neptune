@@ -34,8 +34,8 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	public IRentedArray<TColor> ColorData { get; }
 	public IRentedArray<T> ValueData { get; }
 
-	public ref TColor this[int key] => ref ColorData.Memory.Span[key];
-	public ref TColor this[int x, int y] => ref ColorData.Memory.Span[y * Width + x];
+	public ref TColor this[int key] => ref ColorData.Span[key];
+	public ref TColor this[int x, int y] => ref ColorData.Span[y * Width + x];
 
 	public IRentedArray<byte> Data { get; }
 	public int Width { get; }
@@ -52,7 +52,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		}
 
 		var buffer = new ImageBuffer<TNewColor, TNew>(Width, Height);
-		RgbConverter.Convert<TColor, T, TNewColor, TNew>(ColorData.Memory.Span, buffer.ColorData.Memory.Span);
+		RgbConverter.Convert<TColor, T, TNewColor, TNew>(ColorData.Span, buffer.ColorData.Span);
 		return buffer;
 	}
 
@@ -83,7 +83,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 			return;
 		}
 
-		foreach (ref var pixel in ColorData.Memory.Span) {
+		foreach (ref var pixel in ColorData.Span) {
 			PixelOperations<TColor, T>.PremultiplyPixel(ref pixel);
 		}
 	}
@@ -93,7 +93,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 			return;
 		}
 
-		foreach (ref var pixel in ColorData.Memory.Span) {
+		foreach (ref var pixel in ColorData.Span) {
 			PixelOperations<TColor, T>.UnmultiplyPixel(ref pixel);
 		}
 	}
@@ -118,7 +118,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 			return;
 		}
 
-		var dstImagePixels = ColorData.Memory.Span;
+		var dstImagePixels = ColorData.Span;
 		ref var dstPixel = ref dstImagePixels[target.Y * Width + target.X];
 		var copy = dstPixel;
 		var tF = alpha * float.CreateSaturating(TColor.White.A);
@@ -137,7 +137,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 			return;
 		}
 
-		var dstImagePixels = ColorData.Memory.Span;
+		var dstImagePixels = ColorData.Span;
 		if (TColor.HasAlphaChannel) {
 			ref var dstPixel = ref dstImagePixels[target.Y * Width + target.X];
 			dstPixel.A = TColor.Transparent.A;
@@ -162,7 +162,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 			return;
 		}
 
-		var dstImagePixels = ColorData.Memory.Span;
+		var dstImagePixels = ColorData.Span;
 		ref var dstPixel = ref dstImagePixels[target.Y * Width + target.X];
 		PixelOperations<TColor, T>.BlendPixel(operation, colorPixel, ref dstPixel);
 	}
@@ -181,8 +181,8 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		var ((cropX, cropY), (cropW, cropH)) = crop;
 
 		try {
-			var dstImagePixels = ColorData.Memory.Span;
-			var srcImagePixels = imageBuffer.ColorData.Memory.Span;
+			var dstImagePixels = ColorData.Span;
+			var srcImagePixels = imageBuffer.ColorData.Span;
 
 			for (var sy = 0; sy < cropH; sy++) {
 				var dy = y + sy;
@@ -218,7 +218,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew> {
 		var newPixel = color.Convert<TNewColor, TNew, TColor, T>();
-		foreach (ref var pixel in ColorData.Memory.Span) {
+		foreach (ref var pixel in ColorData.Span) {
 			PixelOperations<TColor, T>.BlendPixel(operation, newPixel, ref pixel);
 		}
 	}
@@ -236,7 +236,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew> {
 		var pixel = color.Convert<TNewColor, TNew, TColor, T>();
 		var ((x, y), (w, h)) = target;
-		var dstImagePixels = ColorData.Memory.Span;
+		var dstImagePixels = ColorData.Span;
 
 		for (var sy = 0; sy < h; sy++) {
 			var dy = y + sy;
@@ -264,7 +264,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	}
 
 	public void Flip() {
-		var sp = ColorData.Memory.Span;
+		var sp = ColorData.Span;
 		for (var y = 0; y < Height; y++) {
 			for (var x = 0; x < Width / 2; x++) {
 				var left = y * Width + x;
@@ -275,7 +275,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	}
 
 	public void Flop() {
-		var sp = ColorData.Memory.Span;
+		var sp = ColorData.Span;
 		for (var y = 0; y < Height / 2; y++) {
 			for (var x = 0; x < Width; x++) {
 				var left = y * Width + x;
@@ -320,7 +320,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		var newImage = new ImageBuffer<TColor, T>(width, height);
 
 		var s = new Point<float>(Width, Height) / width;
-		var spt = newImage.ColorData.Memory.Span;
+		var spt = newImage.ColorData.Span;
 
 		for (var y = 0; y < height; y++) {
 			for (var x = 0; x < width; x++) {
