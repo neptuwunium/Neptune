@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using Pluto.IO.Binary;
+using Pluto.Maths;
 using Triton.Pixel;
 using Triton.Pixel.Formats;
 

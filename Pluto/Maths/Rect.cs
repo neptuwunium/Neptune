@@ -4,7 +4,7 @@
 
 using System.Numerics;
 
-namespace Triton;
+namespace Pluto.Maths;
 
 public readonly record struct Rect<T>(Point<T> TopLeft, Point<T> WidthHeight) : IMinMaxValue<Rect<T>> where T : INumber<T>, IMinMaxValue<T> {
 	public Rect(T topLeft, T widthHeight) : this(new Point<T>(topLeft), new Point<T>(widthHeight)) { }

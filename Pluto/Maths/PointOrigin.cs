@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace Triton;
+namespace Pluto.Maths;
 
 public enum PointOrigin {
 	TopLeft,

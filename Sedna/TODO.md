@@ -8,12 +8,12 @@ SPDX-License-Identifier: EUPL-1.2
 
 ## Milestone 1 - Setup
 
-- [ ] Project Setup
-- [ ] Dependency Setup (ppy.SDL3-CS, Pluto, Triton, glTFScaffold)
-- [ ] Avalonia Setup (NativeControlHost)
-- [ ] SDL Setup (SDL_Renderer, SDL_GPUDevice)
-- [ ] Render Loop Setup
-- [ ] Hello VBlank
+- [x] Project Setup
+- [x] Dependency Setup (ppy.SDL3-CS, Pluto, Triton, glTFScaffold)
+- [x] Avalonia Setup (NativeControlHost)
+- [x] SDL Setup (SDL_Renderer, SDL_GPUDevice)
+- [x] Render Loop Setup
+- [x] Hello VBlank
 
 ## Milestone 2 - Hello Triangle
 

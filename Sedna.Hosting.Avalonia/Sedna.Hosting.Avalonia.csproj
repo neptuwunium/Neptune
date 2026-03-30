@@ -14,12 +14,11 @@ SPDX-License-Identifier: EUPL-1.2
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Pluto\Pluto.csproj"/>
-		<ProjectReference Include="..\Triton\Triton.csproj"/>
+		<PackageReference Include="Avalonia" Version="11.3.13"/>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ppy.SDL3-CS" Version="2026.320.0"/>
+		<ProjectReference Include="..\Sedna\Sedna.csproj"/>
 	</ItemGroup>
 
 </Project>

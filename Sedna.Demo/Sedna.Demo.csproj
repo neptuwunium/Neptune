@@ -7,19 +7,14 @@ SPDX-License-Identifier: EUPL-1.2
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<OutputType>Exe</OutputType>
 		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Pluto\Pluto.csproj"/>
-		<ProjectReference Include="..\Triton\Triton.csproj"/>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="ppy.SDL3-CS" Version="2026.320.0"/>
+		<ProjectReference Include="..\Sedna.Hosting.SDL\Sedna.Hosting.SDL.csproj"/>
 	</ItemGroup>
 
 </Project>

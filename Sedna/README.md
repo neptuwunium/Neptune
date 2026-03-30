@@ -10,9 +10,11 @@ A SDL-based SceneGraph layer for Avalonia.
 
 This project intended to be a data-driven 3D visualizer within Avalonia or as a standalone/headless window.
 
-It is **NOT** a game engine. It _could_ be used as the renderer within a larger game framework, but it is not one itself.
+It is **NOT** a game engine. It _could_ be used as the renderer within a larger game framework, but it is not one
+itself.
 
-Due to how tightly integrated the scene graph and renderer are planned to be, any engine that does so would be disqualified from using things like entity component systems.
+Due to how tightly integrated the scene graph and renderer are planned to be, any engine that does so would be
+disqualified from using things like entity component systems.
 
 ## Prior Art
 

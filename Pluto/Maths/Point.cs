@@ -4,7 +4,7 @@
 
 using System.Numerics;
 
-namespace Triton;
+namespace Pluto.Maths;
 
 public readonly record struct Point<T>(T X, T Y) :
 	IDivisionOperators<Point<T>, Point<T>, Point<T>>,
