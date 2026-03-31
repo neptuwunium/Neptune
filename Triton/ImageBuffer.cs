@@ -27,6 +27,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 		Height = height;
 		Size = new Point<int>(width, height);
 		ColorId = IColor<TColor, T>.ColorId;
+		Compression = ImageCompression.Linear;
 		if (overrideIsSigned.HasValue) {
 			ColorId = ColorId with { IsSigned = overrideIsSigned.Value };
 		}
@@ -44,6 +45,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 	public Point<int> Size { get; }
 	public int Stride { get; } = Unsafe.SizeOf<TColor>();
 	public ColorId ColorId { get; }
+	public ImageCompression Compression { get; }
 
 	public ImageBuffer<TNewColor, TNew> Cast<TNewColor, TNew>()
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor
