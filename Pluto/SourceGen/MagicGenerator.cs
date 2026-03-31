@@ -19,11 +19,8 @@ public sealed class MagicAttribute(string magic, bool littleEndian = true) : Att
 
 [GenerateMagic]
 public static partial class FileMagic {
-	[Magic("IDX ")]
-	public static partial uint Index { get; }
-
-	[Magic("DATA", false)]
-	public static partial uint Data { get; }
+	[Magic("IDX ")] public static partial uint Index { get; }
+	[Magic("DATA", false)] public static partial uint Data { get; }
 }
 
 */

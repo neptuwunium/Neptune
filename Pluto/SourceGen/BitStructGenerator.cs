@@ -20,11 +20,8 @@ public sealed class BitFieldAttribute(int bits) : Attribute {
 
 [BitStruct(4)]
 public partial struct PackedStruct {
-	[BitField(4)]
-	public partial byte Nya { get; set; }
-
-	[BitField(28)]
-	public partial int Meow { get; set; }
+	[BitField(4)] public partial byte Nya { get; set; }
+	[BitField(28)] public partial int Meow { get; set; }
 }
 
 */
