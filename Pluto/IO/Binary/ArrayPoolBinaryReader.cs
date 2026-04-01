@@ -36,6 +36,18 @@ public class ArrayPoolBinaryReader : ArrayBinaryReader {
 		return arr;
 	}
 
+	public override IRentedArray<byte> ReadSharedBytes(int length) {
+		if (Rented == null) {
+			return new RentedArray<byte>(0);
+		}
+
+		var arr = new UnownedRentedArray<byte>(Rented, Position, length);
+
+		Position += length;
+
+		return arr;
+	}
+
 	protected override void Dispose(bool disposing) {
 		if (LeaveOpen) {
 			return;
