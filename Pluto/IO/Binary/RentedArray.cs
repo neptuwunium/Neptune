@@ -16,6 +16,18 @@ public interface IRentedArray<T> : IEnumerable<T>, IDisposable where T : struct 
 }
 
 public sealed class UnownedRentedArray<T> : IRentedArray<T> where T : struct {
+	public UnownedRentedArray(IRentedArray<T> inner) {
+		Inner = inner;
+		Offset = 0;
+		Length = inner.Length;
+	}
+	
+	public UnownedRentedArray(IRentedArray<T> inner, int offset) {
+		Inner = inner;
+		Offset = offset;
+		Length = inner.Length - offset;
+	}
+	
 	public UnownedRentedArray(IRentedArray<T> inner, int offset, int length) {
 		Inner = inner;
 		Offset = offset;
@@ -52,6 +64,7 @@ public sealed class UnownedRentedArray<T> : IRentedArray<T> where T : struct {
 
 public sealed class UnownedCovariantArray<T> : IRentedArray<T> where T : struct {
 	public UnownedCovariantArray(IRentedArray<byte> inner) : this(inner, 0, inner.Length / Unsafe.SizeOf<T>()) { }
+	public UnownedCovariantArray(IRentedArray<byte> inner, int byteOffset) : this(inner, byteOffset, (inner.Length - byteOffset) / Unsafe.SizeOf<T>()) { }
 	public UnownedCovariantArray(IRentedArray<byte> inner, int byteOffset, int length) {
 		Inner = inner;
 		Offset = byteOffset;
