@@ -337,3 +337,5 @@ nuget.config
 ClassData
 
 dist/
+
+!Sedna.Native.SDLShaderCross/generator.rsp

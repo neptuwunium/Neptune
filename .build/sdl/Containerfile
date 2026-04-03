@@ -5,7 +5,7 @@
 FROM docker.io/debian:trixie
 WORKDIR /app
 RUN apt-get update && \
-	apt-get install -y build-essential cmake mingw-w64 gcc-mingw-w64-ucrt64 g++-mingw-w64-ucrt64 python3
+	apt-get install -y build-essential cmake mingw-w64 gcc-mingw-w64-ucrt64 g++-mingw-w64-ucrt64 python3 git
 
 ENV CC=x86_64-w64-mingw32ucrt-gcc
 ENV CXX=x86_64-w64-mingw32ucrt-g++
@@ -16,7 +16,8 @@ ENV CFLAGS="-static -static-libgcc"
 ENV CXXFLAGS="-static -static-libgcc -static-libstdc++"
 
 # specific layers
-COPY SDL SDL
+ADD "https://api.github.com/repos/libsdl-org/SDL/commits?per_page=1" latest_commit_SDL
+RUN git clone https://github.com/libsdl-org/SDL.git
 RUN cmake -B build-SDL \
 	-DCMAKE_SYSTEM_NAME=Windows \
 	-DCMAKE_C_COMPILER="${CC}" \
@@ -31,7 +32,8 @@ RUN cmake -B build-SDL \
 	cmake --build build-SDL --parallel $(nproc) && \
 	cmake --install build-SDL
 
-COPY SDL_shadercross SDL_shadercross
+ADD "https://api.github.com/repos/libsdl-org/SDL_shadercross/commits?per_page=1" latest_commit_SDL_shadercross
+RUN git clone --recursive https://github.com/libsdl-org/SDL_shadercross.git
 RUN cmake -B build-SDL_shadercross \
 	-DCMAKE_SYSTEM_NAME=Windows \
 	-DCMAKE_C_COMPILER="${CC}" \
