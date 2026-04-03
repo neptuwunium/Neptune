@@ -8,16 +8,15 @@ SPDX-License-Identifier: EUPL-1.2
 
 ## Milestone 0 - SDL
 
-- [ ] Create Sedna.Native.SDL
-- [ ] Create Sedna.Native.SDLShaderCross
-- [ ] Build scripts for SDL, SDL_shadercross
-- [ ] ClangSharpPInvokeGenerator response file for SDL, SDL_shadercross
-- [ ] Loader shim
+- [x] Create Sedna.Native.SDLShaderCross
+- [x] Build scripts for SDL_shadercross
+- [x] ClangSharpPInvokeGenerator response file for SDL_shadercross
+- [x] Loader shim
 
 ## Milestone 1 - Setup
 
 - [x] Project Setup
-- [x] Dependency Setup (Sedna.Native.SDL, Pluto, Triton, glTFScaffold)
+- [x] Dependency Setup (ppy.SDL3-CS, Sedna.Native.SDL, Pluto, Triton, glTFScaffold)
 - [x] Avalonia Setup (NativeControlHost)
 - [x] SDL Setup (SDL_Renderer, SDL_GPUDevice)
 - [x] Render Loop Setup

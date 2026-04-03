@@ -42,7 +42,7 @@ public static class CompressionHelper {
 		}
 
 		foreach (var dir in new[] { Path.Combine(cwd, $"runtimes/{RuntimeInformation.RuntimeIdentifier}/native/"), cwd }) {
-			foreach (var libName in new[] { name, "lib" + name, name + "-0", $"lib{name}-0" }) {
+			foreach (var libName in new[] { name, "lib" + name }) {
 				var target = Path.Combine(dir, libName) + ext;
 				if (!File.Exists(target)) {
 					continue;

@@ -5,13 +5,21 @@
 FROM docker.io/debian:trixie
 WORKDIR /app
 RUN apt-get update && \
-	apt-get install -y build-essential mingw-w64 curl
+	apt-get install -y build-essential cmake mingw-w64 curl gcc-mingw-w64-ucrt64 g++-mingw-w64-ucrt64
+
+ENV CC=x86_64-w64-mingw32ucrt-gcc
+ENV CXX=x86_64-w64-mingw32ucrt-g++
+ENV AR=x86_64-w64-mingw32-ar
+ENV RANLIB=x86_64-w64-mingw32-ranlib
+ENV STRIP=x86_64-w64-mingw32-strip
+ENV CFLAGS="-static -static-libgcc"
+ENV CXXFLAGS="-static -static-libgcc -static-libstdc++"
 
 # specific layers
-COPY . .
+COPY density.patch density.patch
 ENV VERSION=0.14.2
 RUN curl https://github.com/g1mv/density/archive/refs/tags/density-${VERSION}.tar.gz --location | tar xzvf - && \
 	cd density-density-${VERSION} && \
 	patch < ../density.patch && \
-	CC=x86_64-w64-mingw32-gcc LD=x86_64-w64-mingw32-ld AR=x86_64-w64-mingw32-ar OS=Windows_NT make -j$(nproc) library && \
+	make -j$(nproc) library && \
 	install -D build/libdensity.a build/libdensity.dll -t /app/out
