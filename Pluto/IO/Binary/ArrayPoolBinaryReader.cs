@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-using System.Buffers;
 using System.Runtime.CompilerServices;
 
 namespace Pluto.IO.Binary;
