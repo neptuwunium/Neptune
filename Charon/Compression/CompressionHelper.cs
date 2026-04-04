@@ -17,6 +17,7 @@ public static class CompressionHelper {
 	internal const string OodleTexLibraryName = "oo2texrt";
 	internal const string ZstdLibraryName = "zstd";
 	internal const string DensityLibraryName = "density";
+	internal const string GDeflateLibraryName = "GDeflate";
 
 	static CompressionHelper() => NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), DllImportResolver);
 
@@ -78,6 +79,7 @@ public static class CompressionHelper {
 			CompressionType.RawLZMA => true,
 			CompressionType.Zstd => CanLoadLibrary(ZstdLibraryName),
 			CompressionType.Density => CanLoadLibrary(DensityLibraryName),
+			CompressionType.GDeflate => CanLoadLibrary(GDeflateLibraryName),
 			_ => false,
 		};
 
@@ -173,6 +175,9 @@ public static class CompressionHelper {
 			case CompressionType.Density: {
 				return Density.Decompress(compressed, decompressed);
 			}
+			case CompressionType.GDeflate: {
+				return GDeflate.Decompress(compressed, decompressed);
+			}
 			case CompressionType.None:
 				compressed.CopyTo(decompressed);
 				return decompressed.Length;
@@ -245,6 +250,9 @@ public static class CompressionHelper {
 				brotli.Flush();
 
 				return (int) brotli.Position;
+			}
+			case CompressionType.GDeflate: {
+				return GDeflate.Compress(decompressed, compressed, 12);
 			}
 			case CompressionType.None:
 				decompressed.CopyTo(compressed);
