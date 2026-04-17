@@ -23,4 +23,5 @@ public enum CompressionType {
 	RawLZMA,
 	Zstd,
 	Density,
+	GDeflate,
 }

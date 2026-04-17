@@ -21,6 +21,11 @@ public abstract class BufferBinaryReader : IDisposable {
 	/// </summary>
 	public abstract int Length { get; }
 
+	/// <summary>
+	///     Number of bytes left in the stream before end
+	/// </summary>
+	public virtual int Unconsumed => Length - Position;
+
 	/// <inheritdoc cref="IDisposable.Dispose" />
 	public void Dispose() {
 		Dispose(true);

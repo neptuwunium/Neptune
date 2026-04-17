@@ -157,7 +157,7 @@ public sealed class RentedArray<T> : IRentedArray<T> where T : struct {
 
 	public static RentedArray<T> FromFile(string path) => FromStream(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite), false);
 
-	private static RentedArray<T> FromStream(Stream stream, bool leaveOpen) {
+	public static RentedArray<T> FromStream(Stream stream, bool leaveOpen) {
 		try {
 			var buffer = new RentedArray<T>((int) (stream.Length - stream.Position) / Unsafe.SizeOf<T>());
 			stream.ReadExactly(MemoryMarshal.AsBytes(buffer.Span));
