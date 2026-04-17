@@ -19,7 +19,7 @@ public class BitStructGenerator : IIncrementalGenerator {
 			static (ctx, _) => (INamedTypeSymbol) ctx.TargetSymbol);
 
 		context.RegisterSourceOutput(source, static (spc, symbol) => {
-			var typeAttribute = symbol.GetAttributes().First(x => x is { AttributeClass.Name: "BitStructAttribute" } && x.ConstructorArguments[0].Value is int);
+			var typeAttribute = symbol.GetAttributes().First(x => x is { AttributeClass.Name: "BitStructAttribute" });
 			var size = (int) typeAttribute.ConstructorArguments[0].Value!;
 
 			var sb = new StringBuilder();
@@ -44,7 +44,7 @@ public class BitStructGenerator : IIncrementalGenerator {
 
 			var shift = 0;
 			foreach (var property in symbol.GetMembers().OfType<IPropertySymbol>()) {
-				var bitFieldAttribute = property.GetAttributes().FirstOrDefault(x => x.AttributeClass?.Name == "BitFieldAttribute" && x.ConstructorArguments[0].Value is int);
+				var bitFieldAttribute = property.GetAttributes().FirstOrDefault(x => x.AttributeClass?.Name == "BitFieldAttribute");
 				if (bitFieldAttribute == default) {
 					continue;
 				}
