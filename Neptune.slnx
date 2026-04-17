@@ -10,10 +10,11 @@ SPDX-License-Identifier: EUPL-1.2
   <Project Path="Pluto/Pluto.csproj" />
   <Project Path="Pluto.SourceGen/Pluto.SourceGen.csproj" />
   <Project Path="Pluto.Tests/Pluto.Tests.csproj" />
-  <Project Path="Sedna.Hosting.Avalonia\Sedna.Hosting.Avalonia.csproj" />
-  <Project Path="Sedna.Hosting.SDL\Sedna.Hosting.SDL.csproj" />
+  <Project Path="Sedna.Hosting.Avalonia/Sedna.Hosting.Avalonia.csproj" />
+  <Project Path="Sedna.Hosting.SDL/Sedna.Hosting.SDL.csproj" />
+  <Project Path="Sedna.Native.SDLShaderCross/Sedna.Native.SDLShaderCross.csproj" />
   <Project Path="Sedna/Sedna.csproj" />
   <Project Path="Sedna.Demo.Avalonia/Sedna.Demo.Avalonia.csproj" />
-  <Project Path="Sedna.Demo\Sedna.Demo.csproj" />
+  <Project Path="Sedna.Demo/Sedna.Demo.csproj" />
   <Project Path="Triton/Triton.csproj" />
 </Solution>

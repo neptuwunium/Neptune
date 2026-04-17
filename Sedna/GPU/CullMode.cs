@@ -2,14 +2,9 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace Sedna.Geometry;
+namespace Sedna.GPU;
 
-public enum ComponentType {
-	Byte,
-	SByte,
-	Short,
-	UShort,
-	Int,
-	UInt,
-	Float,
+public enum CullMode {
+	Front = 1,
+	Back = 2,
 }

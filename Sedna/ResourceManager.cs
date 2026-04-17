@@ -1,0 +1,93 @@
+// SPDX-FileCopyrightText: 2026 Neptuwunium <ada@chronovore.dev>
+//
+// SPDX-License-Identifier: EUPL-1.2
+
+using Charon.Hash.Algorithms;
+using Sedna.GPU;
+
+namespace Sedna;
+
+public class ResourceManager {
+	public Dictionary<TextureResourceId, Texture> Textures { get; } = [];
+	public Dictionary<ShaderResourceId, Shader> Shaders { get; } = [];
+	public Dictionary<MeshResourceId, Mesh> Meshes { get; } = [];
+	public Dictionary<MaterialResourceId, Material> Materials { get; } = [];
+	
+	public SednaScene Scene { get; }
+
+	internal ResourceManager(SednaScene scene) => Scene = scene;
+
+	public static ulong CreateId(string name, ResourceKind kind, string? tweak = null) {
+		var value = CityHashAlgorithm.Hash64(name) ^ (tweak != null ? CityHashAlgorithm.Hash64(tweak) : 0);
+		value >>= 8;
+		value |= (ulong) kind << 58;
+		return value;
+	}
+
+	public Texture CreateTexture(string name, ulong? id = null) {
+		TextureResourceId textureId = id ?? CreateId(name, ResourceKind.Texture);
+		if (Textures.TryGetValue(textureId, out var texture)) {
+			return texture;
+		}
+
+		return Textures[textureId] = new Texture(textureId, this);
+	}
+
+	public Shader CreateShader(string name, ulong? id = null) {
+		ShaderResourceId shaderId = id ?? CreateId(name, ResourceKind.Shader);
+		if (Shaders.TryGetValue(shaderId, out var shader)) {
+			return shader;
+		}
+
+		return Shaders[shaderId] = new Shader(shaderId, this);
+	}
+
+	public Material CreateMaterial(string name, ulong? id = null) {
+		MaterialResourceId materialId = id ?? CreateId(name, ResourceKind.Material);
+		if (Materials.TryGetValue(materialId, out var material)) {
+			return material;
+		}
+
+		return Materials[materialId] = new Material(materialId, this);
+	}
+
+	public Mesh CreateMesh(string name, ulong? id = null) {
+		MeshResourceId meshId = id ?? CreateId(name, ResourceKind.Mesh);
+		if (Meshes.TryGetValue(meshId, out var mesh)) {
+			return mesh;
+		}
+
+		return Meshes[meshId] = new Mesh(meshId, this);
+	}
+
+	private void Destroy<T, TId>(Dictionary<TId, T> values, TId id) where TId : struct, IResourceId where T : ManagedResource<TId> {
+		// todo: wait on device fence maybe?
+
+		if (values.Remove(id, out var value)) {
+			value.Destroy();
+		}
+	}
+
+	public void Destroy(IResourceId id) {
+		switch (id.Kind) {
+			case ResourceKind.Texture: {
+				Destroy(Textures, id.Value);
+				break;
+			}
+			case ResourceKind.Shader: {
+				Destroy(Shaders, id.Value);
+				break;
+			}
+			case ResourceKind.Mesh: {
+				Destroy(Meshes, id.Value);
+				break;
+			}
+			case ResourceKind.Material: {
+				Destroy(Materials, id.Value);
+				break;
+			}
+			case ResourceKind.Invalid:
+			default: throw new ArgumentOutOfRangeException(nameof(id));
+		}
+	}
+}

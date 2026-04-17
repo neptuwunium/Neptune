@@ -1,0 +1,19 @@
+// SPDX-FileCopyrightText: 2026 Neptuwunium <ada@chronovore.dev>
+//
+// SPDX-License-Identifier: EUPL-1.2
+
+using Sedna.Nodes;
+using Sedna.Render;
+
+namespace Sedna;
+
+public class SednaScene {
+	public Node Root { get; } = new();
+	public ResourceManager Resources { get; }
+	public RenderLoop Renderer { get; }
+
+	public SednaScene(RenderLoop renderer) {
+		Renderer = renderer;
+		Resources = new ResourceManager(this);
+	}
+}

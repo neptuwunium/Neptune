@@ -2,11 +2,14 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace Sedna.Geometry;
+namespace Sedna.GPU;
 
-[Flags]
-public enum LayerMask {
-	ShadowCaster = 1,
-	Opaque = 2,
-	Transparent = 4,
+public enum ComponentType {
+	Byte,
+	SByte,
+	Short,
+	UShort,
+	Int,
+	UInt,
+	Float,
 }

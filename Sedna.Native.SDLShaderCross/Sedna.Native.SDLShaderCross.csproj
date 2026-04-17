@@ -11,7 +11,7 @@ SPDX-License-Identifier: EUPL-1.2
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<NoWarn>CA5392</NoWarn>
+		<NoWarn>CA5392;CA1060</NoWarn>
 		<RootNamespace>SDL</RootNamespace>
 	</PropertyGroup>
 

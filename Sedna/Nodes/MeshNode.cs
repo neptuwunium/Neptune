@@ -2,11 +2,9 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-using Sedna.Geometry;
-
 namespace Sedna.Nodes;
 
 public class MeshNode : Node {
-	public Mesh? Mesh { get; set; }
-	public List<MaterialInstance?> Materials { get; set; } = [];
+	public MeshResourceId Mesh { get; set; }
+	public List<MaterialResourceId> Materials { get; set; } = [];
 }

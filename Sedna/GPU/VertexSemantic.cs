@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace Sedna.Geometry;
+namespace Sedna.GPU;
 
 public enum VertexSemantic {
 	Position,

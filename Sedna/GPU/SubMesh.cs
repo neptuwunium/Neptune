@@ -2,6 +2,6 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace Sedna.Geometry;
+namespace Sedna.GPU;
 
 public record struct SubMesh(int FirstIndex, int IndexCount);

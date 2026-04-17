@@ -2,9 +2,11 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-namespace Sedna.Geometry;
+namespace Sedna.GPU;
 
-public enum CullMode {
-	Front = 1,
-	Back = 2,
+[Flags]
+public enum LayerMask {
+	ShadowCaster = 1,
+	Opaque = 2,
+	Transparent = 4,
 }
