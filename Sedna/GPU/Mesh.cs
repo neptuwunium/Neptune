@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+using System.Buffers;
 using Pluto.IO.Binary;
 using SDL;
 using static SDL.SDL3;
@@ -21,10 +22,22 @@ public class Mesh : ManagedResource<MeshResourceId> {
 	public ComponentType IndexType { get; set; }
 	public List<SubMesh> SubMeshes { get; set; } = [];
 
+	public MemoryHandle VertexBufferHandle { get; set; }
+	public MemoryHandle IndexBufferHandle { get; set; }
 	public unsafe SDL_GPUBuffer* DeviceVertexBuffer { get; set; }
 	public unsafe SDL_GPUBuffer* DeviceIndexBuffer { get; set; }
 
 	public override unsafe void Destroy() {
+		if (VertexBufferHandle.Pointer != null) {
+			VertexBufferHandle.Dispose();
+			VertexBufferHandle = default;
+		}
+
+		if (IndexBufferHandle.Pointer != null) {
+			IndexBufferHandle.Dispose();
+			IndexBufferHandle = default;
+		}
+
 		if (DeviceVertexBuffer != null) {
 			SDL_ReleaseGPUBuffer(Manager.Scene.Renderer.DeviceHandle, DeviceVertexBuffer);
 			DeviceVertexBuffer = null;

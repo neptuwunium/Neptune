@@ -16,6 +16,7 @@ public class Shader : ManagedResource<ShaderResourceId> {
 	public SDL_ShaderCross_ShaderStage Stage { get; set; }
 	public string? IncludeDir { get; set; }
 	public string EntryPoint { get; set; } = "shader_main";
+	public string? ShaderCode { get; set; }
 
 	public nint DeviceShaderCode { get; set; }
 	public unsafe SDL_GPUShader* DeviceShader { get; set; }

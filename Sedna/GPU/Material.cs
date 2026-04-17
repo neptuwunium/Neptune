@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+using System.Buffers;
 using Pluto.IO.Binary;
 using SDL;
 using static SDL.SDL3;
@@ -19,9 +20,15 @@ public class Material : ManagedResource<MaterialResourceId> {
 	public ShaderResourceId VertexShader { get; set; }
 	public ShaderResourceId FragmentShader { get; set; }
 
+	public MemoryHandle UniformBufferHandle { get; set; }
 	public unsafe SDL_GPUBuffer* DeviceUniformBuffer { get; set; }
 
 	public override unsafe void Destroy() {
+		if (UniformBufferHandle.Pointer != null) {
+			UniformBufferHandle.Dispose();
+			UniformBufferHandle = default;
+		}
+
 		if (DeviceUniformBuffer != null) {
 			SDL_ReleaseGPUBuffer(Manager.Scene.Renderer.DeviceHandle, DeviceUniformBuffer);
 			DeviceUniformBuffer = null;
