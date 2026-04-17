@@ -17,15 +17,25 @@ public class ResourceManager {
 
 	internal ResourceManager(SednaScene scene) => Scene = scene;
 
-	public static ulong CreateId(string name, ResourceKind kind, string? tweak = null) {
-		var value = CityHashAlgorithm.Hash64(name) ^ (tweak != null ? CityHashAlgorithm.Hash64(tweak) : 0);
-		value >>= 8;
-		value |= (ulong) kind << 58;
+	public static ulong CreateId(string name, string? tweak = null) => CityHashAlgorithm.Hash64(name) ^ (tweak != null ? CityHashAlgorithm.Hash64(tweak) : 0);
+
+	private static ulong CreateId(string name, ResourceKind kind) {
+		var value = CityHashAlgorithm.Hash64(name);
+		return CreateId(value, kind);
+	}
+
+	private static ulong CreateId(ulong value, ResourceKind kind) {
+		if (value >> 56 == (ulong) kind) {
+			return value;
+		}
+
+		value &= 0x00FFFFFFFFFFFFFFu;
+		value |= (ulong) kind << 56;
 		return value;
 	}
 
 	public Texture CreateTexture(string name, ulong? id = null) {
-		TextureResourceId textureId = id ?? CreateId(name, ResourceKind.Texture);
+		TextureResourceId textureId = id.HasValue ? CreateId(id.Value, ResourceKind.Texture) : CreateId(name, ResourceKind.Texture);
 		if (Textures.TryGetValue(textureId, out var texture)) {
 			return texture;
 		}
@@ -34,7 +44,7 @@ public class ResourceManager {
 	}
 
 	public Shader CreateShader(string name, ulong? id = null) {
-		ShaderResourceId shaderId = id ?? CreateId(name, ResourceKind.Shader);
+		ShaderResourceId shaderId = id.HasValue ? CreateId(id.Value, ResourceKind.Shader) : CreateId(name, ResourceKind.Shader);
 		if (Shaders.TryGetValue(shaderId, out var shader)) {
 			return shader;
 		}
@@ -43,7 +53,7 @@ public class ResourceManager {
 	}
 
 	public Material CreateMaterial(string name, ulong? id = null) {
-		MaterialResourceId materialId = id ?? CreateId(name, ResourceKind.Material);
+		MaterialResourceId materialId = id.HasValue ? CreateId(id.Value, ResourceKind.Material) : CreateId(name, ResourceKind.Material);
 		if (Materials.TryGetValue(materialId, out var material)) {
 			return material;
 		}
@@ -52,7 +62,7 @@ public class ResourceManager {
 	}
 
 	public Mesh CreateMesh(string name, ulong? id = null) {
-		MeshResourceId meshId = id ?? CreateId(name, ResourceKind.Mesh);
+		MeshResourceId meshId = id.HasValue ? CreateId(id.Value, ResourceKind.Mesh) : CreateId(name, ResourceKind.Mesh);
 		if (Meshes.TryGetValue(meshId, out var mesh)) {
 			return mesh;
 		}
