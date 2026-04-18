@@ -12,7 +12,7 @@ namespace Sedna.GPU;
 
 public record struct ShaderOptions {
 	public static ShaderOptions Default { get; } = new();
-	
+
 	public bool Debug { get; set; }
 	public string? DebugName { get; set; }
 	public bool CullUnusedBindings { get; set; }
@@ -20,6 +20,11 @@ public record struct ShaderOptions {
 
 public class GraphicShader : Shader {
 	internal GraphicShader(ShaderResourceId value, ResourceManager manager) : base(value, manager) { }
+
+	public int Samplers { get; set; }
+	public int Textures { get; set; }
+	public int StorageBuffers { get; set; }
+	public int UniformBuffers { get; set; }
 
 	protected override unsafe void CreateShader(byte* pointer, nuint size, byte* entryPoint) {
 		var shaderInfo = stackalloc SDL_GPUShaderCreateInfo[1];
@@ -37,27 +42,30 @@ public class GraphicShader : Shader {
 		shaderInfo->num_storage_buffers = (uint) StorageBuffers;
 		shaderInfo->num_uniform_buffers = (uint) UniformBuffers;
 		shaderInfo->props = 0;
-		
+
 		// todo SDL_PROP_GPU_SHADER_CREATE_NAME_STRING
-		
+
 		DeviceShader = SDL_CreateGPUShader(Manager.Scene.Renderer.DeviceHandle, shaderInfo);
 	}
-	
-	public int Samplers { get; set; }
-	public int Textures { get; set; }
-	public int StorageBuffers { get; set; }
-	public int UniformBuffers { get; set; }
 }
 
 public class ComputeShader : Shader {
 	public ComputeShader(ShaderResourceId value, ResourceManager manager) : base(value, manager) { }
 
-	protected override unsafe void CreateShader(byte* pointer, nuint size, byte* entryPoint) {
-		throw new NotImplementedException();
-	}
+	protected override unsafe void CreateShader(byte* pointer, nuint size, byte* entryPoint) => throw new NotImplementedException();
 }
 
 public abstract class Shader : ManagedResource<ShaderResourceId> {
+	static Shader() {
+		if (SDL_ShaderCross_Init() == 0) {
+			return;
+		}
+
+		AppDomain.CurrentDomain.ProcessExit += (_, _) => {
+			SDL_ShaderCross_Quit();
+		};
+	}
+
 	internal Shader(ShaderResourceId value, ResourceManager manager) : base(value, manager) { }
 
 	public string? Name { get; set; }
@@ -72,18 +80,8 @@ public abstract class Shader : ManagedResource<ShaderResourceId> {
 	public nuint DeviceShaderSize { get; set; }
 	public unsafe SDL_GPUShader* DeviceShader { get; set; }
 
-	static Shader() {
-		if (SDL_ShaderCross_Init() == 0) {
-			return;
-		}
-
-		AppDomain.CurrentDomain.ProcessExit += (_, _) => {
-			SDL_ShaderCross_Quit();
-		};
-	}
-
 	protected abstract unsafe void CreateShader(byte* pointer, nuint size, byte* entryPoint);
-	
+
 	public override unsafe void Create() {
 		if (ShaderCode == null) {
 			// todo: logging
@@ -93,40 +91,64 @@ public abstract class Shader : ManagedResource<ShaderResourceId> {
 		if (DeviceShader != null) {
 			return;
 		}
-		
+
+		const int MAX_SIZE = 4096;
+
 		// todo: ShaderCache
 		var info = stackalloc SDL_ShaderCross_HLSL_Info[1];
 		var size = stackalloc nuint[1];
-		
+
 		byte[]? entryPointArray = null;
 		byte[]? textArray = null;
 		byte[]? includeDirArray = null;
 		byte[]? defineTextArray = null;
-		
+
 		var codePtr = DeviceShaderCode;
 		var codeSize = DeviceShaderSize;
 
 		try {
+			// @formatter:off
 			var entryPointSize = Encoding.UTF8.GetByteCount(EntryPoint) + 1;
-			var entryPointBuffer = entryPointSize > 4096 ? entryPointArray = ArrayPool<byte>.Shared.Rent(entryPointSize) : stackalloc byte[entryPointSize];
+			var entryPointBuffer = entryPointSize > MAX_SIZE ?
+				entryPointArray = ArrayPool<byte>.Shared.Rent(entryPointSize) :
+				stackalloc byte[entryPointSize];
 			entryPointBuffer.Clear();
 			Encoding.UTF8.GetBytes(EntryPoint, entryPointBuffer);
+			// @formatter:on
 
-			if(codePtr == nint.Zero || codeSize == nuint.Zero) {
+			if (codePtr == nint.Zero || codeSize == nuint.Zero) {
 				if (codePtr != nint.Zero) {
 					SDL_free(codePtr);
 					DeviceShaderCode = nint.Zero;
 				}
 
+				// @formatter:off
 				var textSize = Encoding.UTF8.GetByteCount(ShaderCode) + 1;
-				var textBuffer = textSize > 4096 ? textArray = ArrayPool<byte>.Shared.Rent(textSize) : stackalloc byte[textSize];
+				var textBuffer = textSize > MAX_SIZE ?
+					textArray = ArrayPool<byte>.Shared.Rent(textSize) :
+					stackalloc byte[textSize];
 
-				var includeDirSize = IncludeDir != null ? Encoding.UTF8.GetByteCount(IncludeDir) + 1 : 0;
-				var includeDirBuffer = includeDirSize == 0 ? Span<byte>.Empty : includeDirSize > 4096 ? includeDirArray = ArrayPool<byte>.Shared.Rent(includeDirSize) : stackalloc byte[includeDirSize];
+				var includeDirSize = IncludeDir != null ? 
+					Encoding.UTF8.GetByteCount(IncludeDir) + 1 :
+					0;
+				var includeDirBuffer = includeDirSize != 0 ? 
+					includeDirSize > MAX_SIZE ? 
+						includeDirArray = ArrayPool<byte>.Shared.Rent(includeDirSize) : 
+						stackalloc byte[includeDirSize] : 
+					Span<byte>.Empty;
 
-				var defineTextSize = Defines.Count > 0 ? Defines.Sum(x => x.Key.Length + 1 + (x.Value != null ? x.Value.Length + 1 : 0)) : 0;
-				var defineTextBuffer = defineTextSize == 0 ? Span<byte>.Empty : defineTextSize > 4096 ? defineTextArray = ArrayPool<byte>.Shared.Rent(defineTextSize) : stackalloc byte[defineTextSize];
-				var defineBuffer = Defines.Count == 0 ? Span<SDL_ShaderCross_HLSL_Define>.Empty : stackalloc SDL_ShaderCross_HLSL_Define[Defines.Count + 1];
+				var defineTextSize = Defines.Count > 0 ? 
+					Defines.Sum(x => x.Key.Length + 1 + (x.Value != null ? x.Value.Length + 1 : 0)) :
+					0;
+				var defineTextBuffer = defineTextSize != 0 ? 
+					defineTextSize > MAX_SIZE ? 
+						defineTextArray = ArrayPool<byte>.Shared.Rent(defineTextSize) : 
+						stackalloc byte[defineTextSize] :
+					Span<byte>.Empty;
+				var defineBuffer = Defines.Count != 0 ? 
+					stackalloc SDL_ShaderCross_HLSL_Define[Defines.Count + 1] : 
+					Span<SDL_ShaderCross_HLSL_Define>.Empty;
+				// @formatter:on
 
 				textBuffer.Clear();
 				includeDirBuffer.Clear();
