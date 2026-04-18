@@ -109,6 +109,8 @@ public abstract class Shader : ManagedResource<ShaderResourceId> {
 		try {
 			var entryPointSize = Encoding.UTF8.GetByteCount(EntryPoint) + 1;
 			var entryPointBuffer = entryPointSize > 4096 ? entryPointArray = ArrayPool<byte>.Shared.Rent(entryPointSize) : stackalloc byte[entryPointSize];
+			entryPointBuffer.Clear();
+			Encoding.UTF8.GetBytes(EntryPoint, entryPointBuffer);
 
 			if(codePtr == nint.Zero || codeSize == nuint.Zero) {
 				if (codePtr != nint.Zero) {
@@ -127,13 +129,11 @@ public abstract class Shader : ManagedResource<ShaderResourceId> {
 				var defineBuffer = Defines.Count == 0 ? Span<SDL_ShaderCross_HLSL_Define>.Empty : stackalloc SDL_ShaderCross_HLSL_Define[Defines.Count + 1];
 
 				textBuffer.Clear();
-				entryPointBuffer.Clear();
 				includeDirBuffer.Clear();
 				defineTextBuffer.Clear();
 				defineBuffer.Clear();
 
 				Encoding.UTF8.GetBytes(ShaderCode, textBuffer);
-				Encoding.UTF8.GetBytes(EntryPoint, entryPointBuffer);
 
 				if (includeDirSize > 0) {
 					Encoding.UTF8.GetBytes(IncludeDir, includeDirBuffer);
