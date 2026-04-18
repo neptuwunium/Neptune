@@ -138,7 +138,7 @@ public abstract class Shader : ManagedResource<ShaderResourceId> {
 					Span<byte>.Empty;
 
 				var defineTextSize = Defines.Count > 0 ? 
-					Defines.Sum(x => x.Key.Length + 1 + (x.Value != null ? x.Value.Length + 1 : 0)) :
+					Defines.Sum(x => Encoding.ASCII.GetByteCount(x.Key) + 1 + (x.Value != null ? Encoding.ASCII.GetByteCount(x.Value) + 1 : 0)) :
 					0;
 				var defineTextBuffer = defineTextSize != 0 ? 
 					defineTextSize > MAX_SIZE ? 
@@ -166,11 +166,11 @@ public abstract class Shader : ManagedResource<ShaderResourceId> {
 					var defineIndex = 0;
 					foreach (var (defineKey, defineValue) in Defines) {
 						defineBuffer[defineIndex].name = (byte*) definePos;
-						definePos += Encoding.UTF8.GetBytes(defineKey, defineTextBuffer[definePos..]) + 1;
+						definePos += Encoding.ASCII.GetBytes(defineKey, defineTextBuffer[definePos..]) + 1;
 
 						if (defineValue != null) {
 							defineBuffer[defineIndex].value = (byte*) definePos;
-							definePos += Encoding.UTF8.GetBytes(defineValue, defineTextBuffer[definePos..]) + 1;
+							definePos += Encoding.ASCII.GetBytes(defineValue, defineTextBuffer[definePos..]) + 1;
 						}
 
 						defineIndex++;
