@@ -13,6 +13,7 @@ public abstract class ManagedResource<T> : IDisposable where T : struct, IResour
 	public T Id { get; internal set; }
 	public ResourceManager Manager { get; internal set; }
 
+	public abstract void Create();
 	public abstract void Destroy();
 
 	protected virtual void Dispose(bool disposing) => Manager.Destroy(Id);

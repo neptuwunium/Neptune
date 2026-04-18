@@ -27,6 +27,10 @@ public class Mesh : ManagedResource<MeshResourceId> {
 	public unsafe SDL_GPUBuffer* DeviceVertexBuffer { get; set; }
 	public unsafe SDL_GPUBuffer* DeviceIndexBuffer { get; set; }
 
+	public override unsafe void Create() {
+		throw new NotImplementedException();
+	}
+
 	public override unsafe void Destroy() {
 		if (VertexBufferHandle.Pointer != null) {
 			VertexBufferHandle.Dispose();

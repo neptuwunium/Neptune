@@ -21,6 +21,10 @@ public class Texture : ManagedResource<TextureResourceId> {
 	public unsafe SDL_GPUSampler* DeviceSampler { get; set; }
 	public unsafe SDL_GPUTexture* DeviceTexture { get; set; }
 
+	public override unsafe void Create() {
+		throw new NotImplementedException();
+	}
+
 	public override unsafe void Destroy() {
 		if (TextureHandle.Pointer != null) {
 			TextureHandle.Dispose();

@@ -23,6 +23,10 @@ public class Material : ManagedResource<MaterialResourceId> {
 	public MemoryHandle UniformBufferHandle { get; set; }
 	public unsafe SDL_GPUBuffer* DeviceUniformBuffer { get; set; }
 
+	public override unsafe void Create() {
+		throw new NotImplementedException();
+	}
+
 	public override unsafe void Destroy() {
 		if (UniformBufferHandle.Pointer != null) {
 			UniformBufferHandle.Dispose();
