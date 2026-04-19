@@ -22,7 +22,7 @@ public class Texture : ManagedResource<TextureResourceId> {
 	public override unsafe void Create() {
 		var device = Manager.Scene.Renderer.DeviceHandle;
 
-		if (DeviceTexture != null) {
+		if (DeviceTexture == null) {
 			if (Data == null) {
 				// todo logging
 				return;
@@ -42,12 +42,14 @@ public class Texture : ManagedResource<TextureResourceId> {
 
 			var transfer = SDL_CreateGPUTransferBuffer(device, &transferInfo);
 			if (transfer == null) {
+				// todo logging
 				Destroy();
 				return;
 			}
 
 			var map = SDL_MapGPUTransferBuffer(device, transfer, false);
 			if (map == nint.Zero) {
+				// todo logging
 				SDL_ReleaseGPUTransferBuffer(device, transfer);
 				Destroy();
 				return;
@@ -88,7 +90,7 @@ public class Texture : ManagedResource<TextureResourceId> {
 			SDL_ReleaseGPUTransferBuffer(device, transfer);
 		}
 
-		if (DeviceSampler != null) {
+		if (DeviceSampler == null) {
 			var info = SamplerInfo;
 			DeviceSampler = SDL_CreateGPUSampler(device, &info);
 		}
