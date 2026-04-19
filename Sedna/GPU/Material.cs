@@ -36,7 +36,7 @@ public class Material : ManagedResource<MaterialResourceId> {
 
 		var cmd = SDL_AcquireGPUCommandBuffer(device);
 		var pass = SDL_BeginGPUCopyPass(cmd);
-		var (buffer, transfer) = renderer.UploadBuffer(UniformBuffer, SDL_GPUBufferUsageFlags.SDL_GPU_BUFFERUSAGE_VERTEX, pass);
+		var (buffer, transfer) = renderer.UploadBuffer(UniformBuffer, SDL_GPUBufferUsageFlags.SDL_GPU_BUFFERUSAGE_GRAPHICS_STORAGE_READ, pass);
 		SDL_EndGPUCopyPass(pass);
 		SDL_SubmitGPUCommandBuffer(cmd);
 		SDL_ReleaseGPUTransferBuffer(device, (SDL_GPUTransferBuffer*) transfer);
