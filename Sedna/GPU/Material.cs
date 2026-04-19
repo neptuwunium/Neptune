@@ -23,13 +23,23 @@ public class Material : ManagedResource<MaterialResourceId> {
 	public unsafe SDL_GPUBuffer* DeviceUniformBuffer { get; set; }
 	public PipelineId PipelineHash {
 		get {
-			if (field.Value == 0) {
+			if (field == default(PipelineId)) {
 				field = CreatePipelineHash();
 			}
 
 			return field;
 		}
-		set;
+		set {
+			if (field != default(PipelineId)) {
+				Manager.Scene.PipelineCache.Destroy(Manager, this);
+			}
+
+			field = value;
+		}
+	}
+
+	public void Invalidate() {
+		PipelineHash = default;
 	}
 
 	public PipelineId CreatePipelineHash() {

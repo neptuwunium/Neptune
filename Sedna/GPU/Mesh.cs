@@ -28,13 +28,17 @@ public class Mesh : ManagedResource<MeshResourceId> {
 	public unsafe SDL_GPUBuffer* DeviceIndexBuffer { get; set; }
 	public PipelineId PipelineHash {
 		get {
-			if (field.Value == 0) {
+			if (field == default(PipelineId)) {
 				field = CreatePipelineHash();
 			}
 
 			return field;
 		}
 		set;
+	}
+
+	public void Invalidate() {
+		PipelineHash = default;
 	}
 
 	public PipelineId CreatePipelineHash() {
