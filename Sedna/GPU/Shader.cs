@@ -83,12 +83,12 @@ public abstract class Shader : ManagedResource<ShaderResourceId> {
 	protected abstract unsafe void CreateShader(byte* pointer, nuint size, byte* entryPoint);
 
 	public override unsafe void Create() {
-		if (ShaderCode == null) {
-			// todo: logging
+		if (DeviceShader != null) {
 			return;
 		}
-
-		if (DeviceShader != null) {
+		
+		if (ShaderCode == null) {
+			// todo: logging
 			return;
 		}
 

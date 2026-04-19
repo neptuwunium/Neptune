@@ -4,4 +4,4 @@
 
 namespace Sedna.GPU;
 
-public record struct SubMesh(int FirstIndex, int IndexCount);
+public record struct SubMesh(int FirstIndex, int FirstVertex, int Count);

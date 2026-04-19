@@ -8,10 +8,10 @@ using Sedna.GPU;
 namespace Sedna;
 
 public class ResourceManager {
-	public Dictionary<TextureResourceId, Texture> Textures { get; } = [];
-	public Dictionary<ShaderResourceId, Shader> Shaders { get; } = [];
-	public Dictionary<MeshResourceId, Mesh> Meshes { get; } = [];
-	public Dictionary<MaterialResourceId, Material> Materials { get; } = [];
+	public Dictionary<ulong, Texture> Textures { get; } = [];
+	public Dictionary<ulong, Shader> Shaders { get; } = [];
+	public Dictionary<ulong, Mesh> Meshes { get; } = [];
+	public Dictionary<ulong, Material> Materials { get; } = [];
 	
 	public SednaScene Scene { get; }
 
@@ -78,10 +78,10 @@ public class ResourceManager {
 		return Meshes[meshId] = new Mesh(meshId, this);
 	}
 
-	private void Destroy<T, TId>(Dictionary<TId, T> values, TId id) where TId : struct, IResourceId where T : ManagedResource<TId> {
+	private void Destroy<T, TId>(Dictionary<ulong, T> values, TId id) where TId : struct, IResourceId where T : ManagedResource<TId> {
 		// todo: wait on device fence maybe?
 
-		if (values.Remove(id, out var value)) {
+		if (values.Remove(id.Value, out var value)) {
 			value.Destroy();
 		}
 	}
@@ -89,23 +89,44 @@ public class ResourceManager {
 	public void Destroy(IResourceId id) {
 		switch (id.Kind) {
 			case ResourceKind.Texture: {
-				Destroy(Textures, id.Value);
+				Destroy<Texture, TextureResourceId>(Textures, id.Value);
 				break;
 			}
 			case ResourceKind.Shader: {
-				Destroy(Shaders, id.Value);
+				Destroy<Shader, ShaderResourceId>(Shaders, id.Value);
 				break;
 			}
 			case ResourceKind.Mesh: {
-				Destroy(Meshes, id.Value);
+				Destroy<Mesh, MeshResourceId>(Meshes, id.Value);
 				break;
 			}
 			case ResourceKind.Material: {
-				Destroy(Materials, id.Value);
+				Destroy<Material, MaterialResourceId>(Materials, id.Value);
 				break;
 			}
 			case ResourceKind.Invalid:
 			default: throw new ArgumentOutOfRangeException(nameof(id));
+		}
+	}
+
+	private static T? Find<T, TId>(Dictionary<ulong, T> values, TId id) where TId : struct, IResourceId where T : ManagedResource<TId> => values.GetValueOrDefault(id.Value);
+
+	public T? Find<T, TId>(TId id) where TId : struct, IResourceId where T : ManagedResource<TId> {
+		switch (id.Kind) {
+			case ResourceKind.Texture: {
+				return Find<Texture, TextureResourceId>(Textures, id.Value) as T;
+			}
+			case ResourceKind.Shader: {
+				return Find<Shader, ShaderResourceId>(Shaders, id.Value) as T;
+			}
+			case ResourceKind.Mesh: {
+				return Find<Mesh, MeshResourceId>(Meshes, id.Value) as T;
+			}
+			case ResourceKind.Material: {
+				return Find<Material, MaterialResourceId>(Materials, id.Value) as T;
+			}
+			case ResourceKind.Invalid:
+			default: return default;
 		}
 	}
 }
