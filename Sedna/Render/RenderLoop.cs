@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using Pluto.IO.Binary;
 using SDL;
 using Sedna.Hosting;
 using static SDL.SDL3;
@@ -93,6 +94,60 @@ public class RenderLoop : IDisposable {
 			SDL_GPUSwapchainComposition.SDL_GPU_SWAPCHAINCOMPOSITION_SDR,
 			SDL_GPUPresentMode.SDL_GPU_PRESENTMODE_VSYNC
 		);
+	}
+	
+	public unsafe (nint Buffer, nint Transfer) UploadBuffer(IRentedArray<byte>? data, SDL_GPUBufferUsageFlags usage, SDL_GPUCopyPass* pass) {
+		if (data == null) {
+			return (nint.Zero, nint.Zero);
+		}
+
+		var bufferSize = (uint) data.Length;
+		var bufferInfo = new SDL_GPUBufferCreateInfo {
+			usage = usage,
+			size = bufferSize,
+			props = 0,
+		};
+
+		// todo: SDL_PROP_GPU_BUFFER_CREATE_NAME_STRING
+		var buffer = SDL_CreateGPUBuffer(DeviceHandle, &bufferInfo);
+		if (buffer == null) {
+			// todo logging
+			return (nint.Zero, nint.Zero);
+		}
+
+		var transferInfo = new SDL_GPUTransferBufferCreateInfo {
+			usage = SDL_GPUTransferBufferUsage.SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,
+			size = bufferSize,
+		};
+
+		// todo: SDL_PROP_GPU_TRANSFERBUFFER_CREATE_NAME_STRING
+		var transferBuffer = SDL_CreateGPUTransferBuffer(DeviceHandle, &transferInfo);
+		if (transferBuffer == null) {
+			// todo logging
+			SDL_ReleaseGPUBuffer(DeviceHandle, buffer);
+			return (nint.Zero, nint.Zero);
+		}
+
+		var map = SDL_MapGPUTransferBuffer(DeviceHandle, transferBuffer, false);
+		if (map == nint.Zero) {
+			// todo logging
+			SDL_ReleaseGPUBuffer(DeviceHandle, buffer);
+			SDL_ReleaseGPUTransferBuffer(DeviceHandle, transferBuffer);
+			return (nint.Zero, nint.Zero);
+		}
+
+		using (var pinned = data.Memory.Pin()) {
+			Buffer.MemoryCopy(pinned.Pointer, (void*) map, bufferSize, bufferSize);
+		}
+
+		SDL_UnmapGPUTransferBuffer(DeviceHandle, transferBuffer);
+
+		var src = new SDL_GPUTransferBufferLocation { transfer_buffer = transferBuffer, offset = 0 };
+		var dst = new SDL_GPUBufferRegion { buffer = buffer, offset = 0, size = bufferSize };
+
+		SDL_UploadToGPUBuffer(pass, &src, &dst, false);
+
+		return ((nint) buffer, (nint) transferBuffer);
 	}
 
 	private unsafe void ReleaseUnmanagedResources() {
