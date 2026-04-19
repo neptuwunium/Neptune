@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+using Charon.Hash.Algorithms;
 using Pluto.IO.Binary;
 using SDL;
 using static SDL.SDL3;
@@ -25,6 +26,38 @@ public class Mesh : ManagedResource<MeshResourceId> {
 
 	public unsafe SDL_GPUBuffer* DeviceVertexBuffer { get; set; }
 	public unsafe SDL_GPUBuffer* DeviceIndexBuffer { get; set; }
+	public PipelineId PipelineHash {
+		get {
+			if (field.Value == 0) {
+				field = CreatePipelineHash();
+			}
+
+			return field;
+		}
+		set;
+	}
+
+	public PipelineId CreatePipelineHash() {
+		using var writer = new ArrayPoolBinaryWriter();
+
+		writer.Write((int) Type);
+		writer.Write(Semantics.Count);
+		foreach (var semantic in Semantics) {
+			writer.Write(semantic);
+		}
+
+		writer.Write(VertexStrides.Count);
+		foreach (var stride in VertexStrides) {
+			writer.Write(stride);
+		}
+
+		writer.Write(VertexOffsets.Count);
+		foreach (var offset in VertexOffsets) {
+			writer.Write(offset);
+		}
+		
+		return CityHashAlgorithm.Hash128(writer.Array.AsSpan(0, writer.Length));
+	}
 
 	public override unsafe void Create() {
 		if (DeviceVertexBuffer != null) {
@@ -58,82 +91,6 @@ public class Mesh : ManagedResource<MeshResourceId> {
 
 		DeviceVertexBuffer = (SDL_GPUBuffer*) vertexBuffer;
 		DeviceIndexBuffer = (SDL_GPUBuffer*) indexBuffer;
-	}
-
-	public unsafe SDL_GPUGraphicsPipeline* CreatePipeline(Material material) {
-		Create();
-
-		if (DeviceVertexBuffer == null) {
-			return null;
-		}
-
-		if (VertexStrides.Count != VertexOffsets.Count) {
-			// todo logging
-			return null;
-		}
-
-		// todo: Create Manager.PipelineCache.Create(material, mesh). This is only here because VertexSemantics is on the mesh.
-		var vertShader = Manager.Find<Shader, ShaderResourceId>(material.VertexShader);
-		var fragShader = Manager.Find<Shader, ShaderResourceId>(material.FragmentShader);
-
-		if (vertShader == null || fragShader == null) {
-			// todo logging
-			return null;
-		}
-
-		var device = Manager.Scene.Renderer.DeviceHandle;
-		var window = Manager.Scene.Renderer.WindowHandle;
-
-		vertShader.Create();
-		fragShader.Create();
-
-		var vattr = stackalloc SDL_GPUVertexAttribute[Semantics.Count];
-		Span<uint> bufferIdx = stackalloc uint[Semantics.Count];
-		for (var index = 0; index < Semantics.Count; index++) {
-			var attribute = Semantics[index];
-			vattr[index] = new SDL_GPUVertexAttribute {
-				location = bufferIdx[attribute.BufferIndex]++,
-				offset = (uint) attribute.Offset,
-				buffer_slot = (uint) attribute.BufferIndex,
-				format = attribute.Format,
-			};
-		}
-
-		var vbind = stackalloc SDL_GPUVertexBufferDescription[VertexStrides.Count];
-		for (var index = 0; index < VertexStrides.Count; index++) {
-			var stride = VertexStrides[index];
-			vbind[index] = new SDL_GPUVertexBufferDescription {
-				slot = (uint) index,
-				pitch = (uint) stride,
-				input_rate = SDL_GPUVertexInputRate.SDL_GPU_VERTEXINPUTRATE_VERTEX,
-				instance_step_rate = 0,
-			};
-		}
-
-		// todo: pbr targets instead of swap for opaque
-		// 3 targets: color + ao, normal + emission, metalness + roughness 
-		var colorTargetDesc = new SDL_GPUColorTargetDescription {
-			format = SDL_GetGPUSwapchainTextureFormat(device, window),
-		};
-
-		var pipelineInfo = new SDL_GPUGraphicsPipelineCreateInfo {
-			vertex_shader = vertShader.DeviceShader,
-			fragment_shader = fragShader.DeviceShader,
-			vertex_input_state = new SDL_GPUVertexInputState {
-				vertex_attributes = vattr,
-				num_vertex_attributes = (uint) Semantics.Count,
-				vertex_buffer_descriptions = vbind,
-				num_vertex_buffers = (uint) VertexStrides.Count,
-			},
-			primitive_type = Type,
-			rasterizer_state = new SDL_GPURasterizerState { cull_mode = material.CullMode },
-			target_info = new SDL_GPUGraphicsPipelineTargetInfo {
-				color_target_descriptions = &colorTargetDesc,
-				num_color_targets = 1,
-			},
-		};
-
-		return SDL_CreateGPUGraphicsPipeline(device, &pipelineInfo);
 	}
 
 	public Dictionary<MaterialResourceId, List<SubMesh>>? CollectSubmeshes(List<MaterialResourceId> resourceIds) {

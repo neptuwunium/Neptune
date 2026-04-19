@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+using Charon.Hash.Algorithms;
 using Pluto.IO.Binary;
 using SDL;
 using static SDL.SDL3;
@@ -20,6 +21,25 @@ public class Material : ManagedResource<MaterialResourceId> {
 	public ShaderResourceId FragmentShader { get; set; }
 
 	public unsafe SDL_GPUBuffer* DeviceUniformBuffer { get; set; }
+	public PipelineId PipelineHash {
+		get {
+			if (field.Value == 0) {
+				field = CreatePipelineHash();
+			}
+
+			return field;
+		}
+		set;
+	}
+
+	public PipelineId CreatePipelineHash() {
+		using var writer = new ArrayPoolBinaryWriter();
+
+		writer.Write((int) CullMode);
+		writer.Write((int) LayerMask);
+		
+		return CityHashAlgorithm.Hash128(writer.Array.AsSpan(0, writer.Length));
+	}
 
 	public override unsafe void Create() {
 		if (DeviceUniformBuffer != null) {
@@ -27,6 +47,11 @@ public class Material : ManagedResource<MaterialResourceId> {
 		}
 
 		if (UniformBuffer == null) {
+			// todo logging
+			return;
+		}
+
+		if (UniformBuffer.Length % 16 > 0) {
 			// todo logging
 			return;
 		}
@@ -48,5 +73,7 @@ public class Material : ManagedResource<MaterialResourceId> {
 			SDL_ReleaseGPUBuffer(Manager.Scene.Renderer.DeviceHandle, DeviceUniformBuffer);
 			DeviceUniformBuffer = null;
 		}
+		
+		Manager.Scene.PipelineCache.Destroy(Manager, this);
 	}
 }

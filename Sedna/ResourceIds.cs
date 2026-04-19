@@ -34,3 +34,5 @@ public enum ResourceKind : byte {
 [TransparentStruct<ulong>] public partial struct MeshResourceId : IResourceId {
 	public ResourceKind Kind => (ResourceKind)(Value >> 56);
 }
+
+[TransparentStruct<UInt128>] public partial struct PipelineId;

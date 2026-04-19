@@ -7,6 +7,7 @@ namespace Sedna.GPU;
 [Flags]
 public enum LayerMask {
 	ShadowCaster = 1,
-	Opaque = 2,
-	Transparent = 4,
+	DeferredOpaque = 2,
+	ForwardOpaque = 4,
+	Transparent = 8,
 }
