@@ -21,8 +21,8 @@ public class PipelineCache {
 
 		Span<ulong> hash = stackalloc ulong[4];
 		hash[0] = meshHash.Low;
-		hash[1] = meshHash.High;
-		hash[2] = materialHash.Low;
+		hash[1] = materialHash.Low;
+		hash[2] = meshHash.High;
 		hash[3] = materialHash.High;
 
 		var (lo, hi) = MurmurHash3Algorithm.Hash64_128(MemoryMarshal.AsBytes(hash));
