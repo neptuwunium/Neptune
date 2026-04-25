@@ -2,24 +2,26 @@
 //
 // SPDX-License-Identifier: MIT
 
+using System.Runtime.CompilerServices;
+
 namespace Triton.Pixel.Formats;
 
 public record struct ColorR11G11B10 : IColor<ColorR11G11B10, float> {
 	public uint Value { get; set; }
 
 	public float R {
-		readonly get => (Value & 0x7FFU) / 2047.0f;
-		set => Value = (Value & 0xFFFFF800U) | (uint) (value * 0x7FF);
+		readonly get => (float) Unsafe.BitCast<ushort, Half>((ushort) ((Value & 0x000007FF) << 4));
+		set => Value = (Value & 0xFFFFF800U) | (uint) (Unsafe.BitCast<Half, ushort>((Half) value) >> 4);
 	}
 
 	public float G {
-		readonly get => ((Value >> 11) & 0x7FF) / 2047.0f;
-		set => Value = (Value & 0xFFC007FFU) | ((uint) (value * 0x7FF) << 11);
+		readonly get => (float) Unsafe.BitCast<ushort, Half>((ushort) ((Value & 0x003FF800) >> 7));
+		set => Value = (Value & 0xFFC007FFU) | ((uint) (Unsafe.BitCast<Half, ushort>((Half) value) >> 4) << 11);
 	}
 
 	public float B {
-		readonly get => ((Value >> 22) & 0x3FF) / 1023.0f;
-		set => Value = (Value & 0x3FFFFFU) | ((uint) (value * 0x3FF) << 22);
+		readonly get => (float) Unsafe.BitCast<ushort, Half>((ushort) ((Value & 0xFFC00000) >> 17));
+		set => Value = (Value & 0x3FFFFFU) | ((uint) (Unsafe.BitCast<Half, ushort>((Half) value) >> 5) << 22);
 	}
 
 	public readonly float A {
