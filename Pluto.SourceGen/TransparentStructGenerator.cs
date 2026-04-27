@@ -18,7 +18,11 @@ public class TransparentStructGenerator : IIncrementalGenerator {
 			static (node, _) => node is StructDeclarationSyntax,
 			static (ctx, _) => (INamedTypeSymbol) ctx.TargetSymbol);
 
-		context.RegisterSourceOutput(source, static (spc, symbol) => {
+		var combined = source.Combine(context.CompilationProvider.Select((compilation, _) => compilation.GetTypeByMetadataName("System.Object")));
+		
+		context.RegisterSourceOutput(combined, static (spc, provider) => {
+			var symbol = provider.Left;
+			var objectType = provider.Right;
 			var typeAttribute = symbol.GetAttributes().First(x => x is { AttributeClass: { Name: "TransparentStructAttribute", IsGenericType: true } });
 			var label = (string) (typeAttribute.ConstructorArguments[0].Value ?? "Value");
 			var valueType = typeAttribute.AttributeClass!.TypeArguments[0];
@@ -70,7 +74,7 @@ public class TransparentStructGenerator : IIncrementalGenerator {
 							hasEqualsValue = true;
 						}
 				
-						if (method.Parameters[0].Type.Name == "Object") {
+						if (cmp.Equals(method.Parameters[0].Type, objectType)) {
 							hasEqualsObject = true;
 						}
 
