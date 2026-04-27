@@ -6,6 +6,7 @@ SPDX-License-Identifier: EUPL-1.2
 
 <Solution>
   <Project Path="Ceres/Ceres.csproj" />
+  <Project Path="Charon.Tests/Charon.Tests.csproj" />
   <Project Path="Charon/Charon.csproj" />
   <Project Path="Pluto/Pluto.csproj" />
   <Project Path="Pluto.SourceGen/Pluto.SourceGen.csproj" />

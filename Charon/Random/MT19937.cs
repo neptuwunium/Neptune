@@ -4,10 +4,10 @@
 
 using System.Numerics;
 
-namespace Charon.Hash.Algorithms;
+namespace Charon.Random;
 
 // modified https://github.com/lineplay/mt19937_64_cs/blob/master/mt19937_64.cs to take mt parameters.
-public sealed class MTRNGAlgorithm<T> where T : struct, IUnsignedNumber<T>, IBinaryInteger<T>, IMinMaxValue<T> {
+public sealed class MT19937<T> where T : struct, IUnsignedNumber<T>, IBinaryInteger<T>, IMinMaxValue<T> {
 	private readonly T A;
 	private readonly T B;
 	private readonly T C;
@@ -23,7 +23,7 @@ public sealed class MTRNGAlgorithm<T> where T : struct, IUnsignedNumber<T>, IBin
 	private readonly int Z;
 	private ulong Index;
 
-	public MTRNGAlgorithm(T seed, ulong n, ulong m, int r, T a, T b, T c, T d, int w, int x, int y, int z, T f) {
+	public MT19937(T seed, ulong n, ulong m, int r, T a, T b, T c, T d, int w, int x, int y, int z, T f) {
 		N = n;
 		M = m;
 		A = a;

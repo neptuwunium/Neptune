@@ -30,7 +30,7 @@ public sealed partial class OodleTex {
 		return NativeMethods.OodleTexRT_BC7Prep_Decode((byte*) outPin.Pointer, output.Length, (byte*) inPin.Pointer, input.Length, ref header, flags, (byte*) scratchPin.Pointer, scratch.Memory.Length);
 	}
 
-	[InlineArray(10)] [StructLayout(LayoutKind.Sequential, Pack = 4)]
+	[StructLayout(LayoutKind.Sequential)] [InlineArray(10)]
 	public struct BC7ModeCounts : IEquatable<BC7ModeCounts> {
 		public uint Value;
 
