@@ -8,13 +8,13 @@ using Sedna.Render;
 namespace Sedna;
 
 public class SednaScene {
-	public Node Root { get; } = new();
-	public ResourceManager Resources { get; }
-	public RenderLoop Renderer { get; }
-	public PipelineCache PipelineCache { get; } = new();
-
 	public SednaScene(RenderLoop renderer) {
 		Renderer = renderer;
 		Resources = new ResourceManager(this);
 	}
+
+	public Node Root { get; } = new();
+	public ResourceManager Resources { get; }
+	public RenderLoop Renderer { get; }
+	public PipelineCache PipelineCache { get; } = new();
 }

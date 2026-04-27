@@ -25,17 +25,17 @@ public class ArrayPoolBinaryReader : BufferBinaryReader {
 	protected byte[]? Array { get; set; }
 	protected IRentedArray<byte> Rented { get; set; }
 
+	public bool LeaveOpen { get; }
+
 	public override void ReadBytes(Span<byte> span) {
 		if (Array is { } array) {
 			array.AsSpan(Position, Length).CopyTo(span);
 		} else {
 			Rented.Span.Slice(Position, span.Length).CopyTo(span);
 		}
-		
+
 		Position += span.Length;
 	}
-
-	public bool LeaveOpen { get; }
 
 	public override IRentedArray<T> ReadShared<T>(int length) where T : struct {
 		var arr = new UnownedCovariantArray<T>(Rented, Position, length);

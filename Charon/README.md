@@ -8,9 +8,9 @@ SPDX-License-Identifier: EUPL-1.2
 
 Wrappers around Native compression methods.
 
-
 - Windows: LZO, and Oodle have to be provided manually.
-- Linux: Your distro package manager will have almost all dependencies (`apt install libchm1 lzo2 zstd`, `portage emerge dev-libs/chmlib dev-libs/lzo app-arch/zstd`, etc)
+- Linux: Your distro package manager will have almost all dependencies (`apt install libchm1 lzo2 zstd`,
+  `portage emerge dev-libs/chmlib dev-libs/lzo app-arch/zstd`, etc)
 - macOS: same as linux, but use Homebrew (`brew install chmlib lzo zstd`)
 
 Oodle is a proprietary codec and a built library to be made manually using the SDK as provided by RAD.
@@ -20,7 +20,8 @@ The Oodle library has to be renamed to `liboo2core` (keeping the .dll, .so or .d
 
 - Density: [DENSITY](https://github.com/g1mv/density).
 - LZO1/LZO2: [LZO](https://www.oberhumer.com/opensource/lzo/), native module will never be provided.
-- LZX: [CHMLib](http://morte.jedrea.com/~jedwin/projects/chmlib/), requires the GNU compiler or source edits. Will be provided when I can reliably build DLLs. Might have a windows-native workaround.
+- LZX: [CHMLib](http://morte.jedrea.com/~jedwin/projects/chmlib/), requires the GNU compiler or source edits. Will be
+  provided when I can reliably build DLLs. Might have a windows-native workaround.
 - Oodle: Epic Games, native module will never be provided.
 - ZStandard: [ZStandard](https://github.com/facebook/zstd/). Provides windows DLL builds.
 

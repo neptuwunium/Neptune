@@ -8,14 +8,13 @@ using Sedna.GPU;
 namespace Sedna;
 
 public class ResourceManager {
+	internal ResourceManager(SednaScene scene) => Scene = scene;
 	public Dictionary<ulong, Texture> Textures { get; } = [];
 	public Dictionary<ulong, Shader> Shaders { get; } = [];
 	public Dictionary<ulong, Mesh> Meshes { get; } = [];
 	public Dictionary<ulong, Material> Materials { get; } = [];
-	
-	public SednaScene Scene { get; }
 
-	internal ResourceManager(SednaScene scene) => Scene = scene;
+	public SednaScene Scene { get; }
 
 	public static ulong CreateId(string name, string? tweak = null) => CityHashAlgorithm.Hash64(name) ^ (tweak != null ? CityHashAlgorithm.Hash64(tweak) : 0);
 

@@ -21,6 +21,7 @@ public class Material : ManagedResource<MaterialResourceId> {
 	public ShaderResourceId FragmentShader { get; set; }
 
 	public unsafe SDL_GPUBuffer* DeviceUniformBuffer { get; set; }
+
 	public PipelineId PipelineHash {
 		get {
 			if (field == default(PipelineId)) {
@@ -38,16 +39,14 @@ public class Material : ManagedResource<MaterialResourceId> {
 		}
 	}
 
-	public void Invalidate() {
-		PipelineHash = default;
-	}
+	public void Invalidate() => PipelineHash = default;
 
 	public PipelineId CreatePipelineHash() {
 		using var writer = new ArrayPoolBinaryWriter();
 
 		writer.Write((int) CullMode);
 		writer.Write((int) LayerMask);
-		
+
 		return CityHashAlgorithm.Hash128(writer.Array.AsSpan(0, writer.Length));
 	}
 
@@ -83,7 +82,7 @@ public class Material : ManagedResource<MaterialResourceId> {
 			SDL_ReleaseGPUBuffer(Manager.Scene.Renderer.DeviceHandle, DeviceUniformBuffer);
 			DeviceUniformBuffer = null;
 		}
-		
+
 		Manager.Scene.PipelineCache.Destroy(Manager, this);
 	}
 }

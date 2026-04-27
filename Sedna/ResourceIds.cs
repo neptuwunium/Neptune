@@ -20,19 +20,19 @@ public enum ResourceKind : byte {
 }
 
 [TransparentStruct<ulong>] public partial struct TextureResourceId : IResourceId {
-	public ResourceKind Kind => (ResourceKind)(Value >> 56);
+	public ResourceKind Kind => (ResourceKind) (Value >> 56);
 }
 
 [TransparentStruct<ulong>] public partial struct ShaderResourceId : IResourceId {
-	public ResourceKind Kind => (ResourceKind)(Value >> 56);
+	public ResourceKind Kind => (ResourceKind) (Value >> 56);
 }
 
 [TransparentStruct<ulong>] public partial struct MaterialResourceId : IResourceId {
-	public ResourceKind Kind => (ResourceKind)(Value >> 56);
+	public ResourceKind Kind => (ResourceKind) (Value >> 56);
 }
 
 [TransparentStruct<ulong>] public partial struct MeshResourceId : IResourceId {
-	public ResourceKind Kind => (ResourceKind)(Value >> 56);
+	public ResourceKind Kind => (ResourceKind) (Value >> 56);
 }
 
 [TransparentStruct<UInt128>] public partial struct PipelineId;

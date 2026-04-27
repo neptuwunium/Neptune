@@ -16,6 +16,8 @@ public static class NumberExtensions {
 	private static readonly sbyte[] SignedNibbles = [0, 1, 2, 3, 4, 5, 6, 7, -8, -7, -6, -5, -4, -3, -2, -1];
 	private static readonly string[] BytePoints = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"];
 
+	public static T Clamp<T, TValue>(this TValue value) where T : struct, INumberBase<T> where TValue : struct, INumberBase<TValue> => T.CreateSaturating(value);
+
 	extension(byte value) {
 		public byte HighNibble => (byte) ((value >> 4) & 0xF);
 		public byte LowNibble => (byte) (value & 0xF);
@@ -24,7 +26,6 @@ public static class NumberExtensions {
 	}
 
 	extension(int value) {
-		public int Align(int n) => unchecked(value + (n - 1)) & ~(n - 1);
 		public long KiB => OneKiB * value;
 		public long MiB => OneMiB * value;
 		public long GiB => OneGiB * value;
@@ -33,10 +34,10 @@ public static class NumberExtensions {
 		public long EiB => OneEiB * value;
 
 		public string HumanReadableBytes => ((ulong) value).HumanReadableBytes;
+		public int Align(int n) => unchecked(value + (n - 1)) & ~(n - 1);
 	}
 
 	extension(uint value) {
-		public uint Align(uint n) => unchecked(value + (n - 1)) & ~(n - 1);
 		public long KiB => OneKiB * value;
 		public long MiB => OneMiB * value;
 		public long GiB => OneGiB * value;
@@ -45,10 +46,10 @@ public static class NumberExtensions {
 		public long EiB => OneEiB * value;
 
 		public string HumanReadableBytes => ((ulong) value).HumanReadableBytes;
+		public uint Align(uint n) => unchecked(value + (n - 1)) & ~(n - 1);
 	}
 
 	extension(long value) {
-		public long Align(long n) => unchecked(value + (n - 1)) & ~(n - 1);
 		public long KiB => OneKiB * value;
 		public long MiB => OneMiB * value;
 		public long GiB => OneGiB * value;
@@ -67,10 +68,11 @@ public static class NumberExtensions {
 				return value < 0 ? "-" + amount : amount;
 			}
 		}
+
+		public long Align(long n) => unchecked(value + (n - 1)) & ~(n - 1);
 	}
 
 	extension(ulong value) {
-		public ulong Align(ulong n) => unchecked(value + (n - 1)) & ~(n - 1);
 		public ulong KiB => OneKiB * value;
 		public ulong MiB => OneMiB * value;
 		public ulong GiB => OneGiB * value;
@@ -94,6 +96,8 @@ public static class NumberExtensions {
 				return $"{value} B";
 			}
 		}
+
+		public ulong Align(ulong n) => unchecked(value + (n - 1)) & ~(n - 1);
 	}
 
 	extension<T>(T left) where T : IBinaryInteger<T>, IAdditionOperators<T, T, T> {
@@ -115,6 +119,4 @@ public static class NumberExtensions {
 			return left * k;
 		}
 	}
-
-	public static T Clamp<T, TValue>(this TValue value) where T : struct, INumberBase<T> where TValue : struct, INumberBase<TValue> => T.CreateSaturating(value);
 }

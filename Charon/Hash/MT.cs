@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-using Charon.Hash.Algorithms;
 using Charon.Random;
 
 namespace Charon.Hash;

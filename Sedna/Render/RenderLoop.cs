@@ -27,7 +27,9 @@ public class RenderLoop : IDisposable {
 	}
 
 	public unsafe void Attach(ISDLHost host) {
-		if (Host != null) return;
+		if (Host != null) {
+			return;
+		}
 
 		Host = host;
 
@@ -46,13 +48,19 @@ public class RenderLoop : IDisposable {
 	}
 
 	public virtual unsafe void Render() {
-		if (!CanRender) return;
+		if (!CanRender) {
+			return;
+		}
 
-		if (Host.Width <= 1 || Host.Height <= 1) return;
+		if (Host.Width <= 1 || Host.Height <= 1) {
+			return;
+		}
 
 		Host.PollEvents();
 
-		if (SDL_GetWindowFlags(WindowHandle).HasFlag(SDL_WindowFlags.SDL_WINDOW_HIDDEN)) return;
+		if (SDL_GetWindowFlags(WindowHandle).HasFlag(SDL_WindowFlags.SDL_WINDOW_HIDDEN)) {
+			return;
+		}
 
 		var cmdBuffer = SDL_AcquireGPUCommandBuffer(DeviceHandle);
 		if (cmdBuffer == null) {
@@ -86,7 +94,9 @@ public class RenderLoop : IDisposable {
 	private void OnHostClosed(object? sender, EventArgs e) => ReleaseUnmanagedResources();
 
 	private unsafe void OnHostResized(object? sender, ResizeEventArgs e) {
-		if (!CanRender) return;
+		if (!CanRender) {
+			return;
+		}
 
 		SDL_SetGPUSwapchainParameters(
 			DeviceHandle,
@@ -95,7 +105,7 @@ public class RenderLoop : IDisposable {
 			SDL_GPUPresentMode.SDL_GPU_PRESENTMODE_VSYNC
 		);
 	}
-	
+
 	public unsafe (nint Buffer, nint Transfer) UploadBuffer(IRentedArray<byte>? data, SDL_GPUBufferUsageFlags usage, SDL_GPUCopyPass* pass) {
 		if (data == null) {
 			return (nint.Zero, nint.Zero);

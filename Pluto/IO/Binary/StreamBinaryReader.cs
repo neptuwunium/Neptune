@@ -17,6 +17,7 @@ public class StreamBinaryReader : BufferBinaryReader {
 	public Stream BaseStream { get; }
 	public bool LeaveOpen { get; }
 	public int BasePosition { get; set; }
+
 	public override int Position {
 		get => BasePosition;
 		set => BasePosition = (int) (BaseStream.Position = value);

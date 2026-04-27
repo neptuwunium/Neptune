@@ -7,8 +7,6 @@ using System.Text.Json.Serialization;
 namespace Ceres.Extensions;
 
 public class NEPTUWUNIUMMaterialAttributes : Property, IExtension {
-	public static string ExtensionName => "NEPTUWUNIUM_material_attributes";
-
 	[JsonPropertyName("textures")]
 	public Dictionary<string, TextureInfo>? Textures { get; set; }
 
@@ -20,4 +18,6 @@ public class NEPTUWUNIUMMaterialAttributes : Property, IExtension {
 
 	[JsonPropertyName("workflow")]
 	public string? Workflow { get; set; }
+
+	public static string ExtensionName => "NEPTUWUNIUM_material_attributes";
 }

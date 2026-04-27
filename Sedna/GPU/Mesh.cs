@@ -26,6 +26,7 @@ public class Mesh : ManagedResource<MeshResourceId> {
 
 	public unsafe SDL_GPUBuffer* DeviceVertexBuffer { get; set; }
 	public unsafe SDL_GPUBuffer* DeviceIndexBuffer { get; set; }
+
 	public PipelineId PipelineHash {
 		get {
 			if (field == default(PipelineId)) {
@@ -37,9 +38,7 @@ public class Mesh : ManagedResource<MeshResourceId> {
 		set;
 	}
 
-	public void Invalidate() {
-		PipelineHash = default;
-	}
+	public void Invalidate() => PipelineHash = default;
 
 	public PipelineId CreatePipelineHash() {
 		using var writer = new ArrayPoolBinaryWriter();
@@ -59,7 +58,7 @@ public class Mesh : ManagedResource<MeshResourceId> {
 		foreach (var offset in VertexOffsets) {
 			writer.Write(offset);
 		}
-		
+
 		return CityHashAlgorithm.Hash128(writer.Array.AsSpan(0, writer.Length));
 	}
 

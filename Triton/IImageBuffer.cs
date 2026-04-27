@@ -18,7 +18,7 @@ public interface IImageBuffer : IDisposable {
 	int Stride { get; }
 	ColorId ColorId { get; }
 	ImageCompression Compression { get; }
-	
+
 	ImageBuffer<TNewColor, TNew> Cast<TNewColor, TNew>()
 		where TNewColor : unmanaged, IColor<TNewColor, TNew>, IColor
 		where TNew : unmanaged, INumberBase<TNew>, IMinMaxValue<TNew>;

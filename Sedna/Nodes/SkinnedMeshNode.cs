@@ -9,6 +9,6 @@ namespace Sedna.Nodes;
 public class SkinnedMeshNode : MeshNode {
 	public List<Node> JointNodes { get; set; } = [];
 	public List<Matrix4X4<float>> InverseBindMatrices { get; set; } = [];
-	
+
 	// todo: BufferResourceId InverseBindMatrices -> SDL_GPU_BUFFERUSAGE_GRAPHICS_STORAGE_READ
 }

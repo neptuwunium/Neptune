@@ -301,7 +301,7 @@ public sealed class ImageBuffer<TColor, T> : IImageBuffer
 
 	public TColor Sample(Point<float> target, SamplingOperation operation = SamplingOperation.Bilinear, SamplingWrap wrap = SamplingWrap.Repeat) {
 		var (x, y) = target;
-		
+
 		if (x > Width || x < 0) {
 			return TColor.Transparent;
 		}

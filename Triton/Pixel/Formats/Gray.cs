@@ -12,6 +12,7 @@ public record struct Gray<T>(T Value) : IColor<Gray<T>, T> where T : unmanaged, 
 		readonly get => Value;
 		set => Value = value;
 	}
+
 	public T G {
 		readonly get => Value;
 		set => Value = value;

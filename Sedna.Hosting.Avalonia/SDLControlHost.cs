@@ -26,7 +26,9 @@ public class SDLControlHost : NativeControlHost, ISDLHost {
 	}
 
 	public unsafe void PollEvents() {
-		if (WindowHandle == null) return;
+		if (WindowHandle == null) {
+			return;
+		}
 
 		SDL_Event evt = new();
 		while (SDL_PollEvent(&evt)) { }
@@ -75,7 +77,9 @@ public class SDLControlHost : NativeControlHost, ISDLHost {
 	}
 
 	private void OnCompositionUpdate() {
-		if (RenderLoop is not { CanRender: true }) return;
+		if (RenderLoop is not { CanRender: true }) {
+			return;
+		}
 
 		RenderLoop.Render();
 		ElementComposition.GetElementVisual(this)?.Compositor.RequestCompositionUpdate(OnCompositionUpdate);
@@ -106,7 +110,9 @@ public class SDLControlHost : NativeControlHost, ISDLHost {
 	protected virtual void Dispose(bool disposing) {
 		ReleaseUnmanagedResources();
 
-		if (disposing) RenderLoop.Dispose();
+		if (disposing) {
+			RenderLoop.Dispose();
+		}
 	}
 
 	~SDLControlHost() => Dispose(false);

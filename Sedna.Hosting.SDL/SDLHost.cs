@@ -29,7 +29,9 @@ public class SDLHost : ISDLHost {
 			SDL_DestroyProperties(props);
 		}
 
-		if (WindowHandle == null) Debug.WriteLine($"[Sedna] Window Acquire Failed: {SDL_GetError()}");
+		if (WindowHandle == null) {
+			Debug.WriteLine($"[Sedna] Window Acquire Failed: {SDL_GetError()}");
+		}
 	}
 
 	public unsafe SDL_Window* WindowHandle { get; private set; }
@@ -39,7 +41,9 @@ public class SDLHost : ISDLHost {
 	public event EventHandler? OnClose;
 
 	public unsafe void PollEvents() {
-		if (WindowHandle == null) return;
+		if (WindowHandle == null) {
+			return;
+		}
 
 		SDL_Event evt = new();
 		while (SDL_PollEvent(&evt)) {
@@ -54,7 +58,9 @@ public class SDLHost : ISDLHost {
 					break;
 			}
 
-			if (WindowHandle == null) return;
+			if (WindowHandle == null) {
+				return;
+			}
 		}
 	}
 

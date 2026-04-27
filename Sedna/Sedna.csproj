@@ -16,7 +16,7 @@ SPDX-License-Identifier: EUPL-1.2
 
 	<ItemGroup>
 		<ProjectReference Include="..\Pluto.SourceGen\Pluto.SourceGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
-		<ProjectReference Include="..\Charon\Charon.csproj" />
+		<ProjectReference Include="..\Charon\Charon.csproj"/>
 		<ProjectReference Include="..\Pluto\Pluto.csproj"/>
 		<ProjectReference Include="..\Triton\Triton.csproj"/>
 		<ProjectReference Include="..\Sedna.Native.SDLShaderCross\Sedna.Native.SDLShaderCross.csproj"/>

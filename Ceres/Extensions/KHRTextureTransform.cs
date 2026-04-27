@@ -7,8 +7,6 @@ using System.Text.Json.Serialization;
 namespace Ceres.Extensions;
 
 public class KHRTextureTransform : Property, IExtension {
-	public static string ExtensionName => "KHR_texture_transform";
-
 	[JsonPropertyName("offset")]
 	public List<double>? Offset { get; set; }
 
@@ -20,4 +18,6 @@ public class KHRTextureTransform : Property, IExtension {
 
 	[JsonPropertyName("texCoord")]
 	public int? TexCoord { get; set; }
+
+	public static string ExtensionName => "KHR_texture_transform";
 }

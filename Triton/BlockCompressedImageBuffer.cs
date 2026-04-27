@@ -12,13 +12,14 @@ namespace Triton;
 
 public sealed class BlockCompressedImageBuffer : IImageBuffer {
 	public BlockCompressedImageBuffer(IRentedArray<byte> buffer, Point<int> size, ImageCompression compression) : this(buffer, size.X, size.Y, compression) { }
+
 	public BlockCompressedImageBuffer(IRentedArray<byte> buffer, int width, int height, ImageCompression compression) {
 		Data = buffer;
 		Width = width;
 		Height = height;
 		Size = new Point<int>(width, height);
 		Compression = compression;
-		
+
 		switch (compression) {
 			case ImageCompression.Linear:
 				throw new NotSupportedException();
@@ -31,38 +32,38 @@ public sealed class BlockCompressedImageBuffer : IImageBuffer {
 				ColorId = ColorId.FromPixel<ColorRGBA<byte>, byte>();
 				Stride = 16;
 				break;
-			case ImageCompression.BC4S: 
+			case ImageCompression.BC4S:
 				ColorId = ColorId.FromPixel<ColorR<sbyte>, sbyte>();
 				Stride = 8;
 				break;
-			case ImageCompression.BC4U: 
+			case ImageCompression.BC4U:
 				ColorId = ColorId.FromPixel<ColorR<byte>, byte>();
 				Stride = 8;
 				break;
-			case ImageCompression.BC5S: 
+			case ImageCompression.BC5S:
 				ColorId = ColorId.FromPixel<ColorRG<sbyte>, sbyte>();
 				Stride = 16;
 				break;
-			case ImageCompression.BC5U: 
+			case ImageCompression.BC5U:
 				ColorId = ColorId.FromPixel<ColorRG<byte>, byte>();
 				Stride = 16;
 				break;
-			case ImageCompression.BC6S: 
+			case ImageCompression.BC6S:
 				ColorId = ColorId.FromPixel<ColorRGB<short>, short>();
 				Stride = 16;
 				break;
-			case ImageCompression.BC6U: 
+			case ImageCompression.BC6U:
 				ColorId = ColorId.FromPixel<ColorRGB<ushort>, ushort>();
 				Stride = 16;
 				break;
-			case ImageCompression.BC7: 
+			case ImageCompression.BC7:
 				ColorId = ColorId.FromPixel<ColorRGBA<byte>, byte>();
 				Stride = 16;
 				break;
 			default: throw new ArgumentOutOfRangeException(nameof(compression), compression, null);
 		}
-		
 	}
+
 	public IRentedArray<byte> Data { get; }
 	public int Width { get; }
 	public int Height { get; }

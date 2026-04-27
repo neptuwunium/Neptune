@@ -7,12 +7,11 @@ using System.Threading;
 namespace Pluto;
 
 public static class Helpers {
-	public static void ResetCulture() {
+	public static void ResetCulture() =>
 		Thread.CurrentThread.CurrentCulture =
 			Thread.CurrentThread.CurrentUICulture =
 				CultureInfo.CurrentCulture =
 					CultureInfo.CurrentUICulture =
 						CultureInfo.DefaultThreadCurrentCulture =
 							CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
-	}
 }

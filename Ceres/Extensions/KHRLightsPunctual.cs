@@ -5,10 +5,9 @@
 namespace Ceres.Extensions;
 
 public class KHRLightsPunctual : Property, IExtension {
-	public static string ExtensionName => "KHR_lights_punctual";
-
 	public List<KHRLight>? Lights { get; set; }
 	public int? Light { get; set; }
+	public static string ExtensionName => "KHR_lights_punctual";
 
 	public (KHRLight Light, int Id) CreateLight(string name) {
 		Lights ??= [];

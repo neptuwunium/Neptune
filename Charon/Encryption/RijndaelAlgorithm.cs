@@ -8,10 +8,14 @@ using System.Runtime.Intrinsics;
 namespace Charon.Encryption;
 
 /// <summary>
-/// AES-Rijndael with provided round keys
-/// Note: this is vulnerable to side channel attacks.
+///     AES-Rijndael with provided round keys
+///     Note: this is vulnerable to side channel attacks.
 /// </summary>
 public static class RaccoonRijndael {
+	public const int AES_128_BITS = 128;
+	public const int AES_192_BITS = 192;
+	public const int AES_256_BITS = 256;
+
 	private static readonly uint[] TE0 = [
 		0xc66363a5, 0xf87c7c84, 0xee777799, 0xf67b7b8d, 0xfff2f20d, 0xd66b6bbd, 0xde6f6fb1, 0x91c5c554, 0x60303050, 0x02010103, 0xce6767a9, 0x562b2b7d, 0xe7fefe19, 0xb5d7d762, 0x4dababe6, 0xec76769a, 0x8fcaca45, 0x1f82829d, 0x89c9c940, 0xfa7d7d87, 0xeffafa15, 0xb25959eb, 0x8e4747c9, 0xfbf0f00b, 0x41adadec, 0xb3d4d467, 0x5fa2a2fd, 0x45afafea, 0x239c9cbf, 0x53a4a4f7, 0xe4727296, 0x9bc0c05b, 0x75b7b7c2, 0xe1fdfd1c, 0x3d9393ae, 0x4c26266a, 0x6c36365a, 0x7e3f3f41, 0xf5f7f702, 0x83cccc4f, 0x6834345c,
 		0x51a5a5f4, 0xd1e5e534, 0xf9f1f108, 0xe2717193, 0xabd8d873, 0x62313153, 0x2a15153f, 0x0804040c, 0x95c7c752, 0x46232365, 0x9dc3c35e, 0x30181828, 0x379696a1, 0x0a05050f, 0x2f9a9ab5, 0x0e070709, 0x24121236, 0x1b80809b, 0xdfe2e23d, 0xcdebeb26, 0x4e272769, 0x7fb2b2cd, 0xea75759f, 0x1209091b, 0x1d83839e, 0x582c2c74, 0x341a1a2e, 0x361b1b2d, 0xdc6e6eb2, 0xb45a5aee, 0x5ba0a0fb, 0xa45252f6, 0x763b3b4d, 0xb7d6d661, 0x7db3b3ce, 0x5229297b, 0xdde3e33e, 0x5e2f2f71, 0x13848497, 0xa65353f5, 0xb9d1d168,
@@ -118,21 +122,11 @@ public static class RaccoonRijndael {
 		0x1B000000, 0x36000000,
 	];
 
-	public const int AES_128_BITS = 128;
-	public const int AES_192_BITS = 192;
-	public const int AES_256_BITS = 256;
+	public static int GetRounds(int keybits = AES_128_BITS) => keybits / 32 + 6;
 
-	public static int GetRounds(int keybits = AES_128_BITS) {
-		return keybits / 32 + 6;
-	}
+	public static int GetKeySize(int keybits = AES_128_BITS) => keybits / 8;
 
-	public static int GetKeySize(int keybits = AES_128_BITS) {
-		return keybits / 8;
-	}
-
-	public static int GetRoundKeySize(int keybits = AES_128_BITS) {
-		return keybits / 8 + 28;
-	}
+	public static int GetRoundKeySize(int keybits = AES_128_BITS) => keybits / 8 + 28;
 
 	public static uint[] CreateEncryptRoundKey(ReadOnlySpan<byte> key, int keybits) {
 		var rk = new uint[GetRoundKeySize(keybits)];

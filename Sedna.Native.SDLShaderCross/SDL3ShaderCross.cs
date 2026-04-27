@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace SDL;
 
-public static unsafe partial class SDL3ShaderCross {
+public static partial class SDL3ShaderCross {
 	static SDL3ShaderCross() => NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), DllImportResolver);
 
 	internal static nint DllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath) {

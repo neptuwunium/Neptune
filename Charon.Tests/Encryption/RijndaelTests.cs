@@ -20,7 +20,7 @@ internal static class RijndaelTests {
 		RaccoonRijndael.DecryptRound(rk, vec, key.Length * 8);
 		Assert.That(vec, Is.EqualTo(exp).AsCollection);
 	}
-	
+
 	[TestCase("_CHARON__CHARON_", "6541b1f166de7cc40da76c191e99e323")]
 	[TestCase("_CHARON__CHARON__CHARON_", "8ebe0595878743ceca46c5ac520a1c17")]
 	[TestCase("_CHARON__CHARON__CHARON__CHARON_", "d2c2b39a719ecdeaf456df3d7419df24")]

@@ -22,13 +22,13 @@ public sealed class UnownedRentedArray<T> : IRentedArray<T> where T : struct {
 		Offset = 0;
 		Length = inner.Length;
 	}
-	
+
 	public UnownedRentedArray(IRentedArray<T> inner, int offset) {
 		Inner = inner;
 		Offset = offset;
 		Length = inner.Length - offset;
 	}
-	
+
 	public UnownedRentedArray(IRentedArray<T> inner, int offset, int length) {
 		Inner = inner;
 		Offset = offset;
@@ -72,6 +72,7 @@ public sealed class UnownedRentedArray<T> : IRentedArray<T> where T : struct {
 public sealed class UnownedCovariantArray<T> : IRentedArray<T> where T : struct {
 	public UnownedCovariantArray(IRentedArray<byte> inner) : this(inner, 0, inner.Length / Unsafe.SizeOf<T>()) { }
 	public UnownedCovariantArray(IRentedArray<byte> inner, int byteOffset) : this(inner, byteOffset, (inner.Length - byteOffset) / Unsafe.SizeOf<T>()) { }
+
 	public UnownedCovariantArray(IRentedArray<byte> inner, int byteOffset, int length) {
 		Inner = inner;
 		Offset = byteOffset;
@@ -86,7 +87,7 @@ public sealed class UnownedCovariantArray<T> : IRentedArray<T> where T : struct 
 	public int Length { get; private set; }
 	public Memory<T> Memory => Length == 0 ? Memory<T>.Empty : Manager.Memory;
 	public Span<T> Span => Length == 0 ? Span<T>.Empty : MemoryMarshal.Cast<byte, T>(Inner.Span.Slice(Offset, ByteLength));
-	
+
 	public IRentedArray<T> Clone() {
 		var arr = new RentedArray<T>(Length);
 		Span.CopyTo(arr.Span);
@@ -140,10 +141,10 @@ public sealed class RentedArray<T> : IRentedArray<T> where T : struct {
 
 	public T[] Array { get; private set; }
 	public ArraySegment<T> Segment => Length == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(Array, 0, Length);
+	public static RentedArray<T> Empty { get; } = new(0);
 	public int Length { get; private set; }
 	public Memory<T> Memory => Length == 0 ? Memory<T>.Empty : Array.AsMemory(0, Length);
 	public Span<T> Span => Length == 0 ? Span<T>.Empty : Array.AsSpan(0, Length);
-	public static RentedArray<T> Empty { get; } = new(0);
 
 	public IRentedArray<T> Clone() {
 		var arr = new RentedArray<T>(Length);

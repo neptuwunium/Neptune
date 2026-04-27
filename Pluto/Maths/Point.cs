@@ -87,7 +87,7 @@ public readonly record struct Point<T>(T X, T Y) :
 				offsetY = referenceY;
 				break;
 		}
-		
+
 		return new Point<T>(X + offsetX, Y + offsetY);
 	}
 }

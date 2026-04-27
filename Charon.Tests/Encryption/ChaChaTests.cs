@@ -23,7 +23,7 @@ internal static class ChaChaTests {
 		const int ROUNDS = 20;
 
 		var cha = new ChaChaAlgorithm(key, iv, ChaChaAlgorithm.DefaultState, COUNTER);
-		cha.CryptBytes(ref vecSpan, 0, vec.Length, ROUNDS, false);
+		cha.CryptBytes(ref vecSpan, 0, vec.Length);
 		Assert.That(vec, Is.EqualTo(exp).AsCollection);
 	}
 
@@ -43,7 +43,7 @@ internal static class ChaChaTests {
 		const int ROUNDS = 20;
 
 		var cha = new ChaChaAlgorithm(key, iv, ChaChaAlgorithm.DefaultState, COUNTER);
-		cha.CryptBytes(ref vecSpan, 0, vec.Length, ROUNDS, false);
+		cha.CryptBytes(ref vecSpan, 0, vec.Length);
 		Assert.That(vec, Is.EqualTo(exp).AsCollection);
 	}
 
@@ -64,7 +64,7 @@ internal static class ChaChaTests {
 		const int ROUNDS = 20;
 
 		var cha = new ChaChaAlgorithm(key, iv, ChaChaAlgorithm.DefaultState, COUNTER);
-		cha.CryptBytes(ref vecSpan, 0, vec.Length, ROUNDS, false);
+		cha.CryptBytes(ref vecSpan, 0, vec.Length);
 		Assert.That(vec, Is.EqualTo(exp).AsCollection);
 	}
 
@@ -85,7 +85,7 @@ internal static class ChaChaTests {
 		const int ROUNDS = 20;
 
 		var cha = new ChaChaAlgorithm(key, iv, ChaChaAlgorithm.DefaultState, COUNTER);
-		cha.CryptBytes(ref vecSpan, 0, vec.Length, ROUNDS, false);
+		cha.CryptBytes(ref vecSpan, 0, vec.Length);
 		Assert.That(vec, Is.EqualTo(exp).AsCollection);
 	}
 
@@ -106,7 +106,7 @@ internal static class ChaChaTests {
 		const uint COUNTER = 1u;
 
 		var cha = new ChaChaAlgorithm(key, iv, ChaChaAlgorithm.DefaultState, COUNTER);
-		cha.CryptStream(ref vecSpan, 0, vec.Length, rounds, false);
+		cha.CryptStream(ref vecSpan, 0, vec.Length, rounds);
 		Assert.That(vec, Is.EqualTo(exp).AsCollection);
 	}
 
@@ -127,7 +127,7 @@ internal static class ChaChaTests {
 		const uint COUNTER = 1u;
 
 		var cha = new ChaChaAlgorithm(key, iv, ChaChaAlgorithm.DefaultState, COUNTER);
-		cha.CryptStream(ref vecSpan, 0, vec.Length, rounds, false);
+		cha.CryptStream(ref vecSpan, 0, vec.Length, rounds);
 		Assert.That(vec, Is.EqualTo(exp).AsCollection);
 	}
 }

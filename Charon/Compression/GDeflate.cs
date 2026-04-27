@@ -5,14 +5,14 @@
 namespace Charon.Compression;
 
 public static partial class GDeflate {
+	public enum TileStreamCompressor : byte {
+		GDeflate = 4,
+	}
+
 	public const int TileSize = 0x10000;
 	public const int MaxTiles = 0xFFFF;
 	public const int TileHeaderSize = sizeof(uint) + 4 * 208 + 4 * 8;
 	public const int FullTileSize = TileSize + TileHeaderSize;
-
-	public enum TileStreamCompressor : byte {
-		GDeflate = 4,
-	}
 
 	[StructLayout(LayoutKind.Sequential, Pack = 1, Size = 8)]
 	public record struct TileStreamHeader() {

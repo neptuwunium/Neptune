@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 // ReSharper disable once CheckNamespace
+
 namespace Pluto.SourceGen.ReverseEndiannessGenerator;
 
 [AttributeUsage(AttributeTargets.Struct)]

@@ -26,7 +26,7 @@ public class PipelineCache {
 		hash[3] = materialHash.High;
 
 		var (lo, hi) = MurmurHash3Algorithm.Hash64_128(MemoryMarshal.AsBytes(hash));
-		
+
 		return new UInt128(hi, lo);
 	}
 
@@ -140,7 +140,7 @@ public class PipelineCache {
 
 			SDL_ReleaseGPUGraphicsPipeline(device, (SDL_GPUGraphicsPipeline*) ptr);
 		}
-		
+
 		materialPipelines.Clear();
 	}
 }

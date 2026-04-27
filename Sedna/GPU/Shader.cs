@@ -86,7 +86,7 @@ public abstract class Shader : ManagedResource<ShaderResourceId> {
 		if (DeviceShader != null) {
 			return;
 		}
-		
+
 		if (ShaderCode == null) {
 			// todo: logging
 			return;
@@ -260,15 +260,15 @@ public abstract class Shader : ManagedResource<ShaderResourceId> {
 			if (entryPointArray != null) {
 				ArrayPool<byte>.Shared.Return(entryPointArray);
 			}
-			
+
 			if (textArray != null) {
 				ArrayPool<byte>.Shared.Return(textArray);
 			}
-			
+
 			if (includeDirArray != null) {
 				ArrayPool<byte>.Shared.Return(includeDirArray);
 			}
-			
+
 			if (defineTextArray != null) {
 				ArrayPool<byte>.Shared.Return(defineTextArray);
 			}

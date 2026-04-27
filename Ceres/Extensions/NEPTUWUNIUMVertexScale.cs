@@ -7,8 +7,6 @@ using System.Text.Json.Serialization;
 namespace Ceres.Extensions;
 
 public class NEPTUWUNIUMVertexScale : Property, IExtension {
-	public static string ExtensionName => "NEPTUWUNIUM_vertex_scale";
-
 	[JsonPropertyName("offset")]
 	public List<double>? Offset { get; set; }
 
@@ -20,4 +18,6 @@ public class NEPTUWUNIUMVertexScale : Property, IExtension {
 
 	[JsonPropertyName("componentScale")]
 	public double? ComponentScale { get; set; } = null;
+
+	public static string ExtensionName => "NEPTUWUNIUM_vertex_scale";
 }

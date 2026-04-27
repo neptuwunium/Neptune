@@ -288,7 +288,7 @@ public partial class TIFFEncoder : IEncoder {
 		internal const string LibraryName = "tiff";
 		internal const DllImportSearchPath SearchPath = DllImportSearchPath.SafeDirectories | DllImportSearchPath.AssemblyDirectory | DllImportSearchPath.ApplicationDirectory;
 
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8), DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)] [DefaultDllImportSearchPaths(SearchPath)]
 		public static partial nint TIFFClientOpen(string name, string mode, nint handle,
 			nint readProc,
 			nint writeProc,
@@ -298,32 +298,32 @@ public partial class TIFFEncoder : IEncoder {
 			nint mapProc,
 			nint unmapProc);
 
-		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void TIFFSetField(nint tiff, TIFFTag tag, int value);
 
-		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void TiffGetField(nint tiff, TIFFTag tag, out int value);
 
-		[LibraryImport(LibraryName, EntryPoint = "TIFFSetField"), DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName, EntryPoint = "TIFFSetField")] [DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void TIFFSetFieldArray(nint tiff, TIFFTag tag, int count, nint array);
 
-		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void TIFFWriteEncodedStrip(nint tiff, int strip, nint data, uint dataLength);
 
-		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void TIFFReadEncodedStrip(nint tiff, int strip, nint data, uint dataLength);
 
-		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void TIFFWriteDirectory(nint tiff);
 
-		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
 		[return: MarshalAs(UnmanagedType.I4)]
 		public static partial bool TIFFReadDirectory(nint tiff);
 
-		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
 		public static partial int TIFFNumberOfDirectories(nint tiff);
 
-		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
 		public static partial void TIFFClose(nint tiff);
 	}
 }
