@@ -13,6 +13,7 @@ public interface IRentedArray<T> : IEnumerable<T>, IDisposable where T : struct 
 	Memory<T> Memory { get; }
 	Span<T> Span { get; }
 	T this[int index] { get; set; }
+	IRentedArray<T> Clone();
 }
 
 public sealed class UnownedRentedArray<T> : IRentedArray<T> where T : struct {
@@ -43,6 +44,12 @@ public sealed class UnownedRentedArray<T> : IRentedArray<T> where T : struct {
 	public T this[int index] {
 		get => Inner[Offset + index];
 		set => Inner[Offset + index] = value;
+	}
+
+	public IRentedArray<T> Clone() {
+		var arr = new RentedArray<T>(Length);
+		Span.CopyTo(arr.Span);
+		return arr;
 	}
 
 	public void Dispose() {
@@ -79,6 +86,12 @@ public sealed class UnownedCovariantArray<T> : IRentedArray<T> where T : struct 
 	public int Length { get; private set; }
 	public Memory<T> Memory => Length == 0 ? Memory<T>.Empty : Manager.Memory;
 	public Span<T> Span => Length == 0 ? Span<T>.Empty : MemoryMarshal.Cast<byte, T>(Inner.Span.Slice(Offset, ByteLength));
+	
+	public IRentedArray<T> Clone() {
+		var arr = new RentedArray<T>(Length);
+		Span.CopyTo(arr.Span);
+		return arr;
+	}
 
 	public T this[int index] {
 		get => Span[index];
@@ -131,6 +144,12 @@ public sealed class RentedArray<T> : IRentedArray<T> where T : struct {
 	public Memory<T> Memory => Length == 0 ? Memory<T>.Empty : Array.AsMemory(0, Length);
 	public Span<T> Span => Length == 0 ? Span<T>.Empty : Array.AsSpan(0, Length);
 	public static RentedArray<T> Empty { get; } = new(0);
+
+	public IRentedArray<T> Clone() {
+		var arr = new RentedArray<T>(Length);
+		Span.CopyTo(arr.Span);
+		return arr;
+	}
 
 	public T this[int index] {
 		get => Array[index];
