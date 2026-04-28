@@ -52,7 +52,7 @@ public class TransparentStructGenerator : IIncrementalGenerator {
 				}
 
 				if (method.MethodKind == MethodKind.Constructor) {
-					hasConstructor = method.Parameters.Length == 1 && cmp.Equals(method.Parameters[1].Type, valueType);
+					hasConstructor = method.Parameters.Length == 1 && cmp.Equals(method.Parameters[0].Type, valueType);
 					continue;
 				}
 
@@ -160,8 +160,6 @@ public class TransparentStructGenerator : IIncrementalGenerator {
 
 			sb.AppendLine($"\tpublic static bool operator ==({name} left, {name} right) => left.Equals(right);");
 			sb.AppendLine($"\tpublic static bool operator !=({name} left, {name} right) => !(left == right);");
-			sb.AppendLine($"\tpublic static bool operator ==({name} left, {type} right) => left.Equals(right);");
-			sb.AppendLine($"\tpublic static bool operator !=({name} left, {type} right) => !(left == right);");
 			sb.AppendLine($"\tpublic static implicit operator {name}({type} value) => new(value);");
 			sb.AppendLine($"\tpublic static implicit operator {type}({name} value) => value.{label};");
 			sb.AppendLine("}");
