@@ -19,7 +19,7 @@ public class TransparentStructGenerator : IIncrementalGenerator {
 			static (ctx, _) => (INamedTypeSymbol) ctx.TargetSymbol);
 
 		var combined = source.Combine(context.CompilationProvider.Select((compilation, _) => compilation.GetTypeByMetadataName("System.Object")));
-		
+
 		context.RegisterSourceOutput(combined, static (spc, provider) => {
 			var symbol = provider.Left;
 			var objectType = provider.Right;
@@ -69,11 +69,11 @@ public class TransparentStructGenerator : IIncrementalGenerator {
 						if (cmp.Equals(method.Parameters[0].Type, symbol)) {
 							hasEqualsSelf = true;
 						}
-				
+
 						if (cmp.Equals(method.Parameters[0].Type, valueType)) {
 							hasEqualsValue = true;
 						}
-				
+
 						if (cmp.Equals(method.Parameters[0].Type, objectType)) {
 							hasEqualsObject = true;
 						}
@@ -88,7 +88,7 @@ public class TransparentStructGenerator : IIncrementalGenerator {
 						if (cmp.Equals(method.Parameters[0].Type, symbol)) {
 							hasCompareSelf = true;
 						}
-				
+
 						if (cmp.Equals(method.Parameters[0].Type, valueType)) {
 							hasCompareValue = true;
 						}
@@ -125,7 +125,7 @@ public class TransparentStructGenerator : IIncrementalGenerator {
 			sb.AppendLine();
 			sb.AppendLine($"public partial struct {name} : IEquatable<{name}>, IEquatable<{type}>, IComparable<{name}>, IComparable<{type}> {{");
 			sb.AppendLine($"\tpublic {type} {label} {{ get; set; }}");
-			
+
 			if (!hasConstructor) {
 				sb.AppendLine($"\tpublic {name}({type} value) => this.{label} = value;");
 			}

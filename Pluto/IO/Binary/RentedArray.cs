@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 namespace Pluto.IO.Binary;
 
 public interface IRentedArray<T> : IEnumerable<T>, IDisposable where T : struct {
+	static IRentedArray<T> Empty { get; } = new RentedArray<T>();
 	int Length { get; }
 	Memory<T> Memory { get; }
 	Span<T> Span { get; }

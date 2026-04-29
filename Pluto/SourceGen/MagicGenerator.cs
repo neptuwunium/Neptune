@@ -7,15 +7,17 @@
 namespace Pluto.SourceGen.MagicGenerator;
 
 [AttributeUsage(AttributeTargets.Struct)]
-public sealed class GenerateMagicAttribute(int size = 4) : Attribute {
+public sealed class GenerateMagicAttribute(int size = 4, string? altPrint = null) : Attribute {
 	public int Size { get; set; } = size;
+	public string? AltPrint { get; set; } = altPrint;
 }
 
 [AttributeUsage(AttributeTargets.Struct, AllowMultiple = true)]
-public sealed class MagicAttribute(string magic, string? name = null, bool littleEndian = true) : Attribute {
+public sealed class MagicAttribute(string magic, string? name = null, string? altName = null, bool little = true) : Attribute {
 	public string Magic { get; } = magic;
 	public string Name { get; } = name ?? magic;
-	public bool LittleEndian { get; } = littleEndian;
+	public string PrintableName { get; } = altName ?? name ?? magic;
+	public bool Little { get; } = little;
 }
 
 /*
