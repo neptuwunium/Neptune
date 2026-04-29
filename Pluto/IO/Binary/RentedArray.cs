@@ -190,4 +190,36 @@ public sealed class RentedArray<T> : IRentedArray<T> where T : struct {
 			}
 		}
 	}
+
+	public int BinarySearch(int index, int count, T item, IComparer<T>? comparer) {
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(count);
+		ArgumentOutOfRangeException.ThrowIfLessThan(Length - index, count);
+
+		comparer ??= Comparer<T>.Default;
+
+		var lo = index;
+		var hi = index + count - 1;
+
+		while (lo <= hi) {
+			var i = lo + ((hi - lo) >> 1);
+			var order = comparer.Compare(Array[i], item);
+
+			switch (order) {
+				case 0:
+					return i;
+				case < 0:
+					lo = i + 1;
+					break;
+				default:
+					hi = i - 1;
+					break;
+			}
+		}
+
+		return ~lo;
+	}
+
+	public int BinarySearch(T item) => BinarySearch(0, Length, item, null);
+	public int BinarySearch(T item, IComparer<T>? comparer) => BinarySearch(0, Length, item, comparer);
 }
