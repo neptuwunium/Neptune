@@ -79,7 +79,7 @@ public class MagicGenerator : IIncrementalGenerator {
 				sb.AppendLine($"\tpublic const {type} {name} = ({type}) 0x{value:x};");
 				toString.AppendLine($"\t\t\tcase {name}: return nameof({name});");
 				if (writeAlt) {
-					altString.AppendLine($"\t\t\t{name} => \"{altName}\",");
+					altString.AppendLine($"\t\t{name} => \"{altName}\",");
 				}
 			}
 
@@ -88,6 +88,7 @@ public class MagicGenerator : IIncrementalGenerator {
 			toString.AppendLine("\t}");
 
 			if (writeAlt) {
+				altString.AppendLine("\t\t_ => ToString(),");
 				altString.AppendLine("\t};");
 				sb.AppendLine();
 				sb.Append(altString);
