@@ -47,6 +47,8 @@ public class MagicGenerator : IIncrementalGenerator {
 
 			sb.AppendLine($"\tpublic static bool operator ==({symbol.Name} left, {type} right) => left.Value == right;");
 			sb.AppendLine($"\tpublic static bool operator !=({symbol.Name} left, {type} right) => !(left == right);");
+			sb.AppendLine($"\tpublic static implicit operator {symbol.Name}({type} value) => new(value);");
+			sb.AppendLine($"\tpublic static implicit operator {type}({symbol.Name} value) => value.Value;");
 			sb.AppendLine();
 
 			var toString = new StringBuilder();
