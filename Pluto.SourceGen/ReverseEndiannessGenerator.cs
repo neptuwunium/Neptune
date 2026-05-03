@@ -5,6 +5,7 @@
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
@@ -15,7 +16,11 @@ public class ReverseEndiannessGenerator : IIncrementalGenerator {
 	public void Initialize(IncrementalGeneratorInitializationContext context) {
 		var source = context.SyntaxProvider.ForAttributeWithMetadataName(
 			"Pluto.SourceGen.ReverseEndiannessGenerator.EndianSwappableAttribute",
-			static (node, _) => node is StructDeclarationSyntax,
+			static (node, _) => node switch {
+				StructDeclarationSyntax => true,
+				RecordDeclarationSyntax record => record.ClassOrStructKeyword.IsKind(SyntaxKind.StructKeyword),
+				_ => false
+			},
 			static (ctx, _) => (INamedTypeSymbol) ctx.TargetSymbol);
 
 		context.RegisterSourceOutput(source, static (spc, symbol) => {
@@ -26,7 +31,7 @@ public class ReverseEndiannessGenerator : IIncrementalGenerator {
 			sb.AppendLine();
 			sb.AppendLine($"namespace {symbol.ContainingNamespace.ToDisplayString()};");
 			sb.AppendLine();
-			sb.AppendLine($"public static partial struct {symbol.Name} {{");
+			sb.AppendLine($"public static partial {(symbol.IsRecord ? "record struct" : "struct")} {symbol.Name} {{");
 
 			sb.AppendLine($"\tpublic {symbol.Name} ReverseEndianness() {{");
 
