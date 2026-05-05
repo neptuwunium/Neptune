@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-using System.Threading.Tasks;
-
 namespace Pluto.IO;
 
 public sealed class AsyncQuantumDisposable<T> : IDisposable, IAsyncDisposable where T : class, IDisposable, IAsyncDisposable {

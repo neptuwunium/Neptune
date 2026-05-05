@@ -3,8 +3,6 @@
 // SPDX-License-Identifier: EUPL-1.2
 
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Pluto.IO.FileSystem;
 
