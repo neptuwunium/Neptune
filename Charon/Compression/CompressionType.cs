@@ -24,4 +24,8 @@ public enum CompressionType {
 	Zstd,
 	Density,
 	GDeflate,
+	ZlibUnknownSize,
+	DeflateUnknownSize,
+	ZstdUnknownSize,
+	LZ4F,
 }

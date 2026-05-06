@@ -191,7 +191,7 @@ public sealed partial class ZStandard : IDisposable {
 
 	public static unsafe int GetDecompressBound(Memory<byte> bytes) {
 		using var pin = bytes.Pin();
-		return (int) NativeMethods.ZSTD_decompressBound((byte*) pin.Pointer, bytes.Length);
+		return (int) NativeMethods.ZSTD_getDecompressedSize((byte*) pin.Pointer, bytes.Length);
 	}
 
 	public unsafe bool UnloadDict() {
@@ -269,7 +269,7 @@ public sealed partial class ZStandard : IDisposable {
 		public static unsafe partial nint ZSTD_compressCCtx(nint cctx, byte* dst, long dstCapacity, byte* src, long srcSize, ZSTDCompressionLevel compressionLevel);
 
 		[LibraryImport(CompressionHelper.ZstdLibraryName)] [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
-		public static unsafe partial long ZSTD_decompressBound(byte* src, long srcSize);
+		public static unsafe partial long ZSTD_getDecompressedSize(byte* src, long srcSize);
 
 		[LibraryImport(CompressionHelper.ZstdLibraryName)] [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
 		public static unsafe partial long ZSTD_compressBound(long size);
