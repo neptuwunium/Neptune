@@ -72,6 +72,7 @@ public static class CompressionHelper {
 			CompressionType.Deflate => true,
 			CompressionType.DeflateUnknownSize => true,
 			CompressionType.Gzip => true,
+			CompressionType.GzipUnknownSize => true,
 			CompressionType.LZ4 => true,
 			CompressionType.LZ4HC => true,
 			CompressionType.LZ4F => CanLoadLibrary(Lz4LibraryName),
@@ -152,7 +153,23 @@ public static class CompressionHelper {
 				dataStream.Position = 2;
 				using var zlib = new GZipStream(dataStream, CompressionMode.Decompress);
 				zlib.ReadExactly(decompressed.Span);
+				return decompressed.Length;
+			}
+			case CompressionType.GzipUnknownSize: {
+				using var dataPin = compressed.Pin();
+				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
+				dataStream.Position = 2;
+				using var zlib = new GZipStream(dataStream, CompressionMode.Decompress);
+				var offset = 0;
+				var span = decompressed.Span;
+				while (dataStream.Position < dataStream.Length && offset < decompressed.Length) {
+					var size = zlib.Read(span[offset..]);
+					if (size == 0) {
+						break;
+					}
 
+					offset += size;
+				}
 				return decompressed.Length;
 			}
 			case CompressionType.Oodle: {
@@ -233,7 +250,8 @@ public static class CompressionHelper {
 	public static unsafe int Compress(CompressionType type, Memory<byte> compressed, Memory<byte> decompressed, CompressionLevel compressionLevel = CompressionLevel.Fastest) {
 		// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
 		switch (type) {
-			case CompressionType.Zlib: {
+			case CompressionType.Zlib:
+			case CompressionType.ZlibUnknownSize: {
 				using var dataPin = decompressed.Pin();
 				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, decompressed.Length);
 				using var zlib = new ZLibStream(dataStream, compressionLevel);
@@ -242,7 +260,8 @@ public static class CompressionHelper {
 
 				return (int) zlib.Position;
 			}
-			case CompressionType.Deflate: {
+			case CompressionType.Deflate:
+			case CompressionType.DeflateUnknownSize: {
 				using var dataPin = decompressed.Pin();
 				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, decompressed.Length);
 				using var zlib = new DeflateStream(dataStream, compressionLevel);
@@ -251,7 +270,8 @@ public static class CompressionHelper {
 
 				return (int) zlib.Position;
 			}
-			case CompressionType.Zstd: {
+			case CompressionType.Zstd:
+			case CompressionType.ZstdUnknownSize: {
 				using var zstd = new ZStandard();
 				return (int) zstd.Compress(decompressed, compressed,
 					compressionLevel switch {
@@ -262,7 +282,8 @@ public static class CompressionHelper {
 						_ => throw new ArgumentOutOfRangeException(nameof(compressionLevel), compressionLevel, default),
 					});
 			}
-			case CompressionType.Gzip: {
+			case CompressionType.Gzip:
+			case CompressionType.GzipUnknownSize: {
 				using var dataPin = compressed.Pin();
 				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
 				dataStream.Position = 2;

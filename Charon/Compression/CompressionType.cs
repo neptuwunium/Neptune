@@ -27,5 +27,6 @@ public enum CompressionType {
 	ZlibUnknownSize,
 	DeflateUnknownSize,
 	ZstdUnknownSize,
+	GzipUnknownSize,
 	LZ4F,
 }
