@@ -4,6 +4,7 @@
 
 using System.IO.Compression;
 using K4os.Compression.LZ4;
+using Pluto.IO.Binary;
 using SevenZip.Compression.LZMA;
 
 namespace Charon.Compression;
@@ -61,31 +62,84 @@ public static class CompressionHelper {
 
 	internal static bool CanLoadLibrary(string libraryName) => NativeLibrary.TryLoad(libraryName, out _);
 
-	public static bool IsSupported(CompressionType compressionType) =>
+	public static bool CanDecompress(CompressionType compressionType) =>
 		compressionType switch {
 			CompressionType.None => true,
-			CompressionType.Oodle => CanLoadLibrary(OodleLibraryName),
-			CompressionType.OodleTex => CanLoadLibrary(OodleTexLibraryName),
 			CompressionType.Brotli => true,
 			CompressionType.Zlib => true,
-			CompressionType.ZlibUnknownSize => true,
 			CompressionType.Deflate => true,
-			CompressionType.DeflateUnknownSize => true,
 			CompressionType.Gzip => true,
 			CompressionType.LZ4 => true,
 			CompressionType.LZ4HC => true,
+			CompressionType.SizedLZMA => true,
+			CompressionType.LZMA => true,
+			CompressionType.HeaderlessLZMA => true,
+			CompressionType.Oodle => CanLoadLibrary(OodleLibraryName),
+			CompressionType.OodleTex => CanLoadLibrary(OodleTexLibraryName),
 			CompressionType.LZ4F => CanLoadLibrary(Lz4LibraryName),
 			CompressionType.LZO1 or CompressionType.LZO2 => CanLoadLibrary(LzoLibraryName),
 			CompressionType.LZX => CanLoadLibrary(LzxLibraryName),
-			CompressionType.LZMA => true,
-			CompressionType.SafeLZMA => true,
-			CompressionType.RawLZMA => true,
 			CompressionType.Zstd => CanLoadLibrary(ZstdLibraryName),
-			CompressionType.ZstdUnknownSize => CanLoadLibrary(ZstdLibraryName),
 			CompressionType.Density => CanLoadLibrary(DensityLibraryName),
 			CompressionType.GDeflate => CanLoadLibrary(GDeflateLibraryName),
 			_ => false,
 		};
+	public static bool CanCompress(CompressionType compressionType) =>
+		compressionType switch {
+			CompressionType.None => true,
+			CompressionType.Brotli => true,
+			CompressionType.Zlib => true,
+			CompressionType.Deflate => true,
+			CompressionType.Gzip => true,
+			CompressionType.LZ4 => true,
+			CompressionType.LZ4HC => true,
+			CompressionType.Oodle => CanLoadLibrary(OodleLibraryName),
+			CompressionType.Zstd => CanLoadLibrary(ZstdLibraryName),
+			CompressionType.GDeflate => CanLoadLibrary(GDeflateLibraryName),
+			_ => false,
+		};
+
+	public static int FindDecompressedStreamLength(Stream stream, int bufSize = 81920, bool leaveOpen = false) {
+		var buf = new RentedArray<byte>(bufSize);
+		var length = 0L;
+		var buffer = buf.Span;
+
+		try {
+			int read;
+			while((read = stream.Read(buffer)) > 0) {
+				length += read;
+			}
+		} finally {
+			if (!leaveOpen) {
+				stream.Dispose();
+			}
+		}
+
+		return checked((int) length);
+	}
+
+	public static unsafe int FindDecompressedStreamLength(CompressionType type, Memory<byte> compressed, int bufSize = 81920, bool leaveOpen = false) {
+		using var dataPin = compressed.Pin();
+		using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
+		return type switch {
+			CompressionType.Zlib => FindDecompressedStreamLength(new ZLibStream(dataStream, CompressionMode.Decompress)),
+			CompressionType.Deflate => FindDecompressedStreamLength(new DeflateStream(dataStream, CompressionMode.Decompress)),
+			CompressionType.Gzip => FindDecompressedStreamLength(new GZipStream(dataStream, CompressionMode.Decompress)),
+			CompressionType.Brotli => FindDecompressedStreamLength(new BrotliStream(dataStream, CompressionMode.Decompress)),
+			_ => 0
+		};
+	}
+
+	public static int FindDecompressedLength(CompressionType type, Memory<byte> compressed, bool hasJunk = false) {
+		return type switch {
+			CompressionType.Zlib or CompressionType.Deflate or CompressionType.Brotli => FindDecompressedStreamLength(type, compressed),
+			CompressionType.Gzip when hasJunk => FindDecompressedStreamLength(type, compressed),
+			CompressionType.Gzip => MemoryMarshal.Read<int>(compressed.Span[^4..]),
+			CompressionType.SizedLZMA or CompressionType.LZMA => (int) MemoryMarshal.Read<long>(compressed.Span[5..]),
+			CompressionType.Zstd => ZStandard.GetDecompressBound(compressed),
+			_ => -1,
+		};
+	}
 
 	public static unsafe int Decompress(CompressionType type, Memory<byte> compressed, Memory<byte> decompressed) {
 		switch (type) {
@@ -94,65 +148,24 @@ public static class CompressionHelper {
 				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
 				using var zlib = new ZLibStream(dataStream, CompressionMode.Decompress);
 				zlib.ReadExactly(decompressed.Span);
-
 				return decompressed.Length;
-			}
-			case CompressionType.ZlibUnknownSize: {
-				using var dataPin = compressed.Pin();
-				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
-				using var zlib = new ZLibStream(dataStream, CompressionMode.Decompress);
-				var offset = 0;
-				var span = decompressed.Span;
-				while (dataStream.Position < dataStream.Length && offset < decompressed.Length) {
-					var size = zlib.Read(span[offset..]);
-					if (size == 0) {
-						break;
-					}
-
-					offset += size;
-				}
-
-				return offset;
 			}
 			case CompressionType.Deflate: {
 				using var dataPin = compressed.Pin();
 				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
 				using var deflate = new DeflateStream(dataStream, CompressionMode.Decompress);
 				deflate.ReadExactly(decompressed.Span);
-
 				return decompressed.Length;
-			}
-			case CompressionType.DeflateUnknownSize: {
-				using var dataPin = compressed.Pin();
-				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
-				using var zlib = new DeflateStream(dataStream, CompressionMode.Decompress);
-				var offset = 0;
-				var span = decompressed.Span;
-				while (dataStream.Position < dataStream.Length && offset < decompressed.Length) {
-					var size = zlib.Read(span[offset..]);
-					if (size == 0) {
-						break;
-					}
-
-					offset += size;
-				}
-
-				return offset;
 			}
 			case CompressionType.Zstd: {
 				using var zstd = new ZStandard();
 				return zstd.Decompress(compressed, decompressed);
 			}
-			case CompressionType.ZstdUnknownSize: {
-				return Decompress(CompressionType.Zstd, compressed, decompressed[..ZStandard.GetDecompressBound(compressed)]);
-			}
 			case CompressionType.Gzip: {
 				using var dataPin = compressed.Pin();
 				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
-				dataStream.Position = 2;
-				using var zlib = new GZipStream(dataStream, CompressionMode.Decompress);
-				zlib.ReadExactly(decompressed.Span);
-
+				using var gzip = new GZipStream(dataStream, CompressionMode.Decompress);
+				gzip.ReadExactly(decompressed.Span);
 				return decompressed.Length;
 			}
 			case CompressionType.Oodle: {
@@ -173,7 +186,6 @@ public static class CompressionHelper {
 				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
 				using var brotli = new BrotliStream(dataStream, CompressionMode.Decompress);
 				brotli.ReadExactly(decompressed.Span);
-
 				return decompressed.Length;
 			}
 			case CompressionType.LZO1: {
@@ -185,9 +197,9 @@ public static class CompressionHelper {
 			case CompressionType.LZX: {
 				return LZX.Decompress(compressed, decompressed, 17);
 			}
+			case CompressionType.SizedLZMA:
 			case CompressionType.LZMA:
-			case CompressionType.SafeLZMA:
-			case CompressionType.RawLZMA: {
+			case CompressionType.HeaderlessLZMA: {
 				using var inPin = compressed.Pin();
 				using var inStream = new UnmanagedMemoryStream((byte*) inPin.Pointer, compressed.Length, compressed.Length, FileAccess.Read);
 				using var outPin = decompressed.Pin();
@@ -200,11 +212,11 @@ public static class CompressionHelper {
 					inStream.Position = 5;
 					// ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
 					switch (type) {
-						case CompressionType.LZMA:
-							inStream.Position += 16;
+						case CompressionType.SizedLZMA:
+							inStream.Position += 16; // skip uncompressedSize, compressedSize
 							break;
-						case CompressionType.SafeLZMA:
-							inStream.Position += 8;
+						case CompressionType.LZMA:
+							inStream.Position += 8; // skip uncompressedSize
 							break;
 					}
 
@@ -239,17 +251,15 @@ public static class CompressionHelper {
 				using var zlib = new ZLibStream(dataStream, compressionLevel);
 				zlib.Write(compressed.Span);
 				zlib.Flush();
-
 				return (int) zlib.Position;
 			}
 			case CompressionType.Deflate: {
 				using var dataPin = decompressed.Pin();
 				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, decompressed.Length);
-				using var zlib = new DeflateStream(dataStream, compressionLevel);
-				zlib.Write(compressed.Span);
-				zlib.Flush();
-
-				return (int) zlib.Position;
+				using var deflate = new DeflateStream(dataStream, compressionLevel);
+				deflate.Write(compressed.Span);
+				deflate.Flush();
+				return (int) deflate.Position;
 			}
 			case CompressionType.Zstd: {
 				using var zstd = new ZStandard();
@@ -266,11 +276,10 @@ public static class CompressionHelper {
 				using var dataPin = compressed.Pin();
 				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
 				dataStream.Position = 2;
-				using var zlib = new GZipStream(dataStream, compressionLevel);
-				zlib.Write(decompressed.Span);
-				zlib.Flush();
-
-				return (int) zlib.Position;
+				using var gzip = new GZipStream(dataStream, compressionLevel);
+				gzip.Write(decompressed.Span);
+				gzip.Flush();
+				return (int) gzip.Position;
 			}
 			case CompressionType.Oodle: {
 				return Oodle.Compress(decompressed, compressed, Oodle.OodleLZ_Compressor.Hydra,
@@ -283,21 +292,18 @@ public static class CompressionHelper {
 					});
 			}
 			case CompressionType.LZ4:
-			case CompressionType.LZ4HC: {
+			case CompressionType.LZ4HC:
 				return LZ4Codec.Encode(decompressed.Span, compressed.Span);
-			}
 			case CompressionType.Brotli: {
 				using var dataPin = compressed.Pin();
 				using var dataStream = new UnmanagedMemoryStream((byte*) dataPin.Pointer, compressed.Length);
 				using var brotli = new BrotliStream(dataStream, compressionLevel);
 				brotli.Write(decompressed.Span);
 				brotli.Flush();
-
 				return (int) brotli.Position;
 			}
-			case CompressionType.GDeflate: {
+			case CompressionType.GDeflate:
 				return GDeflate.Compress(decompressed, compressed, 12);
-			}
 			case CompressionType.None:
 				decompressed.CopyTo(compressed);
 				return decompressed.Length;
