@@ -28,9 +28,9 @@ foreach (var path in new FileEnumerator(args, new EnumerationOptions { RecurseSu
 		continue;
 	}
 
-	if (MemoryMarshal.Read<uint>(buffer.Span) == 0x20534444) {
+	if (DDS.IsDDS(buffer.Span)) {
 		Console.WriteLine(path);
-		var dds = new DDS(buffer);
+		using var dds = new DDS(buffer);
 
 		// todo: special logic for cube-maps
 
@@ -55,5 +55,9 @@ foreach (var path in new FileEnumerator(args, new EnumerationOptions { RecurseSu
 				Console.WriteLine($"error: cannot process surface {index}\n{ex}");
 			}
 		}
+	} else if (KTX.IsKTX(buffer.Span)) {
+		Console.WriteLine(path);
+		using var ktx = new KTX(buffer);
+		// todo
 	}
 }

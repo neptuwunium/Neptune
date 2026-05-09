@@ -299,4 +299,6 @@ public class DDS : IDisposable {
 		Dispose(true);
 		GC.SuppressFinalize(this);
 	}
+
+	public static bool IsDDS(ReadOnlySpan<byte> span) => span.Length >= 0x80 && MemoryMarshal.Read<uint>(span) == 0x20534444;
 }
