@@ -5,17 +5,18 @@ SPDX-License-Identifier: EUPL-1.2
 -->
 
 <Solution>
-	<Project Path="Ceres/Ceres.csproj"/>
-	<Project Path="Charon.Tests/Charon.Tests.csproj"/>
-	<Project Path="Charon/Charon.csproj"/>
-	<Project Path="Pluto/Pluto.csproj"/>
-	<Project Path="Pluto.SourceGen/Pluto.SourceGen.csproj"/>
-	<Project Path="Pluto.Tests/Pluto.Tests.csproj"/>
-	<Project Path="Sedna.Hosting.Avalonia/Sedna.Hosting.Avalonia.csproj"/>
-	<Project Path="Sedna.Hosting.SDL/Sedna.Hosting.SDL.csproj"/>
-	<Project Path="Sedna.Native.SDLShaderCross/Sedna.Native.SDLShaderCross.csproj"/>
-	<Project Path="Sedna/Sedna.csproj"/>
-	<Project Path="Sedna.Demo.Avalonia/Sedna.Demo.Avalonia.csproj"/>
-	<Project Path="Sedna.Demo/Sedna.Demo.csproj"/>
-	<Project Path="Triton/Triton.csproj"/>
+	<Project Path="Ceres/Ceres.csproj" />
+	<Project Path="Charon.Tests/Charon.Tests.csproj" />
+	<Project Path="Charon/Charon.csproj" />
+	<Project Path="Pluto/Pluto.csproj" />
+	<Project Path="Pluto.SourceGen/Pluto.SourceGen.csproj" />
+	<Project Path="Pluto.Tests/Pluto.Tests.csproj" />
+	<Project Path="Sedna.Hosting.Avalonia/Sedna.Hosting.Avalonia.csproj" />
+	<Project Path="Sedna.Hosting.SDL/Sedna.Hosting.SDL.csproj" />
+	<Project Path="Sedna.Native.SDLShaderCross/Sedna.Native.SDLShaderCross.csproj" />
+	<Project Path="Sedna/Sedna.csproj" />
+	<Project Path="Sedna.Demo.Avalonia/Sedna.Demo.Avalonia.csproj" />
+	<Project Path="Sedna.Demo/Sedna.Demo.csproj" />
+	<Project Path="Triton.TexConv/Triton.TexConv.csproj" />
+	<Project Path="Triton/Triton.csproj" />
 </Solution>

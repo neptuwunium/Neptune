@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-﻿using System;
+using System;
 using Avalonia;
 
 namespace Sedna.Demo.Avalonia;

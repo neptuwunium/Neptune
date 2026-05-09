@@ -20,7 +20,6 @@ internal static class ChaChaTests {
 		var key = "_CHARON__CHARON__CHARON__CHARON_"u8.ToArray();
 		var iv = "NEPTUNE_NEPT"u8.ToArray();
 		const uint COUNTER = 1u;
-		const int ROUNDS = 20;
 
 		var cha = new ChaChaAlgorithm(key, iv, ChaChaAlgorithm.DefaultState, COUNTER);
 		cha.CryptBytes(ref vecSpan, 0, vec.Length);
@@ -40,7 +39,6 @@ internal static class ChaChaTests {
 		var key = "_CHARON__CHARON__CHARON__CHARON_"u8.ToArray();
 		var iv = "NEPTUNE_NEPT"u8.ToArray();
 		const uint COUNTER = 1u;
-		const int ROUNDS = 20;
 
 		var cha = new ChaChaAlgorithm(key, iv, ChaChaAlgorithm.DefaultState, COUNTER);
 		cha.CryptBytes(ref vecSpan, 0, vec.Length);
@@ -61,7 +59,6 @@ internal static class ChaChaTests {
 		var key = "_CHARON__CHARON__CHARON__CHARON_"u8.ToArray();
 		var iv = "NEPTUNE_NEPT"u8.ToArray();
 		const uint COUNTER = 1u;
-		const int ROUNDS = 20;
 
 		var cha = new ChaChaAlgorithm(key, iv, ChaChaAlgorithm.DefaultState, COUNTER);
 		cha.CryptBytes(ref vecSpan, 0, vec.Length);
@@ -82,7 +79,6 @@ internal static class ChaChaTests {
 		var key = "_CHARON__CHARON__CHARON__CHARON_"u8.ToArray();
 		var iv = "NEPTUNE_NEPT"u8.ToArray();
 		const uint COUNTER = 1u;
-		const int ROUNDS = 20;
 
 		var cha = new ChaChaAlgorithm(key, iv, ChaChaAlgorithm.DefaultState, COUNTER);
 		cha.CryptBytes(ref vecSpan, 0, vec.Length);

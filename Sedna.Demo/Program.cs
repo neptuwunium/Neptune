@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-﻿using Sedna.Hosting.SDL;
+using Sedna.Hosting.SDL;
 using Sedna.Render;
 
 namespace Sedna.Demo;
