@@ -173,7 +173,7 @@ public sealed partial class ZStandard : IDisposable {
 	public unsafe long Compress(Memory<byte> input, Memory<byte> output, ZSTDCompressionLevel compressionLevel) {
 		using var inPin = input.Pin();
 		using var outPin = output.Pin();
-		return NativeMethods.ZSTD_compressCCtx(DContext, (byte*) outPin.Pointer, output.Length, (byte*) inPin.Pointer, input.Length, compressionLevel);
+		return NativeMethods.ZSTD_compressCCtx(CContext, (byte*) outPin.Pointer, output.Length, (byte*) inPin.Pointer, input.Length, compressionLevel);
 	}
 
 	public IMemoryOwner<byte>? Compress(Memory<byte> input, ZSTDCompressionLevel compressionLevel, MemoryPool<byte>? pool = default) {
