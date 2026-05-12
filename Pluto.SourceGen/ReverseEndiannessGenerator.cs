@@ -2,7 +2,6 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
-using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -31,11 +30,10 @@ public class ReverseEndiannessGenerator : IIncrementalGenerator {
 			sb.AppendLine();
 			sb.AppendLine($"namespace {symbol.ContainingNamespace.ToDisplayString()};");
 			sb.AppendLine();
-			sb.AppendLine($"public static partial {(symbol.IsRecord ? "record struct" : "struct")} {symbol.Name} {{");
+			sb.AppendLine($"public partial {(symbol.IsRecord ? "record struct" : "struct")} {symbol.Name} {{");
 
-			sb.AppendLine($"\tpublic {symbol.Name} ReverseEndianness() {{");
-
-			sb.AppendLine("\t\treturn this with {");
+			sb.AppendLine($"\tpublic {symbol.Name} ReverseEndianness() =>");
+			sb.AppendLine("\t\tthis with {");
 
 			foreach (var property in symbol.GetMembers().OfType<IPropertySymbol>()) {
 				var doNotSwapAttribute = property.GetAttributes().FirstOrDefault(x => x.AttributeClass?.Name == "DoNotSwapAttribute");
@@ -52,6 +50,10 @@ public class ReverseEndiannessGenerator : IIncrementalGenerator {
 				}
 
 				switch (property.Type.Name) {
+					case "Byte":
+					case "Boolean":
+					case "SByte":
+						break;
 					case "Int16":
 					case "UInt16":
 					case "Int32":
@@ -62,14 +64,30 @@ public class ReverseEndiannessGenerator : IIncrementalGenerator {
 					case "Double":
 						sb.AppendLine($"\t\t\t{property.Name} = BinaryPrimitives.ReverseEndianness({property.Name}),");
 						break;
-					default:
-						sb.AppendLine($"\t\t\t{property.Name} = {property.Name}.ReverseEndianness(),");
+					default: {
+						if (property.Type is INamedTypeSymbol { EnumUnderlyingType: {} enumType }) {
+							if (enumType.Name is not ("Byte" or "Boolean" or "SByte")) {
+								sb.AppendLine($"\t\t\t{property.Name} = ({property.Type.Name}) BinaryPrimitives.ReverseEndianness(({enumType.ToDisplayString()}) {property.Name}),");
+							}
+
+							break;
+						}
+
+						var hasFunc = property.Type.GetMembers().OfType<IMethodSymbol>().Any(x => x.Name == "ReverseEndianness" && x.Parameters.Length == 0);
+						if (!hasFunc) {
+							hasFunc = property.Type.GetAttributes().Any(x => x.AttributeClass?.Name == "EndianSwappableAttribute");
+						}
+
+						if (hasFunc) {
+							sb.AppendLine($"\t\t\t{property.Name} = {property.Name}.ReverseEndianness(),");
+						}
+
 						break;
+					}
 				}
 			}
 
 			sb.AppendLine("\t\t};");
-			sb.AppendLine("\t}");
 			sb.AppendLine("}");
 			spc.AddSource($"{symbol.Name}.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
 		});
