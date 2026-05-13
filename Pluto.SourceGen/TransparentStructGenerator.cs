@@ -158,6 +158,11 @@ public class TransparentStructGenerator : IIncrementalGenerator {
 				sb.AppendLine($"\tpublic override string ToString() => this.{label}.ToString();");
 			}
 
+			if (symbol.GetAttributes().Any(x => x is { AttributeClass: { Name: "EndianSwappableAttribute" } })) {
+				sb.AppendLine($"\tpublic {name} ReverseEndianness() => System.Buffers.Binary.BinaryPrimitives.ReverseEndianness({label});");
+			}
+
+
 			sb.AppendLine($"\tpublic static bool operator ==({name} left, {name} right) => left.Equals(right);");
 			sb.AppendLine($"\tpublic static bool operator !=({name} left, {name} right) => !(left == right);");
 			sb.AppendLine($"\tpublic static implicit operator {name}({type} value) => new(value);");
