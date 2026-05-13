@@ -7,6 +7,7 @@ SPDX-License-Identifier: EUPL-1.2
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<TargetFrameworks/>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
