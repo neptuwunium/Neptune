@@ -6,13 +6,14 @@
 
 namespace Pluto.SourceGen.MagicGenerator;
 
-[AttributeUsage(AttributeTargets.Struct)]
-public sealed class GenerateMagicAttribute(int size = 4, string? altPrint = null) : Attribute {
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+public sealed class GenerateMagicAttribute(string name, int size = 4, string? altPrint = null) : Attribute {
+	public string Name {get;set;} = name;
 	public int Size { get; set; } = size;
 	public string? AltPrint { get; set; } = altPrint;
 }
 
-[AttributeUsage(AttributeTargets.Struct, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 public sealed class MagicAttribute(string magic, string? name = null, string? altName = null, bool little = true) : Attribute {
 	public string Magic { get; } = magic;
 	public string Name { get; } = name ?? magic;
@@ -22,9 +23,9 @@ public sealed class MagicAttribute(string magic, string? name = null, string? al
 
 /*
 
-[GenerateMagic(8)]
+[GenerateMagic("FileMagic", 8)]
 [Magic("IDX ", "Index")]
 [Magic("DATA", "Data", false)]
-public partial record struct FileMagic;
+public static partial class FileMagicExtensions;
 
 */
