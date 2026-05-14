@@ -12,6 +12,10 @@ public sealed class EndianSwappableAttribute : Attribute;
 [AttributeUsage(AttributeTargets.Property)]
 public sealed class DoNotSwapAttribute : Attribute;
 
+public interface IEndianReversible<out T> {
+	T ReverseEndianness();
+}
+
 /*
 
 [EndianSwappable]

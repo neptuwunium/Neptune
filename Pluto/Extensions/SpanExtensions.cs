@@ -1,4 +1,6 @@
+using System.Buffers.Binary;
 using System.Runtime.InteropServices;
+using Pluto.SourceGen.ReverseEndiannessGenerator;
 
 // SPDX-FileCopyrightText: 2024-2026 Neptuwunium
 //
@@ -49,5 +51,73 @@ public static class SpanExtensions {
 		}
 
 		public string? ReadString(Encoding encoding, int limit = -1) => data.ReadString(encoding, out _, default, limit);
+	}
+
+	extension(Span<ushort> data) {
+		public void ReverseEndianness() {
+			for (var i = 0; i < data.Length; i++) {
+				data[i] = BinaryPrimitives.ReverseEndianness(data[i]);
+			}
+		}
+	}
+
+	extension(Span<short> data) {
+		public void ReverseEndianness() {
+			for (var i = 0; i < data.Length; i++) {
+				data[i] = BinaryPrimitives.ReverseEndianness(data[i]);
+			}
+		}
+	}
+
+	extension(Span<uint> data) {
+		public void ReverseEndianness() {
+			for (var i = 0; i < data.Length; i++) {
+				data[i] = BinaryPrimitives.ReverseEndianness(data[i]);
+			}
+		}
+	}
+
+	extension(Span<int> data) {
+		public void ReverseEndianness() {
+			for (var i = 0; i < data.Length; i++) {
+				data[i] = BinaryPrimitives.ReverseEndianness(data[i]);
+			}
+		}
+	}
+
+	extension(Span<ulong> data) {
+		public void ReverseEndianness() {
+			for (var i = 0; i < data.Length; i++) {
+				data[i] = BinaryPrimitives.ReverseEndianness(data[i]);
+			}
+		}
+	}
+
+	extension(Span<long> data) {
+		public void ReverseEndianness() {
+			for (var i = 0; i < data.Length; i++) {
+				data[i] = BinaryPrimitives.ReverseEndianness(data[i]);
+			}
+		}
+	}
+
+	extension(Span<Half> data) {
+		public void ReverseEndianness() => MemoryMarshal.Cast<Half, ushort>(data).ReverseEndianness();
+	}
+
+	extension(Span<float> data) {
+		public void ReverseEndianness() => MemoryMarshal.Cast<float, uint>(data).ReverseEndianness();
+	}
+
+	extension(Span<double> data) {
+		public void ReverseEndianness() => MemoryMarshal.Cast<double, ulong>(data).ReverseEndianness();
+	}
+
+	extension<T>(Span<T> data) where T : IEndianReversible<T> {
+		public void ReverseEndianness() {
+			for (var i = 0; i < data.Length; i++) {
+				data[i] = data[i].ReverseEndianness();
+			}
+		}
 	}
 }
