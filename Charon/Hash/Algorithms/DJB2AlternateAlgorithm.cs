@@ -22,39 +22,22 @@ public sealed class DJB2AlternateAlgorithm<T> : SpanHashAlgorithm<T>
 		return Value;
 	}
 
-	protected override void HashCore(byte[] array, int ibStart, int cbSize) {
-		while (cbSize > 0) {
-			HashNext(T.CreateSaturating(array[ibStart++]));
-			cbSize--;
+	public void HashCore<TOuter>(ReadOnlySpan<TOuter> source) where TOuter : INumberBase<TOuter>? {
+		foreach (var value in source) {
+			HashNext(T.CreateSaturating(value));
 		}
 	}
 
-	public void HashCore(ushort[] array, int ibStart, int cbSize) {
-		while (cbSize > 0) {
-			HashNext(T.CreateSaturating(array[ibStart++]));
-			cbSize--;
-		}
-	}
-
-	public void HashCore(uint[] array, int ibStart, int cbSize) {
-		while (cbSize > 0) {
-			HashNext(T.CreateSaturating(array[ibStart++]));
-			cbSize--;
-		}
-	}
-
-	public void HashCore(ulong[] array, int ibStart, int cbSize) {
-		while (cbSize > 0) {
-			HashNext(T.CreateSaturating(array[ibStart++]));
-			cbSize--;
-		}
-	}
+	protected override void HashCore(ReadOnlySpan<byte> source) => HashCore(source);
+	public void HashCore(ushort[] array, int ibStart, int cbSize) => HashCore(array.AsSpan(ibStart, cbSize));
+	public void HashCore(uint[] array, int ibStart, int cbSize) => HashCore(array.AsSpan(ibStart, cbSize));
+	public void HashCore(ulong[] array, int ibStart, int cbSize)  => HashCore(array.AsSpan(ibStart, cbSize));
 
 	public void Reset(T value) => Value = value;
 	public override void Reset() => Value = Basis;
 	public override void Initialize() => Reset(Basis);
 
-	protected override T GetValueFinal() {
+	public override T GetValueFinal() {
 		var val = Value;
 		Reset();
 		return val;

@@ -26,23 +26,24 @@ public sealed class CRC32CAlgorithm : SpanHashAlgorithm<uint> {
 
 	public new static CRC32CAlgorithm Create() => new();
 
-	protected override void HashCore(byte[] array, int ibStart, int cbSize) {
+	protected override void HashCore(ReadOnlySpan<byte> source) {
+		var offset = 0;
+		var size = source.Length;
 		if (X64) {
-			var span = array.AsSpan();
-			while (cbSize >= 8) {
-				Value = (uint) Sse42.X64.Crc32(Value, BinaryPrimitives.ReadUInt64LittleEndian(span[ibStart..]));
-				ibStart += 8;
-				cbSize -= 8;
+			while (size >= 8) {
+				Value = (uint) Sse42.X64.Crc32(Value, BinaryPrimitives.ReadUInt64LittleEndian(source[offset..]));
+				offset += 8;
+				size -= 8;
 			}
 		}
 
-		while (cbSize > 0) {
-			Value = Sse42.Crc32(Value, array[ibStart++]);
-			cbSize--;
+		while (size > 0) {
+			Value = Sse42.Crc32(Value, source[offset++]);
+			size--;
 		}
 	}
 
-	protected override uint GetValueFinal() {
+	public override uint GetValueFinal() {
 		var val = ~Value;
 		Reset();
 		return val;

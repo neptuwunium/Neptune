@@ -60,20 +60,22 @@ public sealed class CRCAlgorithm<T> : SpanHashAlgorithm<T>
 		}
 	}
 
-	protected override unsafe void HashCore(byte[] array, int ibStart, int cbSize) {
-		while (cbSize > 0) {
-			var @byte = T.CreateTruncating(array[ibStart++]);
+	protected override unsafe void HashCore(ReadOnlySpan<byte> source) {
+		var size = source.Length;
+		var offset = 0;
+		while (size > 0) {
+			var @byte = T.CreateTruncating(source[offset++]);
 			if (ReflectOut) {
 				Value = Table[(Value ^ @byte).ToUInt64(default) & 0xFF] ^ (Value >> 8);
 			} else {
 				Value = Table[((Value >> (sizeof(T) * 8 - 8)) ^ @byte).ToUInt64(default) & 0xFF] ^ (Value << 8);
 			}
 
-			cbSize--;
+			size--;
 		}
 	}
 
-	protected override T GetValueFinal() {
+	public override T GetValueFinal() {
 		var val = Value ^ Xor;
 		Reset();
 		return val;
