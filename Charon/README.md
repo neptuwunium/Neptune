@@ -13,8 +13,8 @@ Wrappers around Native compression methods.
   `portage emerge dev-libs/chmlib dev-libs/lzo app-arch/zstd`, etc)
 - macOS: same as linux, but use Homebrew (`brew install chmlib lzo zstd`)
 
-Oodle is a proprietary codec and a built library to be made manually using the SDK as provided by RAD.
-The Oodle library has to be renamed to `liboo2core` (keeping the .dll, .so or .dylib extension)
+Oodle is a proprietary codec and a built library to be made manually using the SDK as provided by RAD. The Oodle library
+has to be renamed to `liboo2core` (keeping the .dll, .so or .dylib extension)
 
 ### Native Bindings
 

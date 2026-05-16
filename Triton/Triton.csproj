@@ -27,7 +27,7 @@ SPDX-License-Identifier: EUPL-1.2
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Surface\Compression\" />
+		<Folder Include="Surface\Compression\"/>
 	</ItemGroup>
 
 </Project>

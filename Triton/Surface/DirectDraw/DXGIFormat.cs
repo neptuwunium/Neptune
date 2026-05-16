@@ -135,21 +135,21 @@ public static class DXGIFormatExtensions {
 	extension(DXGIFormat format) {
 		public bool IsCompressed =>
 			format switch {
-				DXGIFormat.BC1_UNORM=> true,
-				DXGIFormat.BC1_UNORM_SRGB=> true,
-				DXGIFormat.BC2_UNORM=> true,
-				DXGIFormat.BC2_UNORM_SRGB=> true,
+				DXGIFormat.BC1_UNORM => true,
+				DXGIFormat.BC1_UNORM_SRGB => true,
+				DXGIFormat.BC2_UNORM => true,
+				DXGIFormat.BC2_UNORM_SRGB => true,
 				DXGIFormat.BC3_UNORM => true,
 				DXGIFormat.BC3_UNORM_SRGB => true,
-				DXGIFormat.BC4_UNORM=> true,
-				DXGIFormat.BC4_SNORM=> true,
+				DXGIFormat.BC4_UNORM => true,
+				DXGIFormat.BC4_SNORM => true,
 				DXGIFormat.BC5_UNORM => true,
 				DXGIFormat.BC5_SNORM => true,
 				DXGIFormat.BC6H_SF16 => true,
 				DXGIFormat.BC6H_UF16 => true,
 				DXGIFormat.BC7_UNORM => true,
 				DXGIFormat.BC7_UNORM_SRGB => true,
-				_ => false
+				_ => false,
 			};
 
 		public (uint BitsPerBlock, uint PixelsPerBlock) PitchFactor =>

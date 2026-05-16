@@ -84,6 +84,7 @@ public static class CompressionHelper {
 			CompressionType.GDeflate => CanLoadLibrary(GDeflateLibraryName),
 			_ => false,
 		};
+
 	public static bool CanCompress(CompressionType compressionType) =>
 		compressionType switch {
 			CompressionType.None => true,
@@ -106,7 +107,7 @@ public static class CompressionHelper {
 
 		try {
 			int read;
-			while((read = stream.Read(buffer)) > 0) {
+			while ((read = stream.Read(buffer)) > 0) {
 				length += read;
 			}
 		} finally {
@@ -126,12 +127,12 @@ public static class CompressionHelper {
 			CompressionType.Deflate => FindDecompressedStreamLength(new DeflateStream(dataStream, CompressionMode.Decompress)),
 			CompressionType.Gzip => FindDecompressedStreamLength(new GZipStream(dataStream, CompressionMode.Decompress)),
 			CompressionType.Brotli => FindDecompressedStreamLength(new BrotliStream(dataStream, CompressionMode.Decompress)),
-			_ => 0
+			_ => 0,
 		};
 	}
 
-	public static int FindDecompressedLength(CompressionType type, Memory<byte> compressed, bool hasJunk = false) {
-		return type switch {
+	public static int FindDecompressedLength(CompressionType type, Memory<byte> compressed, bool hasJunk = false) =>
+		type switch {
 			CompressionType.Zlib or CompressionType.Deflate or CompressionType.Brotli => FindDecompressedStreamLength(type, compressed),
 			CompressionType.Gzip when hasJunk => FindDecompressedStreamLength(type, compressed),
 			CompressionType.Gzip => MemoryMarshal.Read<int>(compressed.Span[^4..]),
@@ -139,7 +140,6 @@ public static class CompressionHelper {
 			CompressionType.Zstd => ZStandard.GetDecompressBound(compressed),
 			_ => -1,
 		};
-	}
 
 	public static unsafe int Decompress(CompressionType type, Memory<byte> compressed, Memory<byte> decompressed) {
 		switch (type) {

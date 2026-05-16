@@ -31,7 +31,7 @@ public sealed class DJB2Algorithm<T> : SpanHashAlgorithm<T>
 	protected override void HashCore(ReadOnlySpan<byte> source) => HashCore(source);
 	public void HashCore(ushort[] array, int ibStart, int cbSize) => HashCore(array.AsSpan(ibStart, cbSize));
 	public void HashCore(uint[] array, int ibStart, int cbSize) => HashCore(array.AsSpan(ibStart, cbSize));
-	public void HashCore(ulong[] array, int ibStart, int cbSize)  => HashCore(array.AsSpan(ibStart, cbSize));
+	public void HashCore(ulong[] array, int ibStart, int cbSize) => HashCore(array.AsSpan(ibStart, cbSize));
 
 	public void Reset(T value) => Value = value;
 	public override void Reset() => Value = Basis;

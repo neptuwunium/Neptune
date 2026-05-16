@@ -16,9 +16,7 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 	public Encoding Encoding { get; } = encoding ?? Encoding.UTF8;
 	public int Protocol { get; set; } = 1;
 
-	public void Dispose() {
-		Stream.Dispose();
-	}
+	public void Dispose() => Stream.Dispose();
 
 	public string ReadLine(Encoding? encoding = null) {
 		var sb = new List<byte>();
@@ -44,37 +42,33 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		return items;
 	}
 
-	private void LoadProtocol() { // 0x80
+	private void LoadProtocol() => // 0x80
 		Protocol = Stream.ReadByte() - '0';
-	}
 
 	// ReSharper disable once MemberCanBeMadeStatic.Local
-	private void LoadFrame() { // 0x95
-		throw new NotSupportedException("FRAME opcode is not supported");
-	}
+	private void LoadFrame() => throw // 0x95
+		new NotSupportedException("FRAME opcode is not supported");
 
-	private void LoadPersId() { // P
+	private void LoadPersId() {
+		// P
 		var pid = ReadLine();
 		Stack.Push(pid);
 	}
 
-	private void LoadBinPersId() { // Q
+	private void LoadBinPersId() => // Q
 		Stack.Push(Stack.Pop());
-	}
 
-	private void LoadNone() { // N
+	private void LoadNone() => // N
 		Stack.Push(null);
-	}
 
-	private void LoadFalse() { // 0x89
+	private void LoadFalse() => // 0x89
 		Stack.Push(false);
-	}
 
-	private void LoadTrue() { // 0x88
+	private void LoadTrue() => // 0x88
 		Stack.Push(true);
-	}
 
-	private void LoadInt() { // I
+	private void LoadInt() {
+		// I
 		var value = ReadLine() ?? throw new InvalidDataException("Expected int value");
 		switch (value) {
 			case "00":
@@ -89,30 +83,35 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		}
 	}
 
-	private void LoadBinInt() { // J
+	private void LoadBinInt() {
+		// J
 		Span<int> value = stackalloc int[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		Stack.Push(value[0]);
 	}
 
-	private void LoadBinInt1() { // K
+	private void LoadBinInt1() {
+		// K
 		Span<byte> value = stackalloc byte[1];
 		Stream.ReadExactly(value);
 		Stack.Push(value[0]);
 	}
 
-	private void LoadBinInt2() { // M
+	private void LoadBinInt2() {
+		// M
 		Span<short> value = stackalloc short[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		Stack.Push(value[0]);
 	}
 
-	private void LoadLong() { // L
+	private void LoadLong() {
+		// L
 		var value = ReadLine() ?? throw new InvalidDataException("Expected long value");
 		Stack.Push(long.Parse(value));
 	}
 
-	private void LoadLong1() { // 0x8a
+	private void LoadLong1() {
+		// 0x8a
 		var n = Stream.ReadByte();
 		if (n > 8) {
 			throw new InvalidDataException("Expected a reasonable long value");
@@ -123,7 +122,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(span[0]);
 	}
 
-	private void LoadLong4() { // 0x8b
+	private void LoadLong4() {
+		// 0x8b
 		Span<int> value = stackalloc int[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		if (value[0] is < 0 or > 8) {
@@ -135,18 +135,21 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(span[0]);
 	}
 
-	private void LoadFloat() { // F
+	private void LoadFloat() {
+		// F
 		var value = ReadLine() ?? throw new InvalidDataException("Expected float value");
 		Stack.Push(double.Parse(value));
 	}
 
-	private void LoadBinFloat() { // G
+	private void LoadBinFloat() {
+		// G
 		Span<double> value = stackalloc double[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		Stack.Push(value[0]);
 	}
 
-	private void LoadString() { // S
+	private void LoadString() {
+		// S
 		var value = ReadLine() ?? throw new InvalidDataException("Expected string value");
 		if (value.Length >= 2 && value[0] == value[^1] && (value[0] == '\'' || value[0] == '"')) {
 			value = value[1..^1];
@@ -155,7 +158,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(value.Replace("\\u000a", "\n", StringComparison.Ordinal));
 	}
 
-	private void LoadBinString() { // T
+	private void LoadBinString() {
+		// T
 		Span<int> value = stackalloc int[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		if (value[0] < 0) {
@@ -167,7 +171,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(text);
 	}
 
-	private void LoadBinString1() { // U
+	private void LoadBinString1() {
+		// U
 		Span<byte> value = stackalloc byte[1];
 		Stream.ReadExactly(value);
 		var text = new byte[value[0]].AsSpan();
@@ -175,7 +180,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(Encoding.GetString(text));
 	}
 
-	private void LoadBinBytes() { // B
+	private void LoadBinBytes() {
+		// B
 		Span<uint> value = stackalloc uint[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		var text = new byte[value[0]];
@@ -183,7 +189,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(text);
 	}
 
-	private void LoadBinBytes1() { // C
+	private void LoadBinBytes1() {
+		// C
 		Span<byte> value = stackalloc byte[1];
 		Stream.ReadExactly(value);
 		var text = new byte[value[0]];
@@ -191,7 +198,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(text);
 	}
 
-	private void LoadBinBytes8() { // 0x8e
+	private void LoadBinBytes8() {
+		// 0x8e
 		Span<ulong> value = stackalloc ulong[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		var text = new byte[value[0]];
@@ -199,7 +207,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(text);
 	}
 
-	private void LoadUnicode() { // V
+	private void LoadUnicode() {
+		// V
 		var value = ReadLine(Encoding.UTF8) ?? throw new InvalidDataException("Expected string value");
 		if (value.Length >= 2 && value[0] == value[^1] && (value[0] == '\'' || value[0] == '"')) {
 			value = value[1..^1];
@@ -208,7 +217,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(value.Replace("\\u000a", "\n", StringComparison.Ordinal));
 	}
 
-	private void LoadBinUnicode() { // 0x8d
+	private void LoadBinUnicode() {
+		// 0x8d
 		Span<long> value = stackalloc long[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		if (value[0] < 0) {
@@ -220,7 +230,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(Encoding.UTF8.GetString(text));
 	}
 
-	private void LoadBinUnicode1() { // 0x8c
+	private void LoadBinUnicode1() {
+		// 0x8c
 		Span<byte> value = stackalloc byte[1];
 		Stream.ReadExactly(value);
 		var text = new byte[value[0]];
@@ -228,7 +239,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(Encoding.UTF8.GetString(text));
 	}
 
-	private void LoadByteArray8() { // 0x96
+	private void LoadByteArray8() {
+		// 0x96
 		Span<ulong> value = stackalloc ulong[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		var text = new byte[value[0]];
@@ -237,64 +249,63 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 	}
 
 	// ReSharper disable once MemberCanBeMadeStatic.Local
-	private void LoadNextBuffer() { // 0x97
-		throw new NotSupportedException("NEXT_BUFFER opcode is not supported");
-	}
+	private void LoadNextBuffer() => throw // 0x97
+		new NotSupportedException("NEXT_BUFFER opcode is not supported");
 
 	// ReSharper disable once MemberCanBeMadeStatic.Local
-	private void LoadReadOnlyBuffer() { // 0x98
-		throw new NotSupportedException("READONLY_BUFFER opcode is not supported");
-	}
+	private void LoadReadOnlyBuffer() => throw // 0x98
+		new NotSupportedException("READONLY_BUFFER opcode is not supported");
 
-	private void LoadTuple() { // t
+	private void LoadTuple() {
+		// t
 		var items = PopMark();
 		Stack.Push(items.ToArray());
 	}
 
-	private void LoadEmptyTuple() { // )
+	private void LoadEmptyTuple() => // )
 		Stack.Push(Array.Empty<object>());
-	}
 
-	private void LoadTuple1() { // 0x85
+	private void LoadTuple1() => // 0x85
 		Stack.Push(new[] { Stack.Pop() });
-	}
 
-	private void LoadTuple2() { // 0x86
+	private void LoadTuple2() {
+		// 0x86
 		var b = Stack.Pop();
 		var a = Stack.Pop();
 		Stack.Push(new[] { a, b });
 	}
 
-	private void LoadTuple3() { // 0x87
+	private void LoadTuple3() {
+		// 0x87
 		var c = Stack.Pop();
 		var b = Stack.Pop();
 		var a = Stack.Pop();
 		Stack.Push(new[] { a, b, c });
 	}
 
-	private void LoadEmptyList() { // ]
+	private void LoadEmptyList() => // ]
 		Stack.Push(Array.Empty<object>());
-	}
 
-	private void LoadEmptyDict() { // }
+	private void LoadEmptyDict() => // }
 		Stack.Push(new Dictionary<object, object?>());
-	}
 
-	private void LoadEmptySet() { // 0x8f
+	private void LoadEmptySet() => // 0x8f
 		Stack.Push(new HashSet<object>());
-	}
 
-	private void LoadFrozenSet() { // 0x91
+	private void LoadFrozenSet() {
+		// 0x91
 		var items = PopMark();
 		Stack.Push(items.ToHashSet());
 	}
 
-	private void LoadList() { // l
+	private void LoadList() {
+		// l
 		var items = PopMark();
 		Stack.Push(items.ToArray());
 	}
 
-	private void LoadDict() { // d
+	private void LoadDict() {
+		// d
 		var items = PopMark().ToArray();
 		var dict = new Dictionary<object, object?>();
 		for (var i = 0; i < items.Length; i += 2) {
@@ -304,7 +315,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(dict);
 	}
 
-	private void LoadInst() { // i
+	private void LoadInst() {
+		// i
 		var module = ReadLine();
 		var name = ReadLine();
 		var args = PopMark();
@@ -316,7 +328,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(obj);
 	}
 
-	private void LoadObj() { // o
+	private void LoadObj() {
+		// o
 		var args = PopMark();
 		var cls = Stack.Pop();
 		var obj = new Dictionary<string, object?> {
@@ -326,7 +339,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(obj);
 	}
 
-	private void LoadNewObj() { // 0x81
+	private void LoadNewObj() {
+		// 0x81
 		var args = Stack.Pop();
 		var cls = Stack.Pop();
 		var obj = new Dictionary<string, object?> {
@@ -336,7 +350,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(obj);
 	}
 
-	private void LoadNewObjEx() { // 0x92
+	private void LoadNewObjEx() {
+		// 0x92
 		var kwargs = Stack.Pop();
 		var args = Stack.Pop();
 		var cls = Stack.Pop();
@@ -348,7 +363,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(obj);
 	}
 
-	private void LoadGlobal() { // c
+	private void LoadGlobal() {
+		// c
 		var module = ReadLine();
 		var name = ReadLine();
 		Stack.Push(new Dictionary<string, object?> {
@@ -357,7 +373,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		});
 	}
 
-	private void LoadStackGlobal() { // 0x93
+	private void LoadStackGlobal() {
+		// 0x93
 		var args = Stack.Pop();
 		var cls = Stack.Pop();
 		var obj = new Dictionary<string, object?> {
@@ -367,7 +384,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(obj);
 	}
 
-	private void LoadExt1() { // 0x82
+	private void LoadExt1() {
+		// 0x82
 		Span<byte> value = stackalloc byte[1];
 		Stream.ReadExactly(value);
 		var ext = new byte[value[0]];
@@ -375,7 +393,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(ext);
 	}
 
-	private void LoadExt2() { // 0x83
+	private void LoadExt2() {
+		// 0x83
 		Span<ushort> value = stackalloc ushort[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		var ext = new byte[value[0]];
@@ -383,7 +402,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		Stack.Push(ext);
 	}
 
-	private void LoadExt4() { // 0x84
+	private void LoadExt4() {
+		// 0x84
 		Span<uint> value = stackalloc uint[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		var ext = new byte[value[0]];
@@ -392,11 +412,11 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 	}
 
 	// ReSharper disable once MemberCanBeMadeStatic.Local
-	private void LoadReduce() { // R
-		throw new NotSupportedException("REDUCE opcode is not supported");
-	}
+	private void LoadReduce() => throw // R
+		new NotSupportedException("REDUCE opcode is not supported");
 
-	private void LoadPop() { // 0
+	private void LoadPop() {
+		// 0
 		if (Stack.Count == 0) {
 			PopMark();
 		} else {
@@ -404,54 +424,60 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		}
 	}
 
-	private void LoadPopMark() { // 1
+	private void LoadPopMark() => // 1
 		PopMark();
-	}
 
-	private void LoadDup() { // 2
+	private void LoadDup() => // 2
 		Stack.Push(Stack.Peek());
-	}
 
-	private void LoadGet() { // g
+	private void LoadGet() {
+		// g
 		var index = int.Parse(ReadLine() ?? throw new InvalidDataException("Unexpected end of stream"));
 		Stack.Push(Memo[index]);
 	}
 
-	private void LoadBinGet() { // h
+	private void LoadBinGet() {
+		// h
 		Span<byte> value = stackalloc byte[1];
 		Stream.ReadExactly(value);
 		Stack.Push(Memo[value[0]]);
 	}
 
-	private void LoadBinGet4() { // j
+	private void LoadBinGet4() {
+		// j
 		Span<int> value = stackalloc int[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		Stack.Push(Memo[value[0]]);
 	}
 
-	private void LoadPut() { // p
+	private void LoadPut() {
+		// p
 		var index = int.Parse(ReadLine() ?? throw new InvalidDataException("Unexpected end of stream"));
 		Memo[index] = Stack.Peek();
 	}
 
-	private void LoadBinPut() { // q
+	private void LoadBinPut() {
+		// q
 		Span<byte> value = stackalloc byte[1];
 		Stream.ReadExactly(value);
 		Memo[value[0]] = Stack.Peek();
 	}
 
-	private void LoadBinPut4() { // r
+	private void LoadBinPut4() {
+		// r
 		Span<int> value = stackalloc int[1];
 		Stream.ReadExactly(MemoryMarshal.AsBytes(value));
 		Memo[value[0]] = Stack.Peek();
 	}
 
-	private void LoadMemoize() { // 0x94
+	private void LoadMemoize() {
+		// 0x94
 		var index = Memo.Count;
 		Memo[index] = Stack.Peek();
 	}
 
-	private void LoadAppend() { // a
+	private void LoadAppend() {
+		// a
 		var value = Stack.Pop();
 		var obj = Stack.Peek();
 		switch (obj) {
@@ -473,7 +499,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		}
 	}
 
-	private void LoadAppends() { // e
+	private void LoadAppends() {
+		// e
 		var value = PopMark();
 		var obj = Stack.Peek();
 		switch (obj) {
@@ -498,7 +525,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		}
 	}
 
-	private void LoadSetItem() { // s
+	private void LoadSetItem() {
+		// s
 		var value = Stack.Pop();
 		var key = Stack.Pop() ?? throw new InvalidDataException("Unexpected null key");
 		var obj = Stack.Peek();
@@ -514,7 +542,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		}
 	}
 
-	private void LoadSetItems() { // u
+	private void LoadSetItems() {
+		// u
 		var items = PopMark().Reverse().ToArray();
 		var obj = Stack.Peek();
 
@@ -539,7 +568,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		}
 	}
 
-	private void LoadAddItems() { // 0x90
+	private void LoadAddItems() {
+		// 0x90
 		var items = PopMark().Reverse().ToArray();
 		var obj = Stack.Peek();
 
@@ -568,7 +598,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		}
 	}
 
-	private void LoadBuild() { // b
+	private void LoadBuild() {
+		// b
 		var obj = Stack.Pop();
 		var inst = Stack.Peek();
 
@@ -597,7 +628,8 @@ public sealed class Unpickler(Stream stream, Encoding? encoding = null) : IDispo
 		}
 	}
 
-	private void LoadMark() { // (
+	private void LoadMark() {
+		// (
 		MetaStack.Push(Stack);
 		Stack = new Stack<object?>();
 	}

@@ -18,7 +18,7 @@ public record CommandLineFlags {
 	public virtual bool Version { get; set; }
 
 	public record Singleton<T> : CommandLineFlags where T : CommandLineFlags {
-		[field: AllowNull] [field: MaybeNull]
+		[field: AllowNull, MaybeNull] 
 		public static T Instance {
 			get => field ??= CommandLineFlagsParser.ParseFlags<T>();
 			set;

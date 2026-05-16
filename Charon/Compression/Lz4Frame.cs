@@ -44,19 +44,19 @@ public static partial class Lz4Frame {
 	}
 
 	private static partial class NativeMethods {
-		[LibraryImport(CompressionHelper.Lz4LibraryName)] [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
+		[LibraryImport(CompressionHelper.Lz4LibraryName), DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]  
 		public static unsafe partial nuint LZ4F_createDecompressionContext(out nint dctx, uint version);
 
-		[LibraryImport(CompressionHelper.Lz4LibraryName)] [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
+		[LibraryImport(CompressionHelper.Lz4LibraryName), DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]  
 		public static unsafe partial nuint LZ4F_freeDecompressionContext(nint dctx);
 
-		[LibraryImport(CompressionHelper.Lz4LibraryName)] [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])] [return: MarshalAs(UnmanagedType.I4)]
+		[LibraryImport(CompressionHelper.Lz4LibraryName), DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])] [return: MarshalAs(UnmanagedType.I4)]
 		public static unsafe partial bool LZ4F_isError(nuint code);
 
-		[LibraryImport(CompressionHelper.Lz4LibraryName)] [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])] [return: MarshalAs(UnmanagedType.LPStr)]
+		[LibraryImport(CompressionHelper.Lz4LibraryName), DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])] [return: MarshalAs(UnmanagedType.LPStr)]
 		public static unsafe partial string LZ4F_getErrorName(nuint code);
 
-		[LibraryImport(CompressionHelper.Lz4LibraryName)] [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
+		[LibraryImport(CompressionHelper.Lz4LibraryName), DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]  
 		public static unsafe partial nuint LZ4F_decompress(nint dctx, byte* dstBuffer, ref nuint dstSizePtr, byte* srcBuffer, ref nuint srcSizePtr, nint dOptPtr);
 	}
 }

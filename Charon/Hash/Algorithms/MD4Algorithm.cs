@@ -142,12 +142,12 @@ public class MD4Algorithm : HashAlgorithm {
 	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
 	private static uint H(uint x, uint y, uint z) => x ^ y ^ z;
 
-	[StructLayout(LayoutKind.Sequential)] [InlineArray(16)]
+	[StructLayout(LayoutKind.Sequential), InlineArray(16)] 
 	private struct BlockStack {
 		public uint Value;
 	}
 
-	[StructLayout(LayoutKind.Sequential)] [InlineArray(4)]
+	[StructLayout(LayoutKind.Sequential), InlineArray(4)] 
 	private struct StateStack {
 		public uint Value;
 

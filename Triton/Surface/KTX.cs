@@ -20,6 +20,7 @@ public class KTX : IDisposable {
 	public IRentedArray<byte> Buffer { get; }
 
 	~KTX() => Dispose(false);
+
 	protected virtual void Dispose(bool disposing) {
 		if (disposing) {
 			Buffer.Dispose();

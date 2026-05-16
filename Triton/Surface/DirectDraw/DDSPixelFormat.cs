@@ -76,6 +76,7 @@ public record struct DDSPixelFormat {
 						case 32:
 							return DXGIFormat.R32_UINT;
 					}
+
 					break;
 			}
 

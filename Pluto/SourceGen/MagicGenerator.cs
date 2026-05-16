@@ -8,7 +8,7 @@ namespace Pluto.SourceGen.MagicGenerator;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class GenerateMagicAttribute(string name, int size = 4, string? altPrint = null) : Attribute {
-	public string Name {get;set;} = name;
+	public string Name { get; set; } = name;
 	public int Size { get; set; } = size;
 	public string? AltPrint { get; set; } = altPrint;
 }

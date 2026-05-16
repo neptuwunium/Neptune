@@ -18,7 +18,7 @@ public class ReverseEndiannessGenerator : IIncrementalGenerator {
 			static (node, _) => node switch {
 				StructDeclarationSyntax => true,
 				RecordDeclarationSyntax record => record.ClassOrStructKeyword.IsKind(SyntaxKind.StructKeyword),
-				_ => false
+				_ => false,
 			},
 			static (ctx, _) => (INamedTypeSymbol) ctx.TargetSymbol);
 

@@ -47,6 +47,22 @@ public class DDS : IDisposable {
 		SetupProperties();
 	}
 
+	public bool LeaveOpen { get; }
+	public IRentedArray<byte> Buffer { get; }
+	public int DataStart { get; }
+	public DDSHeader Header { get; set; }
+	public DDSHeader10 Header10 { get; set; }
+	public DXGIFormat Format { get; set; }
+	public int ArrayCount { get; set; }
+	public int LargeSurface { get; set; }
+	public int OneSurface { get; set; }
+	public int Mips { get; set; }
+
+	public void Dispose() {
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
 	private void SetupProperties() {
 		if (Header.PixelFormat.FourCC == D3DFORMAT.DX10) {
 			Format = Header10.DXGIFormat;
@@ -62,17 +78,6 @@ public class DDS : IDisposable {
 	}
 
 	~DDS() => Dispose(false);
-
-	public bool LeaveOpen { get; }
-	public IRentedArray<byte> Buffer { get; }
-	public int DataStart { get; }
-	public DDSHeader Header { get; set; }
-	public DDSHeader10 Header10 { get; set; }
-	public DXGIFormat Format { get; set; }
-	public int ArrayCount { get; set; }
-	public int LargeSurface { get; set; }
-	public int OneSurface { get; set; }
-	public int Mips { get; set; }
 
 	public IImageBuffer? GetSurface(int surfaceIndex, bool decompress = true) {
 		if (Format == DXGIFormat.UNKNOWN) {
@@ -283,6 +288,7 @@ public class DDS : IDisposable {
 			oneSurface ^= pitch; // maybe use += instead of ^= for non-power-of-2?
 			pitch >>= 2;
 		}
+
 		return oneSurface;
 	}
 
@@ -293,11 +299,6 @@ public class DDS : IDisposable {
 		if (disposing) {
 			Buffer.Dispose();
 		}
-	}
-
-	public void Dispose() {
-		Dispose(true);
-		GC.SuppressFinalize(this);
 	}
 
 	public static bool IsDDS(ReadOnlySpan<byte> span) => span.Length >= 0x80 && MemoryMarshal.Read<uint>(span) == 0x20534444;

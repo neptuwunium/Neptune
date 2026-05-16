@@ -8,10 +8,12 @@ namespace Triton.Surface.DirectDraw;
 [Flags]
 public enum DDSCaps1 : uint {
 	None = 0x0,
+
 	// Reserved1 = 0x1,
 	// Alpha = 0x2,
 	// Backbuffer = 0x4,
 	Complex = 0x8,
+
 	// Flip = 0x10,
 	// FrontBuffer = 0x20,
 	// OffscreenPlain = 0x40,
@@ -21,6 +23,7 @@ public enum DDSCaps1 : uint {
 	// PrimarySurfaceLeft = 0x400,
 	// SystemMemory = 0x800,
 	Texture = 0x1000,
+
 	// ThreedDevice = 0x2000,
 	// VideoMemory = 0x4000,
 	// Visible = 0x8000,

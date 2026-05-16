@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Pluto;
 
 public static class Singleton<T> where T : class, new() {
-	[field: AllowNull] [field: MaybeNull]
+	[field: AllowNull, MaybeNull] 
 	public static T Instance {
 		get => field ??= new T();
 		set;

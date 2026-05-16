@@ -30,7 +30,7 @@ public sealed partial class OodleTex {
 		return NativeMethods.OodleTexRT_BC7Prep_Decode((byte*) outPin.Pointer, output.Length, (byte*) inPin.Pointer, input.Length, ref header, flags, (byte*) scratchPin.Pointer, scratch.Memory.Length);
 	}
 
-	[StructLayout(LayoutKind.Sequential)] [InlineArray(10)]
+	[StructLayout(LayoutKind.Sequential), InlineArray(10)] 
 	public struct BC7ModeCounts : IEquatable<BC7ModeCounts> {
 		public uint Value;
 
@@ -56,13 +56,13 @@ public sealed partial class OodleTex {
 	}
 
 	private static partial class NativeMethods {
-		[LibraryImport(CompressionHelper.OodleTexLibraryName)] [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
+		[LibraryImport(CompressionHelper.OodleTexLibraryName), DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]  
 		public static unsafe partial int OodleTexRT_BC7Prep_ReadHeader(ref BC7PrepHeader prepHeader, out long numBlocks, out long payloadSize);
 
-		[LibraryImport(CompressionHelper.OodleTexLibraryName)] [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
+		[LibraryImport(CompressionHelper.OodleTexLibraryName), DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]  
 		public static unsafe partial long OodleTexRT_BC7Prep_MinDecodeScratchSize(long numBlocks);
 
-		[LibraryImport(CompressionHelper.OodleTexLibraryName)] [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)] [UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]
+		[LibraryImport(CompressionHelper.OodleTexLibraryName), DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories), UnmanagedCallConv(CallConvs = [typeof(CallConvCdecl)])]  
 		public static unsafe partial int OodleTexRT_BC7Prep_Decode(byte* output, long outputBuf, byte* bc7prepData, long bc7prepSize, ref BC7PrepHeader header, BC7PrepDecodeFlags flags, byte* scratchBuf, long scratchSize);
 	}
 }

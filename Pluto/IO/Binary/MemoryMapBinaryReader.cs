@@ -15,7 +15,7 @@ public class MemoryMapBinaryReader : BufferBinaryReader {
 	}
 
 
-	public MemoryMapBinaryReader(string path, long offset = 0, long length = 0, MemoryMappedFileAccess access = MemoryMappedFileAccess.Read, bool leaveOpen = false) : this(MemoryMappedFile.CreateFromFile(path, FileMode.Open, null, 0, access),  offset, length, leaveOpen) { }
+	public MemoryMapBinaryReader(string path, long offset = 0, long length = 0, MemoryMappedFileAccess access = MemoryMappedFileAccess.Read, bool leaveOpen = false) : this(MemoryMappedFile.CreateFromFile(path, FileMode.Open, null, 0, access), offset, length, leaveOpen) { }
 
 	public MemoryMapBinaryReader(FileInfo fileInfo, long offset = 0, long length = 0, MemoryMappedFileAccess access = MemoryMappedFileAccess.Read, bool leaveOpen = false) : this(fileInfo.FullName, offset, length, access, leaveOpen) { }
 

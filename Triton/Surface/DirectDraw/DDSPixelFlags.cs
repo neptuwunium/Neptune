@@ -11,13 +11,16 @@ public enum DDSPixelFlags {
 	AlphaPixels = 0x1,
 	Alpha = 0x2,
 	FourCC = 0x4,
+
 	// PaletteIndexed4 = 0x8,
 	// PaletteIndexedTo8 = 0x10,
 	// PaletteIndexed8 = 0x20,
 	RGB = 0x40,
+
 	// Compressed = 0x80,
 	// RGBToYUV = 0x100,
 	YUV = 0x200,
+
 	// ZBuffer = 0x400,
 	// PaletteIndexed1 = 0x800,
 	// PaletteIndexed2 = 0x1000,

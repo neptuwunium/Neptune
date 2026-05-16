@@ -111,7 +111,7 @@ public sealed partial class MemoryApiHandler : IMemoryHandler {
 	}
 
 
-	[Flags] [SuppressMessage("ReSharper", "UnusedMember.Local")]
+	[Flags, SuppressMessage("ReSharper", "UnusedMember.Local")] 
 	private enum AllocationType {
 		Commit = 0x1000,
 		Reserve = 0x2000,
@@ -124,7 +124,7 @@ public sealed partial class MemoryApiHandler : IMemoryHandler {
 		TopDown = 0x100000,
 	}
 
-	[Flags] [SuppressMessage("ReSharper", "UnusedMember.Local")]
+	[Flags, SuppressMessage("ReSharper", "UnusedMember.Local")] 
 	private enum ProtectionType {
 		NoAccess = 0x01,
 		ReadOnly = 0x02,
@@ -151,11 +151,11 @@ public sealed partial class MemoryApiHandler : IMemoryHandler {
 		ProtectionType Protect);
 
 	private static partial class NativeMethods {
-		[LibraryImport("kernel32", SetLastError = true)] [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+		[LibraryImport("kernel32", SetLastError = true), DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static partial bool ReadProcessMemory(SafeProcessHandle processHandle, nint address, nint bytes, nint size, ref nint bytesReadCount);
 
-		[LibraryImport("kernel32", SetLastError = true)] [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+		[LibraryImport("kernel32", SetLastError = true), DefaultDllImportSearchPaths(DllImportSearchPath.System32)] 
 		internal static partial nint VirtualQueryEx(SafeProcessHandle processHandle, nint address, out MemoryBasicInformation64 memoryInformation, nint size);
 	}
 }

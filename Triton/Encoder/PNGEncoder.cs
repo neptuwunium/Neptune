@@ -185,7 +185,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 		void FlushStream(nint _) => stream.Flush();
 	}
 
-	[Flags] [SuppressMessage("ReSharper", "InconsistentNaming")]
+	[Flags, SuppressMessage("ReSharper", "InconsistentNaming")] 
 	internal enum PNGColorType {
 		Gray = 0,
 		Palette = 1,
@@ -216,7 +216,7 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 		Adam7 = 1,
 	}
 
-	[Flags] [SuppressMessage("ReSharper", "InconsistentNaming")]
+	[Flags, SuppressMessage("ReSharper", "InconsistentNaming")] 
 	internal enum PNGTransform : uint {
 		Identity = 0x0000,
 		Strip16 = 0x0001,
@@ -253,72 +253,72 @@ public partial class PNGEncoder(PNGCompressionLevel compressionLevel) : IEncoder
 		internal const string LibraryName = "png";
 		internal const DllImportSearchPath SearchPath = DllImportSearchPath.SafeDirectories | DllImportSearchPath.AssemblyDirectory | DllImportSearchPath.ApplicationDirectory;
 
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial nint png_create_write_struct([MarshalAs(UnmanagedType.LPStr)] string userPNGVersion, nint errorPtr, nint errorFunc, nint warnFunc);
 
-		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName, StringMarshalling = StringMarshalling.Utf8), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial nint png_create_read_struct([MarshalAs(UnmanagedType.LPStr)] string userPNGVersion, nint errorPtr, nint errorFunc, nint warnFunc);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial nint png_create_info_struct(nint pngPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_destroy_write_struct(ref nint pngPtr, ref nint infoPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_destroy_read_struct(ref nint pngPtr, ref nint infoPtr, ref nint infoEndPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_set_write_fn(nint pngPtr, nint ioPtr, nint write, nint flush);
 
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_set_read_fn(nint pngPtr, nint ioPtr, nint write);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_set_IHDR(nint pngPtr, nint infoPtr, int width, int height, int bitDepth, PNGColorType colorType, PNGInterlacing interlaceMethod, PNGCompressionType compressionMethod, PNGFilterType filterMethod);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)]
 		[return: MarshalAs(UnmanagedType.I4)]
 		public static partial bool png_get_IHDR(nint pngPtr, nint infoPtr, out int width, out int height, out int bitDepth, out PNGColorType colorType, out PNGInterlacing interlaceMethod, out PNGCompressionType compressionMethod, out PNGFilterType filterMethod);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_set_bgr(nint pngPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_set_expand(nint pngPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_set_expand_16(nint pngPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_read_update_info(nint pngPtr, nint infoPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_write_info(nint pngPtr, nint infoPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static unsafe partial void png_set_rows(nint pngPtr, nint infoPtr, byte** rowPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static unsafe partial long png_get_rowbytes(nint pngPtr, nint infoPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static unsafe partial byte** png_get_rows(nint pngPtr, nint infoPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_write_end(nint pngPtr, nint infoPtr);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_set_compression_level(nint pngPtr, PNGCompressionLevel level);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial nint png_get_libpng_ver(nint pngPtr); // for some reason string doesn't work here
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_write_png(nint pngPtr, nint infoPtr, PNGTransform transforms, nint @params);
 
-		[LibraryImport(LibraryName)] [DefaultDllImportSearchPaths(SearchPath)]
+		[LibraryImport(LibraryName), DefaultDllImportSearchPaths(SearchPath)] 
 		public static partial void png_read_png(nint pngPtr, nint infoPtr, PNGTransform transforms, nint @params);
 	}
 }

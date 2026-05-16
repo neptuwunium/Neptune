@@ -122,7 +122,7 @@ public sealed partial class IOVHandler : IMemoryHandler {
 	}
 
 	private static partial class NativeMethods {
-		[LibraryImport("libc")] [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+		[LibraryImport("libc"), DefaultDllImportSearchPaths(DllImportSearchPath.System32)] 
 		internal static unsafe partial nint process_vm_readv(int pid, ref IOV localIov, nuint localIovCount, ref IOV remoteIov, nuint remoteIovCount, nuint flags);
 	}
 }
