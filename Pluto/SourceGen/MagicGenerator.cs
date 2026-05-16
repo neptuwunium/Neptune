@@ -14,7 +14,7 @@ public sealed class GenerateMagicAttribute(string name, int size = 4, string? al
 }
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
-public sealed class MagicAttribute(string magic, string? name = null, string? altName = null, bool little = true) : Attribute {
+public sealed class MagicAttribute(string magic, string? name = null, string? altName = null, bool little = false) : Attribute {
 	public string Magic { get; } = magic;
 	public string Name { get; } = name ?? magic;
 	public string PrintableName { get; } = altName ?? name ?? magic;
