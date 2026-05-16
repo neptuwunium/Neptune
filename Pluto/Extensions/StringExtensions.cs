@@ -144,5 +144,31 @@ public static class StringExtensions {
 
 			return input;
 		}
+
+		// polyfill String.StartsWith(Char, StringComparison)
+		// polyfill String.EndsWith(Char, StringComparison)
+		// polyfill String.IndexOf(Char, StringComparison)
+		// polyfill String.LastIndexOf(Char, StringComparison)
+	#if !NET11_0_OR_GREATER
+		public bool StartsWith(char value, StringComparison comparisonType) => input.AsSpan().StartsWith(new ReadOnlySpan<char>(ref value), comparisonType);
+		public bool EndsWith(char value, StringComparison comparisonType) => input.AsSpan().StartsWith(new ReadOnlySpan<char>(ref value), comparisonType);
+		public int IndexOf(char value, StringComparison comparisonType) => input.AsSpan().IndexOf(new ReadOnlySpan<char>(ref value), comparisonType);
+		public int LastIndexOf(char value, StringComparison comparisonType) => input.AsSpan().LastIndexOf(new ReadOnlySpan<char>(ref value), comparisonType);
+	#endif
+	}
+
+	extension(char input) {
+		// polyfill Char.Equals(Char, StringComparison)
+	#if !NET11_0_OR_GREATER
+		public bool Equals(char other, StringComparison comparisonType) {
+			if (comparisonType == StringComparison.Ordinal) {
+				return input == other;
+			}
+
+			var left = new ReadOnlySpan<char>(ref input);
+			var right = new ReadOnlySpan<char>(ref other);
+			return left.Equals(right, comparisonType);
+		}
+	#endif
 	}
 }

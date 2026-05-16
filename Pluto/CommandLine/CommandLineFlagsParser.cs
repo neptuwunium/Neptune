@@ -8,6 +8,9 @@ using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+#if !NET11_0_OR_GREATER
+using Pluto.Extensions;
+#endif
 
 namespace Pluto.CommandLine;
 
@@ -273,7 +276,7 @@ public static class CommandLineFlagsParser {
 		var ignoreFlags = false;
 		for (var index = 0; index < arguments.Length; index++) {
 			var argument = arguments[index];
-			if (argument.StartsWith('-') && !ignoreFlags) {
+			if (argument.StartsWith('-', StringComparison.Ordinal) && !ignoreFlags) {
 				if (argument == "--") {
 					ignoreFlags = true;
 					continue;
@@ -581,7 +584,7 @@ public static class CommandLineFlagsParser {
 	}
 
 	private static IEnumerable<string> ParseTextValues(FlagAttribute flag, string textValueRaw) {
-		if (flag.FileListPrefix != 0 && textValueRaw.StartsWith(flag.FileListPrefix) && File.Exists(textValueRaw[1..])) {
+		if (flag.FileListPrefix != 0 && textValueRaw.StartsWith(flag.FileListPrefix, StringComparison.Ordinal) && File.Exists(textValueRaw[1..])) {
 			foreach (var line in File.ReadAllLines(textValueRaw[1..])) {
 				yield return line;
 			}
@@ -740,8 +743,8 @@ public static class CommandLineFlagsParser {
 			throw new InvalidCastException($"Cannot process {type.FullName}");
 		}
 
-		var visitorClassName = flag.Visitor[..flag.Visitor.LastIndexOf('.')];
-		var visitorMethodName = flag.Visitor[flag.Visitor.LastIndexOf('.')..];
+		var visitorClassName = flag.Visitor[..flag.Visitor.LastIndexOf('.', StringComparison.Ordinal)];
+		var visitorMethodName = flag.Visitor[flag.Visitor.LastIndexOf('.', StringComparison.Ordinal)..];
 		var visitorAssembly = flag.VisitorAssembly ?? typeof(T).Assembly;
 		var visitorClass = visitorAssembly.GetType(visitorClassName);
 		if (visitorClass is null) {

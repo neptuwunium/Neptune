@@ -4,6 +4,9 @@
 
 using System.Reflection;
 using System.Text.Json.Serialization;
+#if !NET11_0_OR_GREATER
+using Pluto.Extensions;
+#endif
 
 namespace Pluto.CommandLine;
 
@@ -63,7 +66,7 @@ public sealed class FlagAttribute(string flag) : Attribute {
 		IsRequired == other.IsRequired && Positional == other.Positional &&
 		ValidValues?.SequenceEqual(other.ValidValues) == true &&
 		Aliases.SequenceEqual(other.Aliases) && EnumPrefix?.SequenceEqual(other.EnumPrefix) == true &&
-		ReplaceDashes.Equals(other.ReplaceDashes);
+		ReplaceDashes.Equals(other.ReplaceDashes, StringComparison.Ordinal);
 
 	public override string ToString() => $"-{(Flag.Length > 1 ? "-" : string.Empty)}{Flag}: {Help}";
 
