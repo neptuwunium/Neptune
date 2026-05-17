@@ -27,7 +27,7 @@ public record struct ColorABGR<T>(T A, T B, T G, T R) : IColor<ColorABGR<T>, T> 
 	static bool IColor.HasAlphaChannel => true;
 	static bool IColor.ChannelsAreFullyUtilized => true;
 	static Type IColor.ChannelType => typeof(T);
-	static ChannelLayout IColor.ChannelLayout => ChannelLayout.BlueFirst;
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.AlphaBlueFirst;
 
 	public static ColorABGR<T> Black => new(NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());
 	public static ColorABGR<T> White => new(NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());

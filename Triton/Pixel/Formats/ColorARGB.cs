@@ -27,7 +27,7 @@ public record struct ColorARGB<T>(T A, T R, T G, T B) : IColor<ColorARGB<T>, T> 
 	static bool IColor.HasAlphaChannel => true;
 	static bool IColor.ChannelsAreFullyUtilized => true;
 	static Type IColor.ChannelType => typeof(T);
-	static ChannelLayout IColor.ChannelLayout => ChannelLayout.BlueFirst;
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.AlphaRedFirst;
 
 	public static ColorARGB<T> Black => new(NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMinimumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());
 	public static ColorARGB<T> White => new(NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>(), NumericConversion.GetMaximumValueSafe<T>());
