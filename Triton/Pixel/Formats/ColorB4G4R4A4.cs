@@ -1,32 +1,31 @@
-// SPDX-FileCopyrightText: 2022 - 2026 ds5678
 // SPDX-FileCopyrightText: 2026 Neptuwunium
 //
 // SPDX-License-Identifier: MIT
 
 namespace Triton.Pixel.Formats;
 
-public record struct ColorRGBA16 : IColor<ColorRGBA16, byte> {
-	private UInt4Pair Ba;
-	private UInt4Pair Rg;
+public record struct ColorB4G4R4A4 : IColor<ColorB4G4R4A4, byte> {
+	private UInt4Pair Bg;
+	private UInt4Pair Ra;
 
 	public byte R {
-		readonly get => Rg.HighValue;
-		set => Rg.HighValue = value;
+		readonly get => Ra.HighValue;
+		set => Ra.HighValue = value;
 	}
 
 	public byte G {
-		readonly get => Rg.LowValue;
-		set => Rg.LowValue = value;
+		readonly get => Ra.LowValue;
+		set => Ra.LowValue = value;
 	}
 
 	public byte B {
-		readonly get => Ba.HighValue;
-		set => Ba.HighValue = value;
+		readonly get => Bg.HighValue;
+		set => Bg.HighValue = value;
 	}
 
 	public byte A {
-		readonly get => Ba.LowValue;
-		set => Ba.LowValue = value;
+		readonly get => Bg.LowValue;
+		set => Bg.LowValue = value;
 	}
 
 	public readonly void GetChannels(out byte r, out byte g, out byte b, out byte a) => DefaultColorMethods.GetChannels(this, out r, out g, out b, out a);
@@ -39,11 +38,11 @@ public record struct ColorRGBA16 : IColor<ColorRGBA16, byte> {
 	static bool IColor.HasAlphaChannel => true;
 	static bool IColor.ChannelsAreFullyUtilized => false;
 	static Type IColor.ChannelType => typeof(byte);
-	static ChannelLayout IColor.ChannelLayout => ChannelLayout.RedFirst;
+	static ChannelLayout IColor.ChannelLayout => ChannelLayout.BlueFirst;
 
-	public static ColorRGBA16 Black => new() { A = 0xF };
-	public static ColorRGBA16 White => new() { R = 0xF, G = 0xF, B = 0xF, A = 0xF };
-	public static ColorRGBA16 Transparent => Black with { A = 0 };
+	public static ColorB4G4R4A4 Black => new() { A = 0xF };
+	public static ColorB4G4R4A4 White => new() { R = 0xF, G = 0xF, B = 0xF, A = 0xF };
+	public static ColorB4G4R4A4 Transparent => Black with { A = 0 };
 
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B}, A: {A} }}";
 }

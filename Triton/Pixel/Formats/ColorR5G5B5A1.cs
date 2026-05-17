@@ -4,10 +4,10 @@
 
 namespace Triton.Pixel.Formats;
 
-public record struct ColorB5G5R5A1 : IColor<ColorB5G5R5A1, float> {
+public record struct ColorR5G5B5A1 : IColor<ColorR5G5B5A1, float> {
 	public ushort Value { get; set; }
 
-	public float B {
+	public float R {
 		readonly get => (Value & 0x1F) / 31.0f;
 		set => Value = (ushort) ((Value & 0xFFE0) | (ushort) (value * 0x1F));
 	}
@@ -17,7 +17,7 @@ public record struct ColorB5G5R5A1 : IColor<ColorB5G5R5A1, float> {
 		set => Value = (ushort) ((Value & 0xFC1F) | ((ushort) (value * 0x1F) << 5));
 	}
 
-	public float R {
+	public float B {
 		readonly get => ((Value >> 10) & 0x1F) / 31.0f;
 		set => Value = (ushort) ((Value & 0x83FF) | ((ushort) (value * 0x1F) << 10));
 	}
@@ -49,10 +49,10 @@ public record struct ColorB5G5R5A1 : IColor<ColorB5G5R5A1, float> {
 	static Type IColor.ChannelType => typeof(float);
 	static ChannelLayout IColor.ChannelLayout => ChannelLayout.BlueFirst;
 
-	public static ColorB5G5R5A1 Black => new() { A = 1 };
+	public static ColorR5G5B5A1 Black => new() { A = 1 };
 
-	public static ColorB5G5R5A1 White => new() { R = 1, G = 1, B = 1, A = 1 };
-	public static ColorB5G5R5A1 Transparent => Black with { A = 0 };
+	public static ColorR5G5B5A1 White => new() { R = 1, G = 1, B = 1, A = 1 };
+	public static ColorR5G5B5A1 Transparent => Black with { A = 0 };
 
 	public override string ToString() => $"{{ R: {R}, G: {G}, B: {B} }}";
 }
