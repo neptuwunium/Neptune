@@ -23,7 +23,10 @@ public class StreamBinaryReader : BufferBinaryReader {
 		set => BasePosition = (int) (BaseStream.Position = value);
 	}
 
-	public override int Length => (int) BaseStream.Length;
+	public override int Length {
+		get => (int) BaseStream.Length;
+		protected set => throw new NotSupportedException();
+	}
 
 	public void SyncPosition() => Position = (int) BaseStream.Position;
 

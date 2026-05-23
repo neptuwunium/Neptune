@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: EUPL-1.2
 
+using System.Diagnostics.CodeAnalysis;
 using System.IO.MemoryMappedFiles;
 
 namespace Pluto.IO.Binary;
@@ -10,8 +11,7 @@ public class MemoryMapBinaryReader : BufferBinaryReader {
 	public MemoryMapBinaryReader(MemoryMappedFile file, long offset = 0, long length = 0, bool leaveOpen = false) {
 		File = file;
 		LeaveOpen = leaveOpen;
-		Accessor = file.CreateViewAccessor(offset, length, MemoryMappedFileAccess.Read);
-		Length = Accessor.Capacity > int.MaxValue ? int.MaxValue : (int) Accessor.Capacity;
+		Reset(offset, length);
 	}
 
 
@@ -24,7 +24,13 @@ public class MemoryMapBinaryReader : BufferBinaryReader {
 	public bool LeaveOpen { get; }
 
 	public override int Position { get; set; }
-	public override int Length { get; }
+	public override int Length { get; protected set; }
+
+	[MemberNotNull(nameof(Accessor))]
+	public void Reset(long offset = 0, long length = 0) {
+		Accessor = File.CreateViewAccessor(offset, length, MemoryMappedFileAccess.Read);
+		Length = Accessor.Capacity > int.MaxValue ? int.MaxValue : (int) Accessor.Capacity;
+	}
 
 	public override void ReadBytes(Span<byte> span) {
 		Accessor.SafeMemoryMappedViewHandle.ReadSpan((ulong) (Position + Accessor.PointerOffset), span);

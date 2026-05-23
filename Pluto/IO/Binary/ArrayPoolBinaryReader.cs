@@ -10,22 +10,24 @@ public class ArrayPoolBinaryReader : BufferBinaryReader {
 	public ArrayPoolBinaryReader(byte[] array, int length, bool leaveOpen = false) {
 		LeaveOpen = leaveOpen;
 		Length = length;
-		Array = array;
 		Rented = new RentedArray<byte>(array, length);
+		SetLength(length);
 	}
 
 	public ArrayPoolBinaryReader(IRentedArray<byte> array, bool leaveOpen = false) {
 		LeaveOpen = leaveOpen;
-		Length = array.Length;
 		Rented = array;
+		SetLength(array.Length);
 	}
 
 	public override int Position { get; set; }
-	public override int Length { get; }
+	public override int Length { get; protected set; }
 	protected byte[]? Array { get; set; }
 	protected IRentedArray<byte> Rented { get; set; }
 
 	public bool LeaveOpen { get; }
+
+	protected void SetLength(int length) => Length = length;
 
 	public override void ReadBytes(Span<byte> span) {
 		if (Array is { } array) {

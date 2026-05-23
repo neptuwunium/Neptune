@@ -19,7 +19,7 @@ public abstract class BufferBinaryReader : IDisposable {
 	/// <summary>
 	///     Length of the data stream
 	/// </summary>
-	public abstract int Length { get; }
+	public abstract int Length { get; protected set; }
 
 	/// <summary>
 	///     Number of bytes left in the stream before end

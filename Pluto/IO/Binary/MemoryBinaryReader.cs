@@ -9,7 +9,10 @@ public class MemoryBinaryReader : BufferBinaryReader {
 
 	public Memory<byte> Memory { get; }
 	public override int Position { get; set; }
-	public override int Length => Memory.Length;
+	public override int Length {
+		get => Memory.Length;
+		protected set => throw new NotSupportedException();
+	}
 
 	public override void ReadBytes(Span<byte> span) {
 		Memory.Span.Slice(Position, span.Length).CopyTo(span);
