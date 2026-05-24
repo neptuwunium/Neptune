@@ -36,7 +36,7 @@ public abstract class BufferBinaryWriter : IDisposable {
 	///     Write the specified amount of bytes to the buffer
 	/// </summary>
 	/// <param name="arr">Array to write from</param>
-	public virtual void WriteBytes(RentedArray<byte> arr) => WriteBytes(arr.Span);
+	public virtual void WriteBytes(IRentedArray<byte> arr) => WriteBytes(arr.Span);
 
 	/// <summary>
 	///     Write span into the buffer
@@ -126,7 +126,7 @@ public abstract class BufferBinaryWriter : IDisposable {
 	/// <param name="encoding">Encoding to encode as</param>
 	/// <typeparam name="TSize">Type of the size specifier</typeparam>
 	/// <typeparam name="TElement">Type of a single char</typeparam>
-	public virtual void WritePString<TSize, TElement>(string text, Encoding? encoding = default) where TSize : struct, INumber<TSize> where TElement : unmanaged, INumber<TSize> {
+	public virtual void WritePString<TSize, TElement>(string text, Encoding? encoding = default) where TSize : struct, INumber<TSize> where TElement : unmanaged, INumber<TElement> {
 		encoding ??= GuessEncoding(encoding, Unsafe.SizeOf<TElement>());
 		var length = encoding.GetByteCount(text);
 		Write(TSize.CreateChecked(length));
@@ -157,7 +157,10 @@ public abstract class BufferBinaryWriter : IDisposable {
 	///     Align the buffer to the specified width
 	/// </summary>
 	/// <param name="n">Width to align to</param>
-	public virtual void Align(int n = 4) => Position = Position.Align(n);
+	public virtual void Align(int n = 4) {
+		Position = Position.Align(n);
+		EnsureCapacity(Position);
+	}
 
 	protected abstract void Dispose(bool disposing);
 }
