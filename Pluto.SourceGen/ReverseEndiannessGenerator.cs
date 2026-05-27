@@ -50,8 +50,9 @@ public class ReverseEndiannessGenerator : IIncrementalGenerator {
 
 					var isValueLike = property.Type.IsValueType || property.Type.IsUnmanagedType;
 					var isGeneric = property.Type.TypeKind == TypeKind.TypeParameter;
+					var isEnum = property.Type is INamedTypeSymbol { EnumUnderlyingType: not null };
 
-					if (!isValueLike && !isGeneric) {
+					if (!isValueLike && !isGeneric && !isEnum) {
 						sb.AppendLine($"// {property.Name} not a value or type param");
 						continue;
 					}
@@ -60,7 +61,7 @@ public class ReverseEndiannessGenerator : IIncrementalGenerator {
 						var typeParam = symbol.TypeParameters.First(x => x.Name == property.Type.Name);
 						if (typeParam.ConstraintTypes.Any(x => x.Name == "IEndianReversible")) {
 							sb.AppendLine($"\t\t\t{property.Name} = {property.Name}.ReverseEndianness(),");
-						} else if(typeParam.HasUnmanagedTypeConstraint || typeParam.HasValueTypeConstraint) {
+						} else if (typeParam.HasUnmanagedTypeConstraint || typeParam.HasValueTypeConstraint) {
 							sb.AppendLine($"\t\t\t{property.Name} = Pluto.Helpers.ReverseStruct<{property.Type.ToDisplayString()}, {property.Type.ToDisplayString()}>({property.Name}),");
 						}
 
@@ -80,8 +81,8 @@ public class ReverseEndiannessGenerator : IIncrementalGenerator {
 
 						if (hasFunc) {
 							sb.AppendLine($"\t\t\t{property.Name} = {property.Name}.ReverseEndianness(),");
-						} else if(propertyType.TypeParameters.Length == 1) {
-							sb.AppendLine($"\t\t\t{property.Name} = Pluto.Helpers.ReverseStruct<{propertyType.ToDisplayString()}, {propertyType.TypeParameters[0].ToDisplayString()}>({property.Name}),");
+						} else if (propertyType.TypeParameters.Length == 1 && (propertyType.TypeParameters[0].HasUnmanagedTypeConstraint || propertyType.TypeParameters[0].HasValueTypeConstraint)) {
+							sb.AppendLine($"\t\t\t{property.Name} = Pluto.Helpers.ReverseStruct<{propertyType.ToDisplayString()}, {propertyType.TypeArguments[0].ToDisplayString()}>({property.Name}), // bb");
 						}
 					}
 
