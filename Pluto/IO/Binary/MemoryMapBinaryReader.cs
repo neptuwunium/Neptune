@@ -23,13 +23,13 @@ public class MemoryMapBinaryReader : BufferBinaryReader {
 	public MemoryMappedFile File { get; }
 	public bool LeaveOpen { get; }
 
-	public override int Position { get; set; }
-	public override int Length { get; protected set; }
+	public override long Position { get; set; }
+	public override long Length { get; protected set; }
 
 	[MemberNotNull(nameof(Accessor))]
 	public void Reset(long offset = 0, long length = 0) {
 		Accessor = File.CreateViewAccessor(offset, length, MemoryMappedFileAccess.Read);
-		Length = Accessor.Capacity > int.MaxValue ? int.MaxValue : (int) Accessor.Capacity;
+		Length = Accessor.Capacity;
 	}
 
 	public override void ReadBytes(Span<byte> span) {

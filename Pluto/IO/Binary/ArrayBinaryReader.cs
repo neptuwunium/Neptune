@@ -8,14 +8,14 @@ public class ArrayBinaryReader : BufferBinaryReader {
 	public ArrayBinaryReader(byte[] array) => Array = array;
 
 	public byte[] Array { get; }
-	public override int Position { get; set; }
-	public override int Length {
+	public override long Position { get; set; }
+	public override long Length {
 		get => Array.Length;
 		protected set => throw new NotSupportedException();
 	}
 
 	public override void ReadBytes(Span<byte> span) {
-		Array.AsSpan(Position, span.Length).CopyTo(span);
+		Array.AsSpan(checked((int) Position), span.Length).CopyTo(span);
 		Position += span.Length;
 	}
 

@@ -8,14 +8,14 @@ public class MemoryBinaryReader : BufferBinaryReader {
 	public MemoryBinaryReader(Memory<byte> memory) => Memory = memory;
 
 	public Memory<byte> Memory { get; }
-	public override int Position { get; set; }
-	public override int Length {
+	public override long Position { get; set; }
+	public override long Length {
 		get => Memory.Length;
 		protected set => throw new NotSupportedException();
 	}
 
 	public override void ReadBytes(Span<byte> span) {
-		Memory.Span.Slice(Position, span.Length).CopyTo(span);
+		Memory.Span.Slice(checked((int) Position), span.Length).CopyTo(span);
 		Position += span.Length;
 	}
 

@@ -16,19 +16,19 @@ public class StreamBinaryReader : BufferBinaryReader {
 
 	public Stream BaseStream { get; }
 	public bool LeaveOpen { get; }
-	public int BasePosition { get; set; }
+	public long BasePosition { get; set; }
 
-	public override int Position {
+	public override long Position {
 		get => BasePosition;
-		set => BasePosition = (int) (BaseStream.Position = value);
+		set => BasePosition = BaseStream.Position = value;
 	}
 
-	public override int Length {
-		get => (int) BaseStream.Length;
+	public override long Length {
+		get => BaseStream.Length;
 		protected set => throw new NotSupportedException();
 	}
 
-	public void SyncPosition() => Position = (int) BaseStream.Position;
+	public void SyncPosition() => Position = BaseStream.Position;
 
 	public override void ReadBytes(Span<byte> span) {
 		BasePosition += span.Length;

@@ -14,17 +14,17 @@ public abstract class BufferBinaryReader : IDisposable {
 	/// <summary>
 	///     Gets or sets the current position in the data stream
 	/// </summary>
-	public abstract int Position { get; set; }
+	public abstract long Position { get; set; }
 
 	/// <summary>
 	///     Length of the data stream
 	/// </summary>
-	public abstract int Length { get; protected set; }
+	public abstract long Length { get; protected set; }
 
 	/// <summary>
 	///     Number of bytes left in the stream before end
 	/// </summary>
-	public virtual int Unconsumed => Length - Position;
+	public virtual long Unconsumed => Length - Position;
 
 	/// <inheritdoc cref="IDisposable.Dispose" />
 	public void Dispose() {
@@ -263,7 +263,7 @@ public abstract class BufferBinaryReader : IDisposable {
 		}
 
 		if (bufferSize > Length - Position) {
-			bufferSize = Length - Position;
+			bufferSize = checked((int) (Length - Position));
 
 			if (bufferSize < 0) {
 				return string.Empty;

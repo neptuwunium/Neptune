@@ -20,8 +20,8 @@ public class ArrayPoolBinaryReader : BufferBinaryReader {
 		SetLength(array.Length);
 	}
 
-	public override int Position { get; set; }
-	public override int Length { get; protected set; }
+	public override long Position { get; set; }
+	public override long Length { get; protected set; }
 	protected byte[]? Array { get; set; }
 	protected IRentedArray<byte> Rented { get; set; }
 
@@ -31,22 +31,22 @@ public class ArrayPoolBinaryReader : BufferBinaryReader {
 
 	public override void ReadBytes(Span<byte> span) {
 		if (Array is { } array) {
-			array.AsSpan(Position, Length).CopyTo(span);
+			array.AsSpan(checked((int) Position), checked((int) Length)).CopyTo(span);
 		} else {
-			Rented.Span.Slice(Position, span.Length).CopyTo(span);
+			Rented.Span.Slice(checked((int) Position), span.Length).CopyTo(span);
 		}
 
 		Position += span.Length;
 	}
 
 	public override IRentedArray<T> ReadShared<T>(int length) where T : struct {
-		var arr = new UnownedCovariantArray<T>(Rented, Position, length);
+		var arr = new UnownedCovariantArray<T>(Rented, checked((int) Position), length);
 		Position += Unsafe.SizeOf<T>() * length;
 		return arr;
 	}
 
 	public override IRentedArray<byte> ReadSharedBytes(int length) {
-		var arr = new UnownedRentedArray<byte>(Rented, Position, length);
+		var arr = new UnownedRentedArray<byte>(Rented, checked((int) Position), length);
 		Position += length;
 		return arr;
 	}

@@ -140,6 +140,8 @@ public sealed class RentedArray<T> : IRentedArray<T> where T : struct {
 		Length = 0;
 	}
 
+	~RentedArray() => Dispose(false);
+
 	public T[] Array { get; private set; }
 	public ArraySegment<T> Segment => Length == 0 ? ArraySegment<T>.Empty : new ArraySegment<T>(Array, 0, Length);
 	public static RentedArray<T> Empty { get; } = new();
@@ -158,7 +160,7 @@ public sealed class RentedArray<T> : IRentedArray<T> where T : struct {
 		set => Array[index] = value;
 	}
 
-	public void Dispose() {
+	public void Dispose(bool disposing) {
 		if (Length == 0) {
 			return;
 		}
@@ -166,6 +168,11 @@ public sealed class RentedArray<T> : IRentedArray<T> where T : struct {
 		ArrayPool<T>.Shared.Return(Array);
 		Array = [];
 		Length = 0;
+	}
+
+	public void Dispose() {
+		Dispose(true);
+		GC.SuppressFinalize(this);
 	}
 
 	public IEnumerator<T> GetEnumerator() {
