@@ -4,7 +4,7 @@
 
 namespace Charon.Compression.Zip;
 
-[StructLayout(LayoutKind.Sequential, Pack = 4)]
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly record struct ZipCentralDirectoryHeader {
 	public const uint MAGIC = 0x02014B50;
 

@@ -11,6 +11,8 @@ using Pluto.IO.Binary;
 namespace Charon.Compression.Zip;
 
 public sealed class ZipFile : IDisposable {
+	public ZipFile(string path) : this(MemoryMappedFile.CreateFromFile(path, FileMode.Open, null, 0, MemoryMappedFileAccess.Read)) { }
+
 	public ZipFile(MemoryMappedFile memoryMap) {
 		MemoryMap = memoryMap;
 		Entries = ObjectPool<List<ZipEntry>>.Rent();
@@ -104,7 +106,7 @@ public sealed class ZipFile : IDisposable {
 			throw new InvalidDataException("Can't read file header magic");
 		}
 
-		reader.Position = header.ExtraFieldLength + header.FileNameLength;
+		reader.Position += header.ExtraFieldLength + header.FileNameLength;
 
 		var diskBuffer = reader.ReadBytes(checked((int) diskSize));
 		var compression = (ZipCompression) entry.Header.Compression;
