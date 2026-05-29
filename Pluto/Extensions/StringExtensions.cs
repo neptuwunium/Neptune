@@ -20,15 +20,8 @@ public static class StringExtensions {
 			return illegal.Aggregate(input, (current, ch) => current.Replace(ch, replaceChar));
 		}
 
-		public string SanitizeTraversal(char replaceChar = '_') {
-			var illegal = Path.GetInvalidPathChars();
-
-			var value = illegal.Aggregate(input, (current, ch) => current.Replace(ch, replaceChar)).Replace("/../", "/", StringComparison.Ordinal);
-			if (OperatingSystem.IsWindows()) {
-				value = value.Replace("/", @"\", StringComparison.Ordinal).Replace(@"\..\", @"\", StringComparison.Ordinal);
-			}
-
-			return value.TrimStart('/', '\\', '.');
+		public string SanitizeTraversal() {
+			return input.Replace('\\', '/').Replace("/../", "/", StringComparison.Ordinal).TrimStart('/', '.');
 		}
 
 		public void EnsureDirectoryExists() {
