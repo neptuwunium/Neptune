@@ -49,7 +49,7 @@ public class DDS : IDisposable {
 
 	public bool LeaveOpen { get; }
 	public IRentedArray<byte> Buffer { get; }
-	public int DataStart { get; }
+	public int DataStart { get; protected set; }
 	public DDSHeader Header { get; set; }
 	public DDSHeader10 Header10 { get; set; }
 	public DXGIFormat Format { get; set; }
@@ -79,6 +79,19 @@ public class DDS : IDisposable {
 
 	~DDS() => Dispose(false);
 
+	public virtual void Write(BufferBinaryWriter writer) {
+		writer.Write(Header);
+		if (Header.PixelFormat.FourCC == D3DFORMAT.DX10) {
+			writer.Write(Header10);
+		}
+
+		WriteSurfaces(writer);
+	}
+
+	public virtual void WriteSurfaces(BufferBinaryWriter writer) => writer.Write(Buffer.Span[DataStart..]);
+
+	public virtual IRentedArray<byte> GetSurfaceBuffer(int surfaceIndex) => new UnownedRentedArray<byte>(Buffer, DataStart + OneSurface * surfaceIndex, OneSurface);
+
 	public IImageBuffer? GetSurface(int surfaceIndex, bool decompress = true) {
 		if (Format == DXGIFormat.UNKNOWN) {
 			return null;
@@ -88,8 +101,7 @@ public class DDS : IDisposable {
 			throw new NotSupportedException();
 		}
 
-		var offset = DataStart + OneSurface * surfaceIndex;
-		var pixelData = new UnownedRentedArray<byte>(Buffer, offset, OneSurface);
+		var pixelData = GetSurfaceBuffer(surfaceIndex);
 
 		if (Format.IsCompressed && decompress) {
 			// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault

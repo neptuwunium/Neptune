@@ -10,7 +10,7 @@ namespace Triton.Surface.DirectDraw;
 [StructLayout(LayoutKind.Sequential, Pack = 4)]
 public record struct DDSHeader {
 	[InlineArray(11)]
-	internal struct Reserved1Array {
+	public struct Reserved1Array {
 		public uint Value;
 	}
 
@@ -22,11 +22,11 @@ public record struct DDSHeader {
 	public int PitchOrLinearSize { get; set; }
 	public int Depth { get; set; }
 	public int MipMapCount { get; set; }
-	internal Reserved1Array Reserved1 { get; set; }
+	public Reserved1Array Reserved1 { get; set; }
 	public DDSPixelFormat PixelFormat { get; set; }
 	public DDSCaps1 Caps1 { get; set; }
 	public DDSCaps2 Caps2 { get; set; }
 	public DDSCaps3 Caps3 { get; set; }
 	public DDSCaps4 Caps4 { get; set; }
-	internal int Reserved2 { get; set; }
+	public uint Reserved2 { get; set; }
 }
