@@ -280,7 +280,7 @@ public abstract class BufferBinaryReader : IDisposable {
 		var start = Position;
 		var length = 0;
 		try {
-			Read(buffer);
+			Read(buffer[..bufferSize]);
 			length = buffer.IndexOf(T.Zero);
 			switch (length) {
 				case 0: return string.Empty;
