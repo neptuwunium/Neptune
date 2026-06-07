@@ -34,6 +34,14 @@ public class BitStructGenerator : IIncrementalGenerator {
 			sb.AppendLine($"public partial struct {symbol.Name} : IEquatable<{symbol.Name}> {{");
 			sb.AppendLine("\tprivate byte Value { get; set; }");
 			sb.AppendLine();
+			sb.AppendLine($"\tpublic {symbol.Name}(params Span<byte> value) {{");
+			sb.AppendLine($"\t\tif (value.Length > {size}) {{");
+			sb.AppendLine("\t\t\tthrow new ArgumentOutOfRangeException(nameof(value));");
+			sb.AppendLine("\t\t}");
+			sb.AppendLine();
+			sb.AppendLine("\t\tvalue.CopyTo(this);");
+			sb.AppendLine("\t}");
+			sb.AppendLine();
 			sb.AppendLine($"\tpublic override bool Equals(object obj) => obj is {symbol.Name} other && Equals(other);");
 			sb.AppendLine($"\tpublic bool Equals({symbol.Name} other) => ((ReadOnlySpan<byte>) this).SequenceEqual((ReadOnlySpan<byte>) other);");
 			sb.AppendLine($"\tpublic bool Equals(in {symbol.Name} other) => ((ReadOnlySpan<byte>) this).SequenceEqual((ReadOnlySpan<byte>) other);");
@@ -61,6 +69,7 @@ public class BitStructGenerator : IIncrementalGenerator {
 					"long" => 64,
 					_ => 0,
 				};
+				var isBool = type == "bool";
 
 				sb.AppendLine();
 				sb.AppendLine($"\tpublic partial {type} {property.Name} {{");
@@ -74,7 +83,11 @@ public class BitStructGenerator : IIncrementalGenerator {
 				}
 
 				if (signBits == 0) {
-					sb.AppendLine($"\t\t\treturn ({type}) ((value >> {bitOffset}) & 0x{mask:x}ul);");
+					if (isBool) {
+						sb.AppendLine($"\t\t\treturn ((value >> {bitOffset}) & 0x{mask:x}ul) == 1;");
+					} else {
+						sb.AppendLine($"\t\t\treturn ({type}) ((value >> {bitOffset}) & 0x{mask:x}ul);");
+					}
 				} else {
 					var shiftAmount = signBits - bits;
 					sb.AppendLine($"\t\t\tvar raw = (value >> {bitOffset}) & 0x{mask:x}ul;");
@@ -84,7 +97,12 @@ public class BitStructGenerator : IIncrementalGenerator {
 				sb.AppendLine("\t\t}");
 
 				sb.AppendLine("\t\tset {");
-				sb.AppendLine($"\t\t\tvar val = ((ulong) value & 0x{mask:x}ul) << {bitOffset};");
+				if (isBool) {
+					sb.AppendLine($"\t\t\tvar val = (value ? 1ul : 0ul) << {bitOffset};");
+				} else {
+					sb.AppendLine($"\t\t\tvar val = ((ulong) value & 0x{mask:x}ul) << {bitOffset};");
+				}
+
 				// todo: mask can be dropped only needed for first and last copy
 				sb.AppendLine($"\t\t\tvar mask = 0x{mask:x}ul << {bitOffset};");
 				for (var i = startByte; i <= endByte; i++) {
