@@ -49,12 +49,16 @@ public class BitStructGenerator : IIncrementalGenerator {
 			sb.AppendLine($"\tpublic static bool operator !=(in {symbol.Name} left, in {symbol.Name} right) => !(left == right);");
 			sb.AppendLine("\tpublic override int GetHashCode() { var hc = new HashCode(); hc.AddBytes((ReadOnlySpan<byte>) this); return hc.ToHashCode(); }");
 
+			var stringParts = new List<string>();
+
 			var shift = 0;
 			foreach (var property in symbol.GetMembers().OfType<IPropertySymbol>()) {
 				var bitFieldAttribute = property.GetAttributes().FirstOrDefault(x => x.AttributeClass?.Name == "BitFieldAttribute");
 				if (bitFieldAttribute == default) {
 					continue;
 				}
+
+				stringParts.Add($"{property.Name} = {{{property.Name}}}");
 
 				var type = property.Type.ToDisplayString();
 				var bits = (int) bitFieldAttribute.ConstructorArguments[0].Value!;
@@ -115,6 +119,24 @@ public class BitStructGenerator : IIncrementalGenerator {
 
 				shift += bits;
 			}
+
+			sb.AppendLine();
+
+			sb.AppendLine("\tpublic override string ToString() {");
+			sb.AppendLine("\t\tvar sb = new System.Text.StringBuilder();");
+			sb.AppendLine($"\t\tsb.Append(\"{symbol.Name} {{ \");");
+			for (var index = 0; index < stringParts.Count; index++) {
+				var part = stringParts[index];
+				if (index < stringParts.Count - 1) {
+					part += ", ";
+				}
+
+				sb.AppendLine($"\t\tsb.Append($\"{part}\");");
+			}
+
+			sb.AppendLine("\t\tsb.Append(\" }\");");
+			sb.AppendLine("\t\treturn sb.ToString();");
+			sb.AppendLine("\t}");
 
 			sb.AppendLine("}");
 			spc.AddSource($"{symbol.Name}.g.cs", SourceText.From(sb.ToString(), Encoding.UTF8));
