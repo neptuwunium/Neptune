@@ -70,6 +70,54 @@ public sealed class UnownedRentedArray<T> : IRentedArray<T> where T : struct {
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
 
+public sealed class OffsetRentedArray<T> : IRentedArray<T> where T : struct {
+	public OffsetRentedArray(IRentedArray<T> inner, int offset) {
+		Inner = inner;
+		Offset = offset;
+		Length = inner.Length - offset;
+	}
+
+	public OffsetRentedArray(IRentedArray<T> inner, int offset, int length) {
+		Inner = inner;
+		Offset = offset;
+		Length = length;
+	}
+
+	public IRentedArray<T> Inner { get; }
+	public int Offset { get; }
+	public int Length { get; set => field = value > Inner.Length ? throw new InvalidOperationException("cannot grow array") : value; }
+	public Memory<T> Memory => Length == 0 ? Memory<T>.Empty : Inner.Memory.Slice(Offset, Length);
+	public Span<T> Span => Length == 0 ? Span<T>.Empty : Inner.Span.Slice(Offset, Length);
+
+	public T this[int index] {
+		get => Inner[Offset + index];
+		set => Inner[Offset + index] = value;
+	}
+
+	public IRentedArray<T> Clone() {
+		var arr = new RentedArray<T>(Length);
+		Span.CopyTo(arr.Span);
+		return arr;
+	}
+
+	public void Dispose() {
+		if (Length == 0) {
+			return;
+		}
+
+		Length = 0;
+		Inner.Dispose();
+	}
+
+	public IEnumerator<T> GetEnumerator() {
+		for (var i = 0; i < Length; ++i) {
+			yield return this[i];
+		}
+	}
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+}
+
 public sealed class UnownedCovariantArray<T> : IRentedArray<T> where T : struct {
 	public UnownedCovariantArray(IRentedArray<byte> inner) : this(inner, 0, inner.Length / Unsafe.SizeOf<T>()) { }
 	public UnownedCovariantArray(IRentedArray<byte> inner, int byteOffset) : this(inner, byteOffset, (inner.Length - byteOffset) / Unsafe.SizeOf<T>()) { }
