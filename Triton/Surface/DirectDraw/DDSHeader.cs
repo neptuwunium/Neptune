@@ -10,8 +10,19 @@ namespace Triton.Surface.DirectDraw;
 [StructLayout(LayoutKind.Sequential, Pack = 4)]
 public record struct DDSHeader {
 	[InlineArray(11)]
-	public struct Reserved1Array {
+	public struct Reserved1Array : IEquatable<Reserved1Array> {
 		public uint Value;
+
+		public override int GetHashCode() {
+			var hc = new HashCode();
+			hc.AddBytes(MemoryMarshal.AsBytes((ReadOnlySpan<uint>) this));
+			return hc.ToHashCode();
+		}
+
+		public static bool operator ==(Reserved1Array left, Reserved1Array right) => left.Equals(right);
+		public static bool operator !=(Reserved1Array left, Reserved1Array right) => !(left == right);
+		public override bool Equals(object? obj) => obj is Reserved1Array other && Equals(other);
+		public bool Equals(Reserved1Array other) => ((ReadOnlySpan<uint>) this).SequenceEqual(other);
 	}
 
 	public uint Magic { get; set; }
